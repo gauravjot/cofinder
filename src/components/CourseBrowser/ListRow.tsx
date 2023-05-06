@@ -37,14 +37,14 @@ export function ListRow(props: Props) {
 				.then(function (response) {
 					setSeatInfo({
 						seats: {
-							Actual: response.data.seats.Actual,
-							Capacity: response.data.seats.Capacity,
-							Remaining: response.data.seats.Remaining,
+							Actual: response.data.seats.seats.Actual,
+							Capacity: response.data.seats.seats.Capacity,
+							Remaining: response.data.seats.seats.Remaining,
 						},
 						waitlist: {
-							Actual: response.data.waitlist.Actual,
-							Capacity: response.data.waitlist.Capacity,
-							Remaining: response.data.waitlist.Remaining,
+							Actual: response.data.seats.waitlist.Actual,
+							Capacity: response.data.seats.waitlist.Capacity,
+							Remaining: response.data.seats.waitlist.Remaining,
 						},
 					});
 					setIsLoadingSeats(false);
