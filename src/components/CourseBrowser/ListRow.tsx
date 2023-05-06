@@ -1,8 +1,8 @@
 import * as React from "react";
 import { SeatsInfoType, SectionsBrowserType, TermType } from "data/dbTypes";
 import axios from "axios";
-import { API_BASE_URL } from "config";
 import ListRowExpandInfo from "./ListRowExpandInfo";
+import { seatsEP } from "config";
 
 /*
 
@@ -33,9 +33,7 @@ export function ListRow(props: Props) {
 		if (expand && seatInfo === null) {
 			setIsLoadingSeats(true);
 			axios
-				.get(
-					`${API_BASE_URL}/section/seats/${props.term.date}/${props.section.crn}/`
-				)
+				.get(seatsEP(props.term.date, props.section.crn))
 				.then(function (response) {
 					setSeatInfo({
 						seats: {

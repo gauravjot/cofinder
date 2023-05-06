@@ -5,7 +5,7 @@ import linkedin from "assets/svg/linkedin.svg";
 import logo from "assets/images/branding.png";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { VERSION_CODE } from "config";
+import { APP_NAME, VERSION_CODE } from "config";
 
 export default function About() {
 	React.useEffect(() => {
@@ -14,7 +14,7 @@ export default function About() {
 	return (
 		<div className="App">
 			<Helmet>
-				<title>About Us • Cofinder</title>
+				<title>About Us - {APP_NAME}</title>
 			</Helmet>
 			<div className="flex relative">
 				<div className="flex-none xl:sticky fixed top-0 h-screen z-20">

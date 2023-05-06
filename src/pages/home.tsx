@@ -3,7 +3,7 @@ import Sidebar from "components/Sidebar/Sidebar";
 import Spinner from "components/Utils/Spinner";
 import ErrorBoundary from "components/Utils/ErrorBoundary";
 import { Helmet } from "react-helmet";
-import { SCHOOL_FULL_NAME, SCHOOL_SHORT_NAME, SCHOOL_WEBSITE } from "config";
+import { APP_NAME, SCHOOL_FULL_NAME, SCHOOL_SHORT_NAME, SCHOOL_WEBSITE } from "config";
 import { ROUTE } from "routes";
 import { Link } from "react-router-dom";
 
@@ -20,7 +20,9 @@ function App() {
 	return (
 		<div className="App">
 			<Helmet>
-				<title>{SCHOOL_SHORT_NAME} Cofinder • Plan, Organize & Succeed</title>
+				<title>
+					{SCHOOL_SHORT_NAME} {APP_NAME} - Plan, Organize & Succeed
+				</title>
 			</Helmet>
 			<div className="flex relative">
 				<div className="flex-none xl:sticky fixed top-0 xl:h-screen z-20">

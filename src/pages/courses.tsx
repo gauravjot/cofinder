@@ -5,6 +5,7 @@ import { SectionsBrowserType } from "../data/dbTypes";
 import ErrorBoundary from "components/Utils/ErrorBoundary";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { APP_NAME } from "config";
 
 const CourseFilter = React.lazy(() => import("components/CourseBrowser/CourseFilter"));
 const ListData = React.lazy(() => import("components/CourseBrowser/ListData"));
@@ -35,7 +36,7 @@ export default function Courses() {
 	return (
 		<div className="App">
 			<Helmet>
-				<title>Course Browser • Cofinder</title>
+				<title>Course Browser - {APP_NAME}</title>
 			</Helmet>
 			<div className="flex relative">
 				<div className="flex-none xl:sticky fixed top-0 xl:h-screen z-30">

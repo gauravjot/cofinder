@@ -1,5 +1,5 @@
 import * as React from "react";
-import { API_BASE_URL, FETCH_TIME_GAP } from "config";
+import { FETCH_TIME_GAP, coursesEP, instructorsEP, sectionsEP, subjectsEP } from "config";
 import axios from "axios";
 import {
 	ReduxCourseType,
@@ -17,7 +17,6 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 export interface IAppProps {
 	fetch: FETCH;
-	extra?: string;
 }
 
 export const enum FETCH {
@@ -59,6 +58,7 @@ export default function useFetchTermData(props: IAppProps) {
 		let ignore = false;
 		/* localRetriveData data or locally retreived data */
 		let localRetriveData;
+		let url: string;
 
 		/*
 		 * Check if local data is stale
@@ -68,15 +68,19 @@ export default function useFetchTermData(props: IAppProps) {
 		switch (props.fetch) {
 			case FETCH.Instructors:
 				localRetriveData = fetchedInstructors;
+				url = instructorsEP(currentTerm.id);
 				break;
 			case FETCH.Courses:
 				localRetriveData = fetchedCourses;
+				url = coursesEP(currentTerm.id);
 				break;
 			case FETCH.Sections:
 				localRetriveData = fetchedSections;
+				url = sectionsEP(currentTerm.id);
 				break;
 			case FETCH.Subjects:
 				localRetriveData = fetchedSubjects;
+				url = subjectsEP(currentTerm.id);
 				break;
 			default:
 				throw new Error(
@@ -93,19 +97,14 @@ export default function useFetchTermData(props: IAppProps) {
 		}
 
 		// if fetch is true, we send network request
-		if (fetch) {
+		if (fetch && url) {
 			console.log(props.fetch + ": fetching");
 			axios
-				.get(
-					`${API_BASE_URL}/${currentTerm.id}/${props.fetch}/${
-						props.extra ? props.extra + "/" : ""
-					}`,
-					{
-						headers: {
-							"Content-Type": "application/json",
-						},
-					}
-				)
+				.get(url, {
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
 				.then(function (response) {
 					if (!ignore) {
 						if (props.fetch === FETCH.Instructors) {
@@ -163,7 +162,6 @@ export default function useFetchTermData(props: IAppProps) {
 	}, [
 		props.fetch,
 		currentTerm.id,
-		props.extra,
 		fetchedInstructors,
 		fetchedCourses,
 		fetchedSections,
@@ -249,7 +247,7 @@ export function useFetchSpecificSectionData(props: IAppProps) {
 		if (fetch && encodedCRNS !== "") {
 			console.log(props.fetch + ": fetching");
 			axios
-				.get(`${API_BASE_URL}/${currentTerm.id}/sections/${encodedCRNS}/`, {
+				.get(sectionsEP(currentTerm.id, encodedCRNS), {
 					headers: {
 						"Content-Type": "application/json",
 					},
@@ -278,13 +276,6 @@ export function useFetchSpecificSectionData(props: IAppProps) {
 			// Component unmounted
 			ignore = true;
 		};
-	}, [
-		props.fetch,
-		currentTerm.id,
-		props.extra,
-		fetchedScheduleSections,
-		mySchedule,
-		dispatch,
-	]);
+	}, [props.fetch, currentTerm.id, fetchedScheduleSections, mySchedule, dispatch]);
 	return data;
 }

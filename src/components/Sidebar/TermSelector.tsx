@@ -2,10 +2,10 @@ import * as React from "react";
 import { RootState } from "index";
 import { TermsReducerType, TermType } from "data/dbTypes";
 import axios from "axios";
-import { API_BASE_URL } from "config";
 import { setTerms, setCurrentTerm } from "redux/actions";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { clearAllVariableStates } from "../../redux/actions";
+import { EP_TERMS } from "config";
 
 export default function TermSelector() {
 	const dispatch = useAppDispatch();
@@ -28,7 +28,7 @@ export default function TermSelector() {
 			// fetch
 			setIsFetching(true);
 			axios
-				.get(`${API_BASE_URL}/terms/`, {
+				.get(EP_TERMS, {
 					headers: {
 						"Content-Type": "application/json",
 					},

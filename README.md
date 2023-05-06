@@ -1,25 +1,20 @@
-# Getting Started
+# CoFinder
 
-To run the project, use these commands in _university-future_ directory:
+CoFinder helps you find course offerings for University of the Fraser Valley. We are not yet affiliated with any of UFV's department, but this tool was developed as part of a course project within UFV.
 
-```bash
-npm install
-npm start
-```
+**Try Now**: [https://cofinder.ca](https://cofinder.ca)
 
-## Dev Setup
+## Gallery
 
-To work on project, first:
+1. CoFinder Homepage
+   ![CoFinder Home](screenshots/homepage.png)
 
-- Run project with `npm start`
-- In another terminal window, use `npm run watch-css`
+2. CoFinder Calendar
+   ![CoFinder Calendar](screenshots/calendar.png)
 
-You can now start working.
+3. CoFinder Course Browser
+   ![CoFinder Course Browser](screenshots/course_browser.png)
 
-## CSS
+## Backend
 
-Please follow [README.md](src/CSS/README.md) instructions inside the _src/CSS_ folder.
-
-## Building
-
-Use `npm build`
+For backend, we are using Google Cloud Functions.

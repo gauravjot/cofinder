@@ -2,6 +2,7 @@ import * as React from "react";
 import Sidebar from "components/Sidebar/Sidebar";
 import Spinner from "components/Utils/Spinner";
 import { Helmet } from "react-helmet";
+import { APP_NAME } from "config";
 const Content = React.lazy(() => import("components/Calendar/CalendarContent"));
 
 export default function Calendar() {
@@ -12,7 +13,7 @@ export default function Calendar() {
 	return (
 		<div className="App">
 			<Helmet>
-				<title>Your Calendar • Cofinder</title>
+				<title>Your Calendar - {APP_NAME}</title>
 			</Helmet>
 			<div className="flex relative">
 				<div className="flex-none xl:sticky fixed top-0 h-screen z-20">
