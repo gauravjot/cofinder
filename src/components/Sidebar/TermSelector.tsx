@@ -35,19 +35,19 @@ export default function TermSelector() {
 				})
 				.then(function (response) {
 					if (!interrupt) {
-						let result = [...response.data];
-						result.reverse();
-						console.log(result);
 						dispatch(
-							setTerms({ terms: result, fetched: new Date().getTime() })
+							setTerms({
+								terms: response.data.terms,
+								fetched: new Date().getTime(),
+							})
 						);
 						if (currentTerm && currentTerm.id === "0") {
 							dispatch(
 								setCurrentTerm({
-									id: result[0].id,
-									name: result[0].name,
-									date: result[0].date,
-									term_ident: result[0].term_ident || "",
+									id: response.data.terms[0].id,
+									name: response.data.terms[0].name,
+									date: response.data.terms[0].date,
+									term_ident: response.data.terms[0].term_ident || "",
 								})
 							);
 							setIsFetching(false);
