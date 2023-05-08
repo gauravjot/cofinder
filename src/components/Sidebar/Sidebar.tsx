@@ -19,9 +19,9 @@ export default function Sidebar(props: Props) {
 	let expandRef: React.RefObject<any> = React.useRef<HTMLDivElement>(null);
 
 	function toExpand() {
-		if (window.innerWidth > 1280 && !expand) {
+		if (window.innerWidth >= 1280 && !expand) {
 			setExpand(true);
-		} else if (window.innerWidth <= 1280 && expand) {
+		} else if (window.innerWidth < 1280 && expand) {
 			setExpand(false);
 		}
 	}
