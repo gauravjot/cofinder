@@ -20,20 +20,20 @@ export const FEEDBACK_URL: string = "https://forms.office.com/r/6agnYan48K";
 // UFV API Endpoints
 export const sectionsEP = (term: string, encodedCRNs: string | null = null): string => {
 	if (encodedCRNs) {
-		return `https://uag.cofinder.ca/api/v1/sections?term=${term}&crns=${encodedCRNs}`;
+		return `https://cf-api.cofinder.ca/sections?term=${term}&crns=${encodedCRNs}`;
 	}
-	return `https://uag.cofinder.ca/api/v1/sections?term=${term}`;
+	return `https://cf-api.cofinder.ca/sections?term=${term}`;
 };
-export const EP_TERMS = "https://uag.cofinder.ca/api/v1/terms";
+export const EP_TERMS = "https://cf-api.cofinder.ca/terms";
 export const subjectsEP = (term: string) => {
-	return `https://uag.cofinder.ca/api/v1/subjects?term=${term}`;
+	return `https://cf-api.cofinder.ca/subjects?term=${term}`;
 };
 export const coursesEP = (term: string) => {
-	return `https://uag.cofinder.ca/api/v1/courses?term=${term}`;
+	return `https://cf-api.cofinder.ca/courses?term=${term}`;
 };
 export const instructorsEP = (term: string) => {
-	return `https://uag.cofinder.ca/api/v1/instructors?term=${term}`;
+	return `https://cf-api.cofinder.ca/instructors?term=${term}`;
 };
 export const seatsEP = (term_name: string | number, crn: string | number) => {
-	return `https://uag.cofinder.ca/api/v1/seats?term_name=${term_name}&crn=${crn}`;
+	return `https://cf-api.cofinder.ca/seats?term_name=${term_name}&crn=${crn}`;
 };
