@@ -20,7 +20,7 @@ class SchedulesAdmin(admin.ModelAdmin):
     def sch_crn(self, obj):
         return obj.crn.crn
 
-    def sch_course(self, obj):
+    def sch_course(self, request, obj):
         return f'{obj.crn.course.subject.id} {obj.crn.course.code}'
 
     def get_readonly_fields(self, obj=None):
@@ -46,7 +46,7 @@ class SectionsAdmin(admin.ModelAdmin):
     save_as = True
     readonly_fields = ['get_readonly_fields']
 
-    def get_readonly_fields(self, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['crn']
         else:
@@ -65,7 +65,7 @@ class SubjectsAdmin(admin.ModelAdmin):
     save_on_top = True
     readonly_fields = ['get_readonly_fields']
 
-    def get_readonly_fields(self, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['id']
         else:
@@ -87,7 +87,7 @@ class InstructorsAdmin(admin.ModelAdmin):
     save_on_top = True
     readonly_fields = ['get_readonly_fields']
 
-    def get_readonly_fields(self, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['id']
         else:
@@ -107,7 +107,7 @@ class CoursesAdmin(admin.ModelAdmin):
     save_on_top = True
     readonly_fields = ['get_readonly_fields']
 
-    def get_readonly_fields(self, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['id']
         else:
@@ -127,7 +127,7 @@ class LocationsAdmin(admin.ModelAdmin):
     save_on_top = True
     readonly_fields = ['get_readonly_fields']
 
-    def get_readonly_fields(self, obj=None):
+    def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['id']
         else:
