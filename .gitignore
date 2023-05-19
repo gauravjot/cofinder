@@ -1,0 +1,8 @@
+# python
+.venv
+venv
+/.venv
+/venv
+.env
+__pycache__/
+migrations/
