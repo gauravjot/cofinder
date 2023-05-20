@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE } from "routes";
 import logo from "assets/images/branding.png";
 
-const Search = React.lazy(() => import("components/Home/Topbar/Search"));
+const Search = React.lazy(() => import("features/Home/Topbar/Search"));
 
 interface Props {
 	title: string;

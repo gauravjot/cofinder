@@ -7,7 +7,7 @@ import {
 	convertToJsDate,
 	getDayAfterDate,
 	Weekdays,
-} from "components/Utils/CheckTimeSlotCollision";
+} from "utils/CheckTimeSlotCollision";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "assets/css/calendar.css";
 

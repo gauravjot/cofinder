@@ -2,7 +2,7 @@ import * as React from "react";
 import axios from "axios";
 import { xml2json } from "xml-js";
 import { RSS_NEWS_URL, NEWS_URL, SCHOOL_SHORT_NAME } from "config";
-import Spinner from "components/Utils/Spinner";
+import Spinner from "components/ui/Spinner";
 
 interface FeedItem {
 	title: string;

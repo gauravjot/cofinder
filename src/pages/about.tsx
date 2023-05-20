@@ -1,5 +1,5 @@
 import * as React from "react";
-import Sidebar from "components/Sidebar/Sidebar";
+import Sidebar from "features/Sidebar/Sidebar";
 import github from "assets/svg/github.svg";
 import linkedin from "assets/svg/linkedin.svg";
 import logo from "assets/images/branding.png";

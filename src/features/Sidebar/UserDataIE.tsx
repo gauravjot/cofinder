@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import { RootState } from "index";
-import { TermType } from "../../data/dbTypes";
-import { MyScheduleTypeItem } from "data/stateTypes";
+import { TermType } from "types/dbTypes";
+import { MyScheduleTypeItem } from "types/stateTypes";
 import { changeMySchedule, setCurrentTerm } from "redux/actions";
 
 export default function UserDataIE() {

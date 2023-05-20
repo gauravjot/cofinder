@@ -1,17 +1,17 @@
 import * as React from "react";
-import Spinner from "components/Utils/Spinner";
-import { ErrorTemplate } from "components/Utils/ErrorTemplate";
+import Spinner from "components/ui/Spinner";
+import { ErrorTemplate } from "components/utils/ErrorTemplate";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import { RootState } from "index";
-import { checkCollision } from "components/Utils/CheckTimeSlotCollision";
-import { SectionsBrowserType } from "data/dbTypes";
+import { checkCollision } from "utils/CheckTimeSlotCollision";
+import { SectionsBrowserType } from "types/dbTypes";
 import {
 	addToDetailedSchedule,
 	removeFromDetailedSchedule,
 	addToMySchedule,
 	removeFromMySchedule,
 } from "redux/actions";
-const ListRow = React.lazy(() => import("components/CourseBrowser/ListRow"));
+const ListRow = React.lazy(() => import("features/CourseBrowser/ListRow"));
 
 interface Props {
 	listData: SectionsBrowserType[];
@@ -75,7 +75,8 @@ export default function ListData(props: Props) {
 											term={currentTerm}
 											isSelected={
 												detailedSchedule?.sections.findIndex(
-													(o) => o.crn === item.crn
+													(o: SectionsBrowserType) =>
+														o.crn === item.crn
 												) !== -1
 											}
 											doesCollide={checkCollision(

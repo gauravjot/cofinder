@@ -1,7 +1,12 @@
 import * as React from "react";
-import { ScheduleType, SeatsInfoType, SectionsBrowserType, TermType } from "data/dbTypes";
-import { refactorDate } from "components/Utils/RefactorDateTime";
-import { refactorTime, refactorWeekDay } from "../Utils/RefactorDateTime";
+import {
+	ScheduleType,
+	SeatsInfoType,
+	SectionsBrowserType,
+	TermType,
+} from "types/dbTypes";
+import { refactorDate } from "utils/RefactorDateTime";
+import { refactorTime, refactorWeekDay } from "utils/RefactorDateTime";
 
 export interface IListRowExpandInfoProps {
 	section: SectionsBrowserType;

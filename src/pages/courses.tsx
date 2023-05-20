@@ -1,15 +1,15 @@
 import * as React from "react";
-import Sidebar from "components/Sidebar/Sidebar";
-import Spinner from "components/Utils/Spinner";
-import { SectionsBrowserType } from "../data/dbTypes";
-import ErrorBoundary from "components/Utils/ErrorBoundary";
+import Sidebar from "features/Sidebar/Sidebar";
+import Spinner from "components/ui/Spinner";
+import { SectionsBrowserType } from "types/dbTypes";
+import ErrorBoundary from "components/utils/ErrorBoundary";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { APP_NAME } from "config";
 
-const CourseFilter = React.lazy(() => import("components/CourseBrowser/CourseFilter"));
-const ListData = React.lazy(() => import("components/CourseBrowser/ListData"));
-const SelectionBar = React.lazy(() => import("components/CourseBrowser/SelectionBar"));
+const CourseFilter = React.lazy(() => import("features/CourseBrowser/CourseFilter"));
+const ListData = React.lazy(() => import("features/CourseBrowser/ListData"));
+const SelectionBar = React.lazy(() => import("features/CourseBrowser/SelectionBar"));
 
 export default function Courses() {
 	let params = useParams();

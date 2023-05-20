@@ -1,17 +1,14 @@
-import { TermsReducerType } from "data/dbTypes";
 import { Reducer, AnyAction } from "redux";
-import { TermType } from "../data/dbTypes";
 import { ADD_TO_MY_SCHEDULE, REMOVE_FROM_MY_SCHEDULE } from "./actions";
+import { TermsReducerType, TermType } from "types/dbTypes";
 import {
 	ReduxCourseType,
 	ReduxSectionDetailedType,
 	ReduxSubjectType,
-} from "../data/stateTypes";
-import {
 	MyScheduleTypeItem,
 	ReduxDetailedScheduleType,
 	ReduxInstructorType,
-} from "../data/stateTypes";
+} from "types/stateTypes";
 
 import {
 	CLEAR_MY_SCHEDULE,

@@ -1,9 +1,13 @@
-import Spinner from "components/Utils/Spinner";
+import Spinner from "components/ui/Spinner";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { InstructorType } from "data/dbTypes";
+import { InstructorType } from "types/dbTypes";
 import { getColor } from "../MyCourses";
-import { ReduxCourseType, ReduxInstructorType, CourseSubjectType } from "data/stateTypes";
+import {
+	ReduxCourseType,
+	ReduxInstructorType,
+	CourseSubjectType,
+} from "types/stateTypes";
 import useFetchTermData, { FETCH } from "hooks/useFetchTermData";
 import { ROUTE } from "routes";
 

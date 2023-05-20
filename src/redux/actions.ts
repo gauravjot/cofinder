@@ -1,12 +1,12 @@
-import { TermsReducerType, TermType } from "data/dbTypes";
+import { TermsReducerType, TermType, SectionsBrowserType } from "types/dbTypes";
 import {
 	ReduxInstructorType,
 	ReduxCourseType,
 	ReduxSectionDetailedType,
 	ReduxSubjectType,
-} from "../data/stateTypes";
-import { MyScheduleTypeItem, ReduxDetailedScheduleType } from "../data/stateTypes";
-import { SectionsBrowserType } from "../data/dbTypes";
+	MyScheduleTypeItem,
+	ReduxDetailedScheduleType,
+} from "types/stateTypes";
 import { AppDispatch } from "../index";
 
 export const clearAllVariableStates = (dispatch: AppDispatch) => {

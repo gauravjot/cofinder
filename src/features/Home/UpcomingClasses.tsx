@@ -1,13 +1,9 @@
-import {
-	convertToJsDate,
-	getDayAfterDate,
-	Weekdays,
-} from "components/Utils/CheckTimeSlotCollision";
+import { convertToJsDate, getDayAfterDate, Weekdays } from "utils/CheckTimeSlotCollision";
 import { FETCH, useFetchSpecificSectionData } from "hooks/useFetchTermData";
 import React from "react";
 import { getColor } from "./MyCourses";
-import { combineDateTime } from "../Utils/CheckTimeSlotCollision";
-import { SectionsBrowserType } from "data/dbTypes";
+import { combineDateTime } from "utils/CheckTimeSlotCollision";
+import { SectionsBrowserType } from "types/dbTypes";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "routes";
 

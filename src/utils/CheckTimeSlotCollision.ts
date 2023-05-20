@@ -1,5 +1,5 @@
-import { ScheduleType } from "data/dbTypes";
-import { ReduxDetailedScheduleType } from "data/stateTypes";
+import { ScheduleType } from "types/dbTypes";
+import { ReduxDetailedScheduleType } from "types/stateTypes";
 
 export enum Weekdays {
 	"U",

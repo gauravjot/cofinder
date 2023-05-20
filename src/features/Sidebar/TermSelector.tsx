@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RootState } from "index";
-import { TermsReducerType, TermType } from "data/dbTypes";
+import { TermsReducerType, TermType } from "types/dbTypes";
 import axios from "axios";
 import { setTerms, setCurrentTerm } from "redux/actions";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";

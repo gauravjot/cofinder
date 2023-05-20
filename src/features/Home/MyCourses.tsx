@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { SectionsBrowserType } from "data/dbTypes";
+import { SectionsBrowserType } from "types/dbTypes";
 import { useFetchSpecificSectionData } from "../../hooks/useFetchTermData";
 import { FETCH } from "hooks/useFetchTermData";
 import { ROUTE } from "../../routes";

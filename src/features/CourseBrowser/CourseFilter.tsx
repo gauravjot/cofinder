@@ -1,14 +1,14 @@
 import * as React from "react";
 import Multiselect from "multiselect-react-dropdown";
 import { useLocation } from "react-router-dom";
-import { SectionsBrowserType, InstructorType } from "data/dbTypes";
-import { SubjectType } from "data/dbTypes";
+import { SectionsBrowserType, InstructorType } from "types/dbTypes";
+import { SubjectType } from "types/dbTypes";
 import useFetchTermData, { FETCH } from "hooks/useFetchTermData";
 import {
 	ReduxSectionDetailedType,
 	ReduxInstructorType,
 	ReduxSubjectType,
-} from "data/stateTypes";
+} from "types/stateTypes";
 
 interface Props {
 	setData: (data: SectionsBrowserType[]) => void;

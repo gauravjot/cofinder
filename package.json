@@ -24,6 +24,7 @@
 		"react-window": "^1.8.8",
 		"redux": "^4.2.1",
 		"typescript": "^4.9.5",
+		"use-debounce": "^9.0.4",
 		"web-vitals": "^2.1.4",
 		"xml-js": "^1.6.11"
 	},
@@ -54,15 +55,15 @@
 		]
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.192",
-		"@types/react-helmet": "^6.1.6",
-		"@types/react-window": "^1.8.5",
 		"@types/jest": "^29.4.0",
+		"@types/lodash": "^4.14.192",
 		"@types/node": "^18.14.0",
 		"@types/react": "^18.0.28",
 		"@types/react-big-calendar": "^1.6.1",
 		"@types/react-dom": "^18.0.11",
+		"@types/react-helmet": "^6.1.6",
 		"@types/react-redux": "^7.1.25",
+		"@types/react-window": "^1.8.5",
 		"tailwindcss": "^3.2.4"
 	}
 }

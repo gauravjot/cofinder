@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ReduxSubjectType } from "../../data/stateTypes";
+import { ReduxSubjectType } from "types/stateTypes";
 import { FETCH } from "hooks/useFetchTermData";
 import useFetchTermData from "hooks/useFetchTermData";
 import { ROUTE } from "routes";
-import { ErrorTemplate } from "components/Utils/ErrorTemplate";
-import Spinner from "../Utils/Spinner";
+import { ErrorTemplate } from "components/utils/ErrorTemplate";
+import Spinner from "components/ui/Spinner";
 
 export default function BrowseSubjects() {
 	const navigate = useNavigate();

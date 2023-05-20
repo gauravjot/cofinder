@@ -7,13 +7,14 @@ import {
 	ReduxSectionDetailedType,
 	ReduxSubjectType,
 	ReduxDetailedScheduleType,
-} from "data/stateTypes";
+} from "types/stateTypes";
 import { RootState } from "index";
 import { setInstructors, setCourses, setSections, setSubjects } from "redux/actions";
 import { setDetailedSchedule } from "../redux/actions";
-import { MyScheduleTypeItem } from "../data/stateTypes";
-import { TermType } from "data/dbTypes";
+import { MyScheduleTypeItem } from "types/stateTypes";
+import { TermType } from "types/dbTypes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { axiosFetch } from "./useAxiosFetch";
 
 export interface IAppProps {
 	fetch: FETCH;
@@ -49,116 +50,106 @@ export default function useFetchTermData(props: IAppProps) {
 	// current term
 	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
 
-	React.useEffect(() => {
-		/* fetch =  true means we will do network request for data
-                default is false */
-		let fetch = false;
-		/* ignore is used for axios promise skip in case the
-        component unmounts */
-		let ignore = false;
-		/* localRetriveData data or locally retreived data */
-		let localRetriveData;
-		let url: string;
+	console.log("hook", "reload");
 
-		/*
-		 * Check if local data is stale
-		 * - if yes then fetch new
-		 * - if no then use local data
-		 */
+	const fetchAndUpdate = React.useCallback(
+		async (url: string) => {
+			console.log("fetchAndUpdate");
+			const request = await axiosFetch<any>(url);
+			if (!request.success) {
+				setData({ fetched: -1 });
+			}
+			switch (props.fetch) {
+				case FETCH.Instructors:
+					{
+						let reply: ReduxInstructorType = {
+							instructors: request.res.instructors,
+							fetched: new Date().getTime(),
+						};
+						if (reply.instructors.length > 0) {
+							dispatch(setInstructors(reply));
+							setData(reply);
+						}
+					}
+					break;
+				case FETCH.Subjects:
+					{
+						let reply: ReduxSubjectType = {
+							subjects: request.res.subjects,
+							fetched: new Date().getTime(),
+						};
+						if (reply.subjects.length > 0) {
+							dispatch(setSubjects(reply));
+							setData(reply);
+						}
+					}
+					break;
+				case FETCH.Courses:
+					{
+						let reply: ReduxCourseType = {
+							courses: request.res.courses,
+							fetched: new Date().getTime(),
+						};
+						if (reply.courses.length > 0) {
+							dispatch(setCourses(reply));
+							setData(reply);
+						}
+					}
+					break;
+				case FETCH.Sections:
+					{
+						let reply: ReduxSectionDetailedType = {
+							sections: request.res.sections,
+							fetched: new Date().getTime(),
+						};
+						if (reply.sections.length > 0) {
+							dispatch(setSections(reply));
+							setData(reply);
+						}
+					}
+					break;
+			}
+		},
+		[props.fetch, dispatch]
+	);
+
+	React.useEffect(() => {
+		console.log("hook", "useEffect");
+		let fetchedTimeGapped = new Date().getTime() - FETCH_TIME_GAP;
 		switch (props.fetch) {
 			case FETCH.Instructors:
-				localRetriveData = fetchedInstructors;
-				url = instructorsEP(currentTerm.id);
+				if (fetchedTimeGapped > fetchedInstructors.fetched && currentTerm.id) {
+					fetchAndUpdate(instructorsEP(currentTerm.id));
+				} else {
+					setData(fetchedInstructors);
+				}
 				break;
 			case FETCH.Courses:
-				localRetriveData = fetchedCourses;
-				url = coursesEP(currentTerm.id);
+				if (fetchedTimeGapped > fetchedCourses.fetched && currentTerm.id) {
+					fetchAndUpdate(coursesEP(currentTerm.id));
+				} else {
+					setData(fetchedCourses);
+				}
 				break;
 			case FETCH.Sections:
-				localRetriveData = fetchedSections;
-				url = sectionsEP(currentTerm.id);
+				if (fetchedTimeGapped > fetchedSections.fetched && currentTerm.id) {
+					fetchAndUpdate(sectionsEP(currentTerm.id));
+				} else {
+					setData(fetchedSections);
+				}
 				break;
 			case FETCH.Subjects:
-				localRetriveData = fetchedSubjects;
-				url = subjectsEP(currentTerm.id);
+				if (fetchedTimeGapped > fetchedSubjects.fetched && currentTerm.id) {
+					fetchAndUpdate(subjectsEP(currentTerm.id));
+				} else {
+					setData(fetchedSubjects);
+				}
 				break;
 			default:
 				throw new Error(
 					"FETCH parameter was not provided or is invalid for this hook."
 				);
 		}
-		if (new Date().getTime() - FETCH_TIME_GAP > localRetriveData.fetched) {
-			fetch = true;
-		}
-
-		// Check if term is empty or 0
-		if (currentTerm.id && currentTerm.id.length < 2) {
-			fetch = false;
-		}
-
-		// if fetch is true, we send network request
-		if (fetch && url) {
-			console.log(props.fetch + ": fetching");
-			axios
-				.get(url, {
-					headers: {
-						"Content-Type": "application/json",
-					},
-				})
-				.then(function (response) {
-					if (!ignore) {
-						if (props.fetch === FETCH.Instructors) {
-							let reply: ReduxInstructorType = {
-								instructors: response.data.instructors,
-								fetched: new Date().getTime(),
-							};
-							if (response.data.instructors.length > 0) {
-								// set Redux State
-								dispatch(setInstructors(reply));
-								// return data for this hook
-								setData(reply);
-							}
-						} else if (props.fetch === FETCH.Sections) {
-							let reply: ReduxSectionDetailedType = {
-								sections: response.data.sections,
-								fetched: new Date().getTime(),
-							};
-							if (response.data.sections.length > 0) {
-								dispatch(setSections(reply));
-								setData(response.data);
-							}
-						} else if (props.fetch === FETCH.Courses) {
-							let reply: ReduxCourseType = {
-								courses: response.data.courses,
-								fetched: new Date().getTime(),
-							};
-							if (response.data.courses.length > 0) {
-								dispatch(setCourses(reply));
-								setData(reply);
-							}
-						} else if (props.fetch === FETCH.Subjects) {
-							let reply: ReduxSubjectType = {
-								subjects: response.data.subjects,
-								fetched: new Date().getTime(),
-							};
-							if (response.data.subjects.length > 0) {
-								dispatch(setSubjects(reply));
-								setData(reply);
-							}
-						}
-					}
-				})
-				.catch(function (error) {
-					setData({ fetched: -1 });
-				});
-		} else {
-			console.log(props.fetch + ": retrieved locally");
-			setData(localRetriveData);
-		}
-		return () => {
-			// Component unmounted
-			ignore = true;
-		};
 	}, [
 		props.fetch,
 		currentTerm.id,
@@ -166,7 +157,7 @@ export default function useFetchTermData(props: IAppProps) {
 		fetchedCourses,
 		fetchedSections,
 		fetchedSubjects,
-		dispatch,
+		fetchAndUpdate,
 	]);
 	return data;
 }
