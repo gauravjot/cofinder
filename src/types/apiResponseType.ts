@@ -4,10 +4,5 @@ export interface ResponseType<T> {
 }
 
 export interface ApiError {
-	statusCode: string;
 	message: string;
-}
-
-export interface ApiCourseType {
-	hello: string;
 }

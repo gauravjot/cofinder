@@ -14,8 +14,8 @@ export const RSS_NEWS_URL: string =
 	"https://corsproxy.io/?https://blogs.ufv.ca/urgent-news/feed/";
 export const FEEDBACK_URL: string = "https://forms.office.com/r/6agnYan48K";
 
-// // Refresh Component Data at set interval
-// export const FETCH_TIME_GAP: number = 60 * 60 * 1000;
+// Refresh Component Data at set interval
+export const FETCH_TIME_GAP: number = 60 * 60 * 1000;
 // UFV API Endpoints
 // export const sectionsEP = (term: string, encodedCRNs: string | null = null): string => {
 // 	if (encodedCRNs) {
@@ -57,4 +57,3 @@ export const instructorsEP = (term: string) => {
 export const seatsEP = (term_name: string | number, crn: string | number) => {
 	return `http://localhost:8000/api/section/seats/${term_name}/${crn}/`;
 };
-export const FETCH_TIME_GAP: number = 0;
