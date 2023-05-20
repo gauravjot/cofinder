@@ -48,7 +48,7 @@ def getTerms(request):
     print(
         "["+str(datetime.now(pytz.utc))+"] DJANGO: Request for /api/terms/ by ("+request.META.get('REMOTE_ADDR')+")")
     termSerializer = TermSerializer(Terms.objects.all().values(), many=True)
-    return Response(data=termSerializer.data, status=status.HTTP_200_OK)
+    return Response(data=dict(success=True, terms=termSerializer.data), status=status.HTTP_200_OK)
 
 
 def _getTermSections(sections, termid):
@@ -111,7 +111,7 @@ def getTermCourses(request, termid):
     print("["+str(datetime.now(pytz.utc))+"] DJANGO: Request for /api/"+termid +
           "/courses/ by ("+request.META.get('REMOTE_ADDR')+")")
     sections = Sections.objects.select_related(
-        'course','course__subject').filter(term=termid).distinct('course')
+        'course', 'course__subject').filter(term=termid).distinct('course')
     result = list()
     for section in sections:
         result.append(dict(
