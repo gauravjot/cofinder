@@ -53,8 +53,8 @@ function loadFromLocalStorage() {
 			/*
         This is for cleanup in case a request was interrupted while
         fetching prveiously. This can be because user lost internet,
-        lost power, decided to close tab while request was in progress
-        or computer decided to die.
+        lost power, decided to close tab or computer decided to died
+        in middle of request. We will clear error codes.
       */
 			if (data[key]["fetched"] && data[key]["fetched"] < 0) {
 				data[key]["fetched"] = 0;
