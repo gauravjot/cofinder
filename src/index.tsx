@@ -48,7 +48,19 @@ function loadFromLocalStorage() {
 	try {
 		const serializedState = localStorage.getItem("state");
 		if (serializedState === null) return undefined;
-		return JSON.parse(serializedState);
+		let data = JSON.parse(serializedState);
+		Object.keys(data).forEach(function (key) {
+			/*
+        This is for cleanup in case a request was interrupted while
+        fetching prveiously. This can be because user lost internet,
+        lost power, decided to close tab while request was in progress
+        or computer decided to die.
+      */
+			if (data[key]["fetched"] && data[key]["fetched"] < 0) {
+				data[key]["fetched"] = 0;
+			}
+		});
+		return data;
 	} catch (e) {
 		console.log(e);
 		return undefined;

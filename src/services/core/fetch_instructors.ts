@@ -1,28 +1,28 @@
 import React from "react";
 import axios from "axios";
-import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP, sectionsEP } from "config";
+import { API_FAIL_RETRY_TIMER, instructorsEP, FETCH_TIME_GAP } from "config";
 import { handleApiError } from "services/handle_error";
 import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
-import { ReduxSectionDetailedType } from "types/stateTypes";
+import { ReduxInstructorType } from "types/stateTypes";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { RootState } from "index";
-import { clearSections, setSections } from "redux/actions";
-import { TermType, SectionsBrowserType } from "types/dbTypes";
+import { setInstructors } from "redux/actions";
+import { TermType, InstructorType } from "types/dbTypes";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function fetchSections(
+function fetchInstructors(
 	term: string
-): Promise<ResponseType<SectionsBrowserType[] | ApiError>> {
+): Promise<ResponseType<InstructorType[] | ApiError>> {
 	return axios
-		.get(sectionsEP(term))
+		.get(instructorsEP(term))
 		.then(function (response) {
 			return {
 				success: true,
-				res: response.data.sections,
-			} as ResponseType<SectionsBrowserType[]>;
+				res: response.data.instructors,
+			} as ResponseType<InstructorType[]>;
 		})
 		.catch(handleApiError);
 }
@@ -30,13 +30,13 @@ function fetchSections(
 /*
  *
  */
-export function useFetchSections(): ReduxSectionDetailedType {
-	const [data, setData] = React.useState<ReduxSectionDetailedType>({
+export function useFetchInstructors(): ReduxInstructorType {
+	const [data, setData] = React.useState<ReduxInstructorType>({
 		fetched: 0,
-		sections: [],
+		instructors: [],
 	});
-	const reduxSections: ReduxSectionDetailedType = useAppSelector(
-		(state: RootState) => state.sections
+	const reduxinstructors: ReduxInstructorType = useAppSelector(
+		(state: RootState) => state.instructors
 	);
 	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
 	const dispatch = useAppDispatch();
@@ -46,13 +46,13 @@ export function useFetchSections(): ReduxSectionDetailedType {
 		if (term.length < 8) {
 			throw new Error(TERM_ERROR);
 		}
-		const response = await fetchSections(term);
+		const response = await fetchInstructors(term);
 
 		if (response.success) {
 			return {
 				fetched: new Date().getTime(),
-				sections: response.res as SectionsBrowserType[],
-			} as ReduxSectionDetailedType;
+				instructors: response.res as InstructorType[],
+			} as ReduxInstructorType;
 		} else {
 			let error = response.res as ApiError;
 			throw new Error(error.message);
@@ -61,21 +61,21 @@ export function useFetchSections(): ReduxSectionDetailedType {
 
 	React.useEffect(() => {
 		async function main() {
-			if (reduxSections.fetched === FetchState.Fetching) {
+			if (reduxinstructors.fetched === FetchState.Fetching) {
 				return;
 			}
-			if (reduxSections.fetched === FetchState.Error) {
+			if (reduxinstructors.fetched === FetchState.Error) {
 				// we wait before retry fetching
 				await sleep(API_FAIL_RETRY_TIMER);
 			}
 			if (
-				reduxSections.fetched === FetchState.Error ||
-				new Date().getTime() - reduxSections.fetched > FETCH_TIME_GAP
+				reduxinstructors.fetched === FetchState.Error ||
+				new Date().getTime() - reduxinstructors.fetched > FETCH_TIME_GAP
 			) {
 				// If the local data is stale we need to fetch again
 				setData({
 					fetched: FetchState.Fetching,
-					sections: [],
+					instructors: [],
 				});
 				apiCall(currentTerm.id)
 					.then((response) => {
@@ -87,22 +87,22 @@ export function useFetchSections(): ReduxSectionDetailedType {
 								err.message === TERM_ERROR
 									? FetchState.Incomplete
 									: FetchState.Error,
-							sections: [],
+							instructors: [],
 						});
 					});
 			} else {
 				// Data is not stale yet, we are good
-				setData(reduxSections);
+				setData(reduxinstructors);
 			}
 		}
 		main();
-	}, [apiCall, reduxSections, currentTerm.id, dispatch]);
+	}, [apiCall, reduxinstructors, currentTerm.id]);
 
 	React.useEffect(() => {
 		if (data.fetched === 0) {
 			return;
 		}
-		dispatch(setSections(data));
+		dispatch(setInstructors(data));
 	}, [data, dispatch]);
 
 	return data;

@@ -3,17 +3,17 @@ import Multiselect from "multiselect-react-dropdown";
 import { useLocation } from "react-router-dom";
 import { SectionsBrowserType, InstructorType } from "types/dbTypes";
 import { SubjectType } from "types/dbTypes";
-import useFetchTermData, { FETCH } from "hooks/useFetchTermData";
 import {
 	ReduxSectionDetailedType,
 	ReduxInstructorType,
 	ReduxSubjectType,
 } from "types/stateTypes";
+import { useFetchSections } from "services/core/fetch_sections";
+import { useFetchInstructors } from "services/core/fetch_instructors";
+import { useFetchSubjects } from "services/core/fetch_subjects";
 
 interface Props {
 	setData: (data: SectionsBrowserType[]) => void;
-	setLoading: (data: boolean) => void;
-	setError: (data: boolean) => void;
 	setSubjectFilter?: string;
 	setKeywordFilter?: string;
 }
@@ -41,18 +41,9 @@ export default function CourseFilter(props: Props) {
 	const [urlSelectedSubject, setUrlSelectedSubject] = React.useState<SubjectType>();
 
 	// Fetch and compute functions
-	const sectionsTermData: ReduxSectionDetailedType = useFetchTermData({
-		fetch: FETCH.Sections,
-	});
-	const instructorsTermData: ReduxInstructorType = useFetchTermData({
-		fetch: FETCH.Instructors,
-	});
-	const subjectsTermData: ReduxSubjectType = useFetchTermData({
-		fetch: FETCH.Subjects,
-	});
-
-	const setLoading = props.setLoading;
-	const setError = props.setError;
+	const sectionsTermData: ReduxSectionDetailedType = useFetchSections();
+	const instructorsTermData: ReduxInstructorType = useFetchInstructors();
+	const subjectsTermData: ReduxSubjectType = useFetchSubjects();
 
 	React.useEffect(() => {
 		if (subjectsTermData && subjectsTermData.fetched !== -1) {
@@ -71,27 +62,6 @@ export default function CourseFilter(props: Props) {
 			setKeyword(props.setKeywordFilter);
 		}
 	}, [props.setKeywordFilter]);
-
-	React.useEffect(() => {
-		if (
-			sectionsTermData &&
-			sectionsTermData.sections?.length > 0 &&
-			sectionsTermData.fetched !== -1
-		) {
-			setLoading(false);
-		} else if (
-			sectionsTermData &&
-			sectionsTermData.sections?.length === 0 &&
-			sectionsTermData.fetched === -1
-		) {
-			// Error while fetching data
-			setLoading(false);
-			setError(true);
-		} else {
-			// Still loading data
-			setLoading(true);
-		}
-	}, [sectionsTermData, setError, setLoading]);
 
 	const setData = props.setData;
 

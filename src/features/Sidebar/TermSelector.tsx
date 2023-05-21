@@ -67,8 +67,9 @@ export default function TermSelector() {
 		if (currentTerm.id !== term.id) {
 			clearAllVariableStates(dispatch);
 			dispatch(setCurrentTerm(term));
+			toggleTermsMenu();
 			// reload browser window
-			window.location.replace(window.location.pathname);
+			// window.location.replace(window.location.pathname);
 		}
 	};
 

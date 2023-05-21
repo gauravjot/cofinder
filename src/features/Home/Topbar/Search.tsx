@@ -8,9 +8,9 @@ import {
 	ReduxInstructorType,
 	CourseSubjectType,
 } from "types/stateTypes";
-import useFetchTermData, { FETCH } from "hooks/useFetchTermData";
 import { ROUTE } from "routes";
 import { useFetchCourses } from "../../../services/core/fetch_courses";
+import { useFetchInstructors } from "services/core/fetch_instructors";
 
 export default function Search() {
 	const navigate = useNavigate();
@@ -35,9 +35,7 @@ export default function Search() {
 		}
 	};
 
-	const instructors: ReduxInstructorType = useFetchTermData({
-		fetch: FETCH.Instructors,
-	});
+	const instructors: ReduxInstructorType = useFetchInstructors();
 	const courses: ReduxCourseType = useFetchCourses();
 
 	React.useEffect(() => {

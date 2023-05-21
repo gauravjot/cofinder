@@ -1,20 +1,12 @@
 import * as React from "react";
-import { FETCH_TIME_GAP, coursesEP, instructorsEP, sectionsEP, subjectsEP } from "config";
+import { FETCH_TIME_GAP, sectionsEP } from "config";
 import axios from "axios";
-import {
-	ReduxCourseType,
-	ReduxInstructorType,
-	ReduxSectionDetailedType,
-	ReduxSubjectType,
-	ReduxDetailedScheduleType,
-} from "types/stateTypes";
+import { ReduxDetailedScheduleType } from "types/stateTypes";
 import { RootState } from "index";
-import { setInstructors, setCourses, setSections, setSubjects } from "redux/actions";
 import { setDetailedSchedule } from "../redux/actions";
 import { MyScheduleTypeItem } from "types/stateTypes";
 import { TermType } from "types/dbTypes";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { axiosFetch } from "./useAxiosFetch";
 
 export interface IAppProps {
 	fetch: FETCH;
@@ -26,140 +18,6 @@ export const enum FETCH {
 	Instructors = "instructors",
 	Sections = "sections",
 	SpecificSections = "sections_specific",
-}
-
-/*
- * This hook is only used to fetch term courses,
- * subjects, instructors and detailed sections.
- */
-export default function useFetchTermData(props: IAppProps) {
-	const [data, setData] = React.useState<any>();
-	const dispatch = useAppDispatch();
-	let fetchedInstructors: ReduxInstructorType = useAppSelector(
-		(state: RootState) => state.instructors
-	);
-	let fetchedCourses: ReduxCourseType = useAppSelector(
-		(state: RootState) => state.courses
-	);
-	let fetchedSections: ReduxSectionDetailedType = useAppSelector(
-		(state: RootState) => state.sections
-	);
-	let fetchedSubjects: ReduxSubjectType = useAppSelector(
-		(state: RootState) => state.subjects
-	);
-	// current term
-	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
-
-	console.log("hook", "reload");
-
-	const fetchAndUpdate = React.useCallback(
-		async (url: string) => {
-			console.log("fetchAndUpdate");
-			const request = await axiosFetch<any>(url);
-			if (!request.success) {
-				setData({ fetched: -1 });
-			}
-			switch (props.fetch) {
-				case FETCH.Instructors:
-					{
-						let reply: ReduxInstructorType = {
-							instructors: request.res.instructors,
-							fetched: new Date().getTime(),
-						};
-						if (reply.instructors.length > 0) {
-							dispatch(setInstructors(reply));
-							setData(reply);
-						}
-					}
-					break;
-				case FETCH.Subjects:
-					{
-						let reply: ReduxSubjectType = {
-							subjects: request.res.subjects,
-							fetched: new Date().getTime(),
-						};
-						if (reply.subjects.length > 0) {
-							dispatch(setSubjects(reply));
-							setData(reply);
-						}
-					}
-					break;
-				case FETCH.Courses:
-					{
-						let reply: ReduxCourseType = {
-							courses: request.res.courses,
-							fetched: new Date().getTime(),
-						};
-						if (reply.courses.length > 0) {
-							dispatch(setCourses(reply));
-							setData(reply);
-						}
-					}
-					break;
-				case FETCH.Sections:
-					{
-						let reply: ReduxSectionDetailedType = {
-							sections: request.res.sections,
-							fetched: new Date().getTime(),
-						};
-						if (reply.sections.length > 0) {
-							dispatch(setSections(reply));
-							setData(reply);
-						}
-					}
-					break;
-			}
-		},
-		[props.fetch, dispatch]
-	);
-
-	React.useEffect(() => {
-		console.log("hook", "useEffect");
-		let fetchedTimeGapped = new Date().getTime() - FETCH_TIME_GAP;
-		switch (props.fetch) {
-			case FETCH.Instructors:
-				if (fetchedTimeGapped > fetchedInstructors.fetched && currentTerm.id) {
-					fetchAndUpdate(instructorsEP(currentTerm.id));
-				} else {
-					setData(fetchedInstructors);
-				}
-				break;
-			case FETCH.Courses:
-				if (fetchedTimeGapped > fetchedCourses.fetched && currentTerm.id) {
-					fetchAndUpdate(coursesEP(currentTerm.id));
-				} else {
-					setData(fetchedCourses);
-				}
-				break;
-			case FETCH.Sections:
-				if (fetchedTimeGapped > fetchedSections.fetched && currentTerm.id) {
-					fetchAndUpdate(sectionsEP(currentTerm.id));
-				} else {
-					setData(fetchedSections);
-				}
-				break;
-			case FETCH.Subjects:
-				if (fetchedTimeGapped > fetchedSubjects.fetched && currentTerm.id) {
-					fetchAndUpdate(subjectsEP(currentTerm.id));
-				} else {
-					setData(fetchedSubjects);
-				}
-				break;
-			default:
-				throw new Error(
-					"FETCH parameter was not provided or is invalid for this hook."
-				);
-		}
-	}, [
-		props.fetch,
-		currentTerm.id,
-		fetchedInstructors,
-		fetchedCourses,
-		fetchedSections,
-		fetchedSubjects,
-		fetchAndUpdate,
-	]);
-	return data;
 }
 
 /*

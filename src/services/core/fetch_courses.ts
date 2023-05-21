@@ -1,13 +1,17 @@
 import React from "react";
 import axios from "axios";
-import { coursesEP, FETCH_TIME_GAP } from "config";
+import { API_FAIL_RETRY_TIMER, coursesEP, FETCH_TIME_GAP } from "config";
 import { handleApiError } from "services/handle_error";
-import { ApiError, ResponseType } from "types/apiResponseType";
+import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
 import { CourseSubjectType, ReduxCourseType } from "types/stateTypes";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { RootState } from "index";
 import { setCourses } from "redux/actions";
 import { TermType } from "types/dbTypes";
+
+function sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function fetchCourses(
 	term: string
@@ -23,14 +27,12 @@ function fetchCourses(
 		.catch(handleApiError);
 }
 
-/* -1 => Fetching...
- * -2 => Returned Error
- * -3 => Term Data was not fetched yet or present
+/*
+ *
  */
-
 export function useFetchCourses(): ReduxCourseType {
 	const [data, setData] = React.useState<ReduxCourseType>({
-		fetched: -1,
+		fetched: 0,
 		courses: [],
 	});
 	const reduxCourses: ReduxCourseType = useAppSelector(
@@ -50,46 +52,56 @@ export function useFetchCourses(): ReduxCourseType {
 			return {
 				fetched: new Date().getTime(),
 				courses: response.res as CourseSubjectType[],
-			};
+			} as ReduxCourseType;
 		} else {
-			// We got an error
 			let error = response.res as ApiError;
 			throw new Error(error.message);
 		}
 	}, []);
 
 	React.useEffect(() => {
-		if (reduxCourses.fetched === -1) {
-			// We are already fetching this somewhere
-			return;
-		}
-		if (reduxCourses.fetched === -2) {
-			// Previous attempt returned an error
-			return;
-		}
-		if (new Date().getTime() - FETCH_TIME_GAP > reduxCourses.fetched) {
-			// If the localdata is stale we need to fetch again
-			setData({
-				fetched: -1,
-				courses: [],
-			});
-			apiCall(currentTerm.id)
-				.then((response) => {
-					setData(response);
-				})
-				.catch((err: Error) => {
-					setData({
-						fetched: err.message === TERM_ERROR ? -3 : -2,
-						courses: [],
-					});
+		async function main() {
+			if (reduxCourses.fetched === FetchState.Fetching) {
+				return;
+			}
+			if (reduxCourses.fetched === FetchState.Error) {
+				// we wait before retry fetching
+				await sleep(API_FAIL_RETRY_TIMER);
+			}
+			if (
+				reduxCourses.fetched === FetchState.Error ||
+				new Date().getTime() - reduxCourses.fetched > FETCH_TIME_GAP
+			) {
+				// If the local data is stale we need to fetch again
+				setData({
+					fetched: FetchState.Fetching,
+					courses: [],
 				});
-		} else {
-			// Data is not stale yet, we are good
-			setData(reduxCourses);
+				apiCall(currentTerm.id)
+					.then((response) => {
+						setData(response);
+					})
+					.catch((err: Error) => {
+						setData({
+							fetched:
+								err.message === TERM_ERROR
+									? FetchState.Incomplete
+									: FetchState.Error,
+							courses: [],
+						});
+					});
+			} else {
+				// Data is not stale yet, we are good
+				setData(reduxCourses);
+			}
 		}
+		main();
 	}, [apiCall, reduxCourses, currentTerm.id]);
 
 	React.useEffect(() => {
+		if (data.fetched === 0) {
+			return;
+		}
 		dispatch(setCourses(data));
 	}, [data, dispatch]);
 

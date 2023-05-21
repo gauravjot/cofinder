@@ -167,13 +167,13 @@ export const coursesReducer: Reducer<ReduxCourseType, AnyAction> = (
  * Terms reducer
  */
 export const termsReducer: Reducer<TermsReducerType, AnyAction> = (
-	state: TermsReducerType = { terms: [], fetched: new Date().getTime() },
+	state: TermsReducerType = { terms: [], fetched: 0 },
 	action: AnyAction
 ) => {
 	const { type, payload } = action;
 	switch (type) {
 		case CLEAR_TERMS:
-			return { terms: [], fetched: new Date().getTime() };
+			return { terms: [], fetched: 0 };
 		case SET_TERMS:
 			return (state = { ...payload });
 		default:

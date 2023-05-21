@@ -1,18 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ReduxSubjectType } from "types/stateTypes";
-import { FETCH } from "hooks/useFetchTermData";
-import useFetchTermData from "hooks/useFetchTermData";
 import { ROUTE } from "routes";
 import { ErrorTemplate } from "components/utils/ErrorTemplate";
 import Spinner from "components/ui/Spinner";
+import { useFetchSubjects } from "services/core/fetch_subjects";
+import { FetchState } from "types/apiResponseType";
 
 export default function BrowseSubjects() {
 	const navigate = useNavigate();
 
-	const subjects: ReduxSubjectType = useFetchTermData({
-		fetch: FETCH.Subjects,
-	});
+	const subjects: ReduxSubjectType = useFetchSubjects();
 
 	return (
 		<div>
@@ -56,7 +54,7 @@ export default function BrowseSubjects() {
 						</button>
 					</span>
 				))
-			) : subjects?.fetched === -1 ? (
+			) : subjects?.fetched === FetchState.Error ? (
 				<div className="border border-red-300 rounded dark:border-red-900">
 					<ErrorTemplate message={<>Could not set or find any subjects.</>} />
 				</div>

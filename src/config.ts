@@ -14,6 +14,7 @@ export const RSS_NEWS_URL: string =
 	"https://corsproxy.io/?https://blogs.ufv.ca/urgent-news/feed/";
 export const FEEDBACK_URL: string = "https://forms.office.com/r/6agnYan48K";
 
+export const API_FAIL_RETRY_TIMER = 5000;
 // Refresh Component Data at set interval
 export const FETCH_TIME_GAP: number = 60 * 60 * 1000;
 // UFV API Endpoints
