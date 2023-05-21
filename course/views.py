@@ -38,7 +38,7 @@ def pushData(request):
 def getSectionSeats(request, crn, termdate):
     try:
         response = get_seats(crn, termdate)
-        return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=dict(seats=response), status=status.HTTP_200_OK)
     except:
         return Response(data=errorMessage("Unable to fetch information."), status=status.HTTP_204_NO_CONTENT)
 
