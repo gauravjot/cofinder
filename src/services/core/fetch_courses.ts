@@ -60,14 +60,7 @@ export function useFetchCourses(): ReduxCourseType {
 	}, []);
 
 	React.useEffect(() => {
-		async function main() {
-			if (reduxCourses.fetched === FetchState.Fetching) {
-				return;
-			}
-			if (reduxCourses.fetched === FetchState.Error) {
-				// we wait before retry fetching
-				await sleep(API_FAIL_RETRY_TIMER);
-			}
+		function getData() {
 			if (
 				reduxCourses.fetched === FetchState.Error ||
 				new Date().getTime() - reduxCourses.fetched > FETCH_TIME_GAP
@@ -93,6 +86,17 @@ export function useFetchCourses(): ReduxCourseType {
 			} else {
 				// Data is not stale yet, we are good
 				setData(reduxCourses);
+			}
+		}
+		async function main() {
+			if (reduxCourses.fetched === FetchState.Fetching) {
+				return;
+			}
+			if (reduxCourses.fetched === FetchState.Error) {
+				// we wait before retry fetching
+				await sleep(API_FAIL_RETRY_TIMER).then(getData);
+			} else {
+				getData();
 			}
 		}
 		main();

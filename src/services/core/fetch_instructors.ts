@@ -60,18 +60,8 @@ export function useFetchInstructors(): ReduxInstructorType {
 	}, []);
 
 	React.useEffect(() => {
-		async function main() {
-			if (reduxinstructors.fetched === FetchState.Fetching) {
-				return;
-			}
-			if (reduxinstructors.fetched === FetchState.Error) {
-				// we wait before retry fetching
-				await sleep(API_FAIL_RETRY_TIMER);
-			}
-			if (
-				reduxinstructors.fetched === FetchState.Error ||
-				new Date().getTime() - reduxinstructors.fetched > FETCH_TIME_GAP
-			) {
+		function getData() {
+			if (new Date().getTime() - reduxinstructors.fetched > FETCH_TIME_GAP) {
 				// If the local data is stale we need to fetch again
 				setData({
 					fetched: FetchState.Fetching,
@@ -93,6 +83,17 @@ export function useFetchInstructors(): ReduxInstructorType {
 			} else {
 				// Data is not stale yet, we are good
 				setData(reduxinstructors);
+			}
+		}
+		async function main() {
+			if (reduxinstructors.fetched === FetchState.Fetching) {
+				return;
+			}
+			if (reduxinstructors.fetched === FetchState.Error) {
+				// we wait before retry fetching
+				await sleep(API_FAIL_RETRY_TIMER).then(getData);
+			} else {
+				getData();
 			}
 		}
 		main();

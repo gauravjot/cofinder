@@ -8,6 +8,7 @@ import { Helmet } from "react-helmet";
 import { APP_NAME } from "config";
 import { useAppSelector } from "redux/hooks";
 import { RootState } from "index";
+import { FetchState } from "types/apiResponseType";
 
 const CourseFilter = React.lazy(() => import("features/CourseBrowser/CourseFilter"));
 const ListData = React.lazy(() => import("features/CourseBrowser/ListData"));
@@ -21,6 +22,12 @@ export default function Courses() {
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	React.useEffect(() => {
+		if (fetchState === FetchState.Fetching && listData && listData.length > 0) {
+			setListData([]);
+		}
+	}, [fetchState, listData]);
 
 	const setDisplayListData = React.useCallback((data: SectionsBrowserType[]) => {
 		setListData(data);
@@ -60,9 +67,9 @@ export default function Courses() {
 											<span className="text-sm text-gray-600 dark:text-slate-400">
 												{fetchState > 0
 													? "showing " +
-													  listData.length +
+													  listData?.length +
 													  " sections"
-													: ""}
+													: "loading sections..."}
 											</span>
 										</div>
 										<div className="mt-3">

@@ -12,6 +12,7 @@ import {
 	removeFromMySchedule,
 } from "redux/actions";
 import { FetchState } from "types/apiResponseType";
+import { API_FAIL_RETRY_TIMER } from "config";
 const ListRow = React.lazy(() => import("features/CourseBrowser/ListRow"));
 
 interface Props {
@@ -51,15 +52,21 @@ export default function ListData(props: Props) {
 					</p>
 				</div>
 			) : fetchState === FetchState.Error ? (
-				<ErrorTemplate
-					message={
-						<>
-							We encountered an error while getting data from server. Make
-							sure no network requests are being blocked.
-						</>
-					}
-				/>
-			) : props.listData && props.listData.length > 0 ? (
+				<div className="bg-red-200/50 rounded dark:bg-red-900/20">
+					<ErrorTemplate
+						message={
+							<p>
+								We encountered an error while getting data from server.
+								Make sure no network requests are being blocked.
+								<br />
+								We will retry to connect in {API_FAIL_RETRY_TIMER /
+									1000}{" "}
+								secs.
+							</p>
+						}
+					/>
+				</div>
+			) : props.listData ? (
 				<>
 					<div className="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-md py-2">
 						<div className="hidden lg:grid grid-cols-12 tracking-wide font-medium dark:text-white pb-4 pt-3 border-b border-gray-300 dark:border-slate-700">
@@ -77,7 +84,7 @@ export default function ListData(props: Props) {
 								</div>
 							}
 						>
-							{props.listData.length > 0 &&
+							{props.listData.length > 0 ? (
 								props.listData.map((item) => {
 									return (
 										<ListRow
@@ -98,18 +105,18 @@ export default function ListData(props: Props) {
 											removeFromSchedule={removeFromSchedule}
 										/>
 									);
-								})}
+								})
+							) : (
+								<div className="grid items-center justify-center h-full py-24 dark:text-slate-300">
+									Processing...
+								</div>
+							)}
 						</React.Suspense>
 					</div>
 				</>
 			) : (
-				<div className="text-center bg-white dark:bg-slate-700 dark:text-white my-4 bg-opacity-50 rounded px-4 py-12 shadow">
-					<span className="text-red-500 dark:text-white material-icons text-lg align-middle">
-						cancel
-					</span>
-					<span className="font-bold align-middle pl-2">
-						No sections found for your filter.
-					</span>
+				<div className="grid items-center justify-center h-full py-24 dark:text-slate-300">
+					No relevent data found.
 				</div>
 			)}
 		</>

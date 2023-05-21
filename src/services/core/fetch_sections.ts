@@ -6,7 +6,7 @@ import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
 import { ReduxSectionDetailedType } from "types/stateTypes";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { RootState } from "index";
-import { clearSections, setSections } from "redux/actions";
+import { setSections } from "redux/actions";
 import { TermType, SectionsBrowserType } from "types/dbTypes";
 
 function sleep(ms: number) {
@@ -60,18 +60,8 @@ export function useFetchSections(): ReduxSectionDetailedType {
 	}, []);
 
 	React.useEffect(() => {
-		async function main() {
-			if (reduxSections.fetched === FetchState.Fetching) {
-				return;
-			}
-			if (reduxSections.fetched === FetchState.Error) {
-				// we wait before retry fetching
-				await sleep(API_FAIL_RETRY_TIMER);
-			}
-			if (
-				reduxSections.fetched === FetchState.Error ||
-				new Date().getTime() - reduxSections.fetched > FETCH_TIME_GAP
-			) {
+		function getData() {
+			if (new Date().getTime() - reduxSections.fetched > FETCH_TIME_GAP) {
 				// If the local data is stale we need to fetch again
 				setData({
 					fetched: FetchState.Fetching,
@@ -93,6 +83,17 @@ export function useFetchSections(): ReduxSectionDetailedType {
 			} else {
 				// Data is not stale yet, we are good
 				setData(reduxSections);
+			}
+		}
+		async function main() {
+			if (reduxSections.fetched === FetchState.Fetching) {
+				return;
+			}
+			if (reduxSections.fetched === FetchState.Error) {
+				// we wait before retry fetching
+				await sleep(API_FAIL_RETRY_TIMER).then(getData);
+			} else {
+				getData();
 			}
 		}
 		main();

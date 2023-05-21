@@ -6,6 +6,7 @@ import { ErrorTemplate } from "components/utils/ErrorTemplate";
 import Spinner from "components/ui/Spinner";
 import { useFetchSubjects } from "services/core/fetch_subjects";
 import { FetchState } from "types/apiResponseType";
+import { API_FAIL_RETRY_TIMER } from "config";
 
 export default function BrowseSubjects() {
 	const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function BrowseSubjects() {
 				</button>{" "}
 				to browse in list form.
 			</p>
-			{subjects && subjects.subjects ? (
+			{subjects && subjects.subjects.length > 0 ? (
 				subjects.subjects.map((subject, index) => (
 					<span key={index}>
 						{(index > 0 &&
@@ -55,8 +56,15 @@ export default function BrowseSubjects() {
 					</span>
 				))
 			) : subjects?.fetched === FetchState.Error ? (
-				<div className="border border-red-300 rounded dark:border-red-900">
-					<ErrorTemplate message={<>Could not set or find any subjects.</>} />
+				<div className="bg-red-200/50 rounded dark:bg-red-900/20 mt-10">
+					<ErrorTemplate
+						message={
+							<>
+								There was an error getting subject list over network. We
+								will try again in {API_FAIL_RETRY_TIMER / 1000} secs.
+							</>
+						}
+					/>
 				</div>
 			) : (
 				<>

@@ -6,6 +6,11 @@ import { combineDateTime } from "utils/CheckTimeSlotCollision";
 import { SectionsBrowserType } from "types/dbTypes";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "routes";
+import { ReduxDetailedScheduleType } from "types/stateTypes";
+import { FetchState } from "types/apiResponseType";
+import { ErrorTemplate } from "components/utils/ErrorTemplate";
+import { API_FAIL_RETRY_TIMER } from "config";
+import Spinner from "components/ui/Spinner";
 
 interface UpcomingSection extends SectionsBrowserType {
 	time_start: Date;
@@ -29,14 +34,14 @@ export default function UpcomingClasses() {
 	const [untilNextClass, setUntilNextClass] = React.useState<string>();
 	const schedule = useFetchSpecificSectionData({
 		fetch: FETCH.SpecificSections,
-	});
+	}) as ReduxDetailedScheduleType;
 
 	React.useEffect(() => {
 		let seventh_date = new Date();
 		seventh_date.setDate(seventh_date.getDate() + 7);
 		let result: UpcomingSection[] = [];
-		if (schedule) {
-			for (const section of schedule?.sections) {
+		if (schedule && schedule.sections?.length > 0) {
+			for (const section of schedule.sections) {
 				for (const slot of section.schedule) {
 					let start_date = getDayAfterDate(
 						convertToJsDate(slot.date_start.toString()),
@@ -163,7 +168,23 @@ export default function UpcomingClasses() {
 				</span>
 			</div>
 			<div className="bg-white dark:bg-slate-800 rounded shadow border border-gray-300 dark:border-slate-700 border-opacity-80">
-				{sections && sections.length > 0 ? (
+				{schedule?.fetched === FetchState.Error ? (
+					<div className="bg-red-200/50 rounded dark:bg-red-900/20 mt-10">
+						<ErrorTemplate
+							message={
+								<>
+									There was an error getting subject list over network.
+									We will try again in {API_FAIL_RETRY_TIMER / 1000}{" "}
+									secs.
+								</>
+							}
+						/>
+					</div>
+				) : schedule?.fetched === FetchState.Fetching ? (
+					<>
+						<Spinner />
+					</>
+				) : sections && sections.length > 0 ? (
 					<>
 						{sections.map((schedule, index) => {
 							return (

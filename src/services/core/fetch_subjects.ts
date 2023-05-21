@@ -58,18 +58,8 @@ export function useFetchSubjects(): ReduxSubjectType {
 	}, []);
 
 	React.useEffect(() => {
-		async function main() {
-			if (reduxSubjects.fetched === FetchState.Fetching) {
-				return;
-			}
-			if (reduxSubjects.fetched === FetchState.Error) {
-				// we wait before retry fetching
-				await sleep(API_FAIL_RETRY_TIMER);
-			}
-			if (
-				reduxSubjects.fetched === FetchState.Error ||
-				new Date().getTime() - reduxSubjects.fetched > FETCH_TIME_GAP
-			) {
+		function getData() {
+			if (new Date().getTime() - reduxSubjects.fetched > FETCH_TIME_GAP) {
 				// If the local data is stale we need to fetch again
 				setData({
 					fetched: FetchState.Fetching,
@@ -91,6 +81,18 @@ export function useFetchSubjects(): ReduxSubjectType {
 			} else {
 				// Data is not stale yet, we are good
 				setData(reduxSubjects);
+			}
+		}
+
+		async function main() {
+			if (reduxSubjects.fetched === FetchState.Fetching) {
+				return;
+			}
+			if (reduxSubjects.fetched === FetchState.Error) {
+				// we wait before retry fetching
+				await sleep(API_FAIL_RETRY_TIMER).then(getData);
+			} else {
+				getData();
 			}
 		}
 		main();

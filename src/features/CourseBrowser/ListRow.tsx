@@ -50,6 +50,7 @@ export function ListRow(props: Props) {
 					setIsLoadingSeats(false);
 				})
 				.catch(function (error) {
+					console.log(error);
 					setSeatInfo(null);
 					setIsLoadingSeats(false);
 				});
