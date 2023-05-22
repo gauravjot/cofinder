@@ -2,7 +2,7 @@ import * as React from "react";
 import { SeatsInfoType, SectionsBrowserType, TermType } from "types/dbTypes";
 import axios from "axios";
 import ListRowExpandInfo from "./ListRowExpandInfo";
-import { seatsEP } from "config";
+import { seatsEP } from "server_eps";
 
 /*
 

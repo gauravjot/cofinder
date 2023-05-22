@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
-import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP, sectionsEP } from "config";
+import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "config";
+import { sectionsEP } from "server_eps";
 import { handleApiError } from "services/handle_error";
 import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
 import { MyScheduleTypeItem, ReduxDetailedScheduleType } from "types/stateTypes";

@@ -5,7 +5,7 @@ import axios from "axios";
 import { setTerms, setCurrentTerm } from "redux/actions";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { clearAllVariableStates } from "../../redux/actions";
-import { EP_TERMS } from "config";
+import { EP_TERMS } from "server_eps";
 
 export default function TermSelector() {
 	const dispatch = useAppDispatch();
@@ -98,7 +98,8 @@ export default function TermSelector() {
 			!termsMenuRef.current?.contains(e.target as Node) &&
 			!termsButtonRef.current?.contains(e.target as Node)
 		) {
-			toggleTermsMenu();
+			termsMenuRef.current?.setAttribute("aria-expanded", "false");
+			setIsTermsExpanded(false);
 		}
 	}, []);
 
@@ -138,9 +139,11 @@ export default function TermSelector() {
 			</button>
 			{currentTerm.name === "0" ? (
 				<div className="pt-3">
-					<p className="dark:text-red-400 text-red-700 leading-5">
-						Error fetching terms. Failed to reach server.
-					</p>
+					{isFetching && (
+						<p className="dark:text-red-400 text-red-700 leading-5">
+							Error fetching terms. Failed to reach server.
+						</p>
+					)}
 					<button
 						onClick={() =>
 							dispatch(
