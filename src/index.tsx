@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 /* CSS */
 import "./assets/css/common.css";
-import "./assets/css/main.css";
+import "./assets/css/global.css";
 /* Redux */
 import { compose } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -48,7 +48,19 @@ function loadFromLocalStorage() {
 	try {
 		const serializedState = localStorage.getItem("state");
 		if (serializedState === null) return undefined;
-		return JSON.parse(serializedState);
+		let data = JSON.parse(serializedState);
+		Object.keys(data).forEach(function (key) {
+			/*
+        This is for cleanup in case a request was interrupted while
+        fetching prveiously. This can be because user lost internet,
+        lost power, decided to close tab or computer decided to died
+        in middle of request. We will clear error codes.
+      */
+			if (data[key]["fetched"] && data[key]["fetched"] < 0) {
+				data[key]["fetched"] = 0;
+			}
+		});
+		return data;
 	} catch (e) {
 		console.log(e);
 		return undefined;

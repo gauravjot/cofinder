@@ -1,8 +1,5 @@
 export const APP_NAME = "CoFinder";
-export const VERSION_CODE: string = "0.1.2";
-
-// Refresh Component Data at set interval
-export const FETCH_TIME_GAP: number = 60 * 60 * 1000;
+export const VERSION_CODE: string = "0.1.3";
 
 // School
 export const SCHOOL_FULL_NAME: string = "University of the Fraser Valley";
@@ -17,23 +14,6 @@ export const RSS_NEWS_URL: string =
 	"https://corsproxy.io/?https://blogs.ufv.ca/urgent-news/feed/";
 export const FEEDBACK_URL: string = "https://forms.office.com/r/6agnYan48K";
 
-// UFV API Endpoints
-export const sectionsEP = (term: string, encodedCRNs: string | null = null): string => {
-	if (encodedCRNs) {
-		return `https://uag.cofinder.ca/api/v1/sections?term=${term}&crns=${encodedCRNs}`;
-	}
-	return `https://uag.cofinder.ca/api/v1/sections?term=${term}`;
-};
-export const EP_TERMS = "https://uag.cofinder.ca/api/v1/terms";
-export const subjectsEP = (term: string) => {
-	return `https://uag.cofinder.ca/api/v1/subjects?term=${term}`;
-};
-export const coursesEP = (term: string) => {
-	return `https://uag.cofinder.ca/api/v1/courses?term=${term}`;
-};
-export const instructorsEP = (term: string) => {
-	return `https://uag.cofinder.ca/api/v1/instructors?term=${term}`;
-};
-export const seatsEP = (term_name: string | number, crn: string | number) => {
-	return `https://uag.cofinder.ca/api/v1/seats?term_name=${term_name}&crn=${crn}`;
-};
+export const API_FAIL_RETRY_TIMER = 5000;
+// Refresh Component Data at set interval
+export const FETCH_TIME_GAP: number = 60 * 60 * 1000;
