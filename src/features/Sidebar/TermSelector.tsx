@@ -173,9 +173,10 @@ export default function TermSelector() {
 					{termsData.terms.map((term) => {
 						return (
 							<button
-								className="text-gray-700 dark:text-slate-200 rounded text-left block px-2 py-1.5 text-sm hover:bg-gray-200 dark:hover:bg-slate-800 hover:px-4 transition-all w-full"
+								className="term-selector-dropdown-item"
 								key={term.id}
 								onClick={() => setAppTerm(term)}
+								aria-current={term.id === currentTerm.id}
 							>
 								{term.name}
 							</button>

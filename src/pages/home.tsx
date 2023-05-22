@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import { APP_NAME, SCHOOL_FULL_NAME, SCHOOL_SHORT_NAME, SCHOOL_WEBSITE } from "config";
 import { ROUTE } from "routes";
 import { Link } from "react-router-dom";
+import { useFetchSpecificSections } from "services/core/fetch_specific_sections";
 
 const Topbar = React.lazy(() => import("features/Home/Topbar/Topbar"));
 const MyCourses = React.lazy(() => import("features/Home/MyCourses"));
@@ -17,6 +18,8 @@ function App() {
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+	const schedule = useFetchSpecificSections();
+
 	return (
 		<div className="App">
 			<Helmet>
@@ -66,11 +69,11 @@ function App() {
 									<div className="grid md:grid-cols-2 gap-12 xl:gap-16 2xl:gap-24 mt-4">
 										<div>
 											<ErrorBoundary>
-												<MyCourses />
+												<MyCourses schedule={schedule} />
 											</ErrorBoundary>
 											<div className="p-8"></div>
 											<ErrorBoundary>
-												<UpcomingClasses />
+												<UpcomingClasses schedule={schedule} />
 											</ErrorBoundary>
 										</div>
 										<div>

@@ -217,6 +217,20 @@ nav[aria-label="Main"] a[aria-current="page"] {
 	}
 }
 
+.term-selector-dropdown-item {
+	@apply text-gray-700 dark:text-slate-200 rounded text-left block px-2 py-1.5 text-sm transition-all w-full;
+}
+.term-selector-dropdown-item[aria-current="true"] {
+	@apply font-bold text-accent-700 dark:text-accent-300 cursor-default;
+}
+.term-selector-dropdown-item[aria-current="true"]::before {
+	content: "•";
+	@apply pr-2;
+}
+.term-selector-dropdown-item[aria-current="false"] {
+	@apply hover:bg-gray-200 dark:hover:bg-slate-800 hover:px-4;
+}
+
 /* Topbar */
 .tw-animate-to-right {
 	@apply ml-2 mr-1 transition-all;

@@ -17,6 +17,10 @@ const SelectionBar = React.lazy(() => import("features/CourseBrowser/SelectionBa
 export default function Courses() {
 	let params = useParams();
 	const [listData, setListData] = React.useState<SectionsBrowserType[]>([]);
+	const [isTrustedFilterActive, setIsTrustedFilterActive] =
+		React.useState<boolean>(false);
+	const [isKeywordFilterActive, setIsKeywordFilterActive] =
+		React.useState<boolean>(false);
 	const fetchState = useAppSelector((state: RootState) => state.sections).fetched;
 
 	React.useEffect(() => {
@@ -28,10 +32,6 @@ export default function Courses() {
 			setListData([]);
 		}
 	}, [fetchState, listData]);
-
-	const setDisplayListData = React.useCallback((data: SectionsBrowserType[]) => {
-		setListData(data);
-	}, []);
 
 	return (
 		<div className="App">
@@ -54,7 +54,9 @@ export default function Courses() {
 								}
 							>
 								<CourseFilter
-									setData={setDisplayListData}
+									setData={setListData}
+									setIsTFA={setIsTrustedFilterActive}
+									setIsKFA={setIsKeywordFilterActive}
 									setSubjectFilter={params.subject}
 									setKeywordFilter={params.keyword}
 								/>
@@ -64,20 +66,36 @@ export default function Courses() {
 											<h3 className="font-medium font-serif dark:text-white">
 												Course Browser
 											</h3>
-											<span className="text-sm text-gray-600 dark:text-slate-400">
-												{fetchState > 0
-													? "showing " +
-													  listData?.length +
-													  " sections"
-													: "loading sections..."}
-											</span>
+											<div className="flex gap-4 place-items-center my-1">
+												<span className="text-sm text-gray-600 dark:text-slate-400">
+													{fetchState > 0
+														? "showing " +
+														  listData?.length +
+														  " sections"
+														: "loading sections..."}
+												</span>
+												{isTrustedFilterActive && (
+													<span className="bg-orange-200 dark:bg-opacity-10 text-orange-800 dark:text-orange-300 px-2 py-1 rounded text-sm">
+														Filters Selected
+													</span>
+												)}
+												{isKeywordFilterActive && (
+													<span className="bg-orange-200 dark:bg-opacity-10 text-orange-800 dark:text-orange-300 px-2 py-1 rounded text-sm">
+														Keyword Applied
+													</span>
+												)}
+											</div>
 										</div>
 										<div className="mt-3">
 											{fetchState > 0 ? <SelectionBar /> : <></>}
 										</div>
 										<div className="basis-full h-0"></div>
 										<div className="w-full">
-											<ListData listData={listData} />
+											<ListData
+												listData={listData}
+												isTFA={isTrustedFilterActive}
+												isKFA={isKeywordFilterActive}
+											/>
 										</div>
 									</div>
 								</div>

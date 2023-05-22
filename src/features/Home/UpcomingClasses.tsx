@@ -1,5 +1,4 @@
 import { convertToJsDate, getDayAfterDate, Weekdays } from "utils/CheckTimeSlotCollision";
-import { FETCH, useFetchSpecificSectionData } from "hooks/useFetchTermData";
 import React from "react";
 import { getColor } from "./MyCourses";
 import { combineDateTime } from "utils/CheckTimeSlotCollision";
@@ -18,6 +17,10 @@ interface UpcomingSection extends SectionsBrowserType {
 	location: string;
 }
 
+interface Props {
+	schedule: ReduxDetailedScheduleType;
+}
+
 const days: string[] = [
 	"Sunday",
 	"Monday",
@@ -28,13 +31,11 @@ const days: string[] = [
 	"Saturday",
 ];
 
-export default function UpcomingClasses() {
+export default function UpcomingClasses(props: Props) {
 	const navigate = useNavigate();
 	const [sections, setSections] = React.useState<UpcomingSection[]>([]);
 	const [untilNextClass, setUntilNextClass] = React.useState<string>();
-	const schedule = useFetchSpecificSectionData({
-		fetch: FETCH.SpecificSections,
-	}) as ReduxDetailedScheduleType;
+	const schedule = props.schedule;
 
 	React.useEffect(() => {
 		let seventh_date = new Date();
@@ -167,129 +168,109 @@ export default function UpcomingClasses() {
 					)}
 				</span>
 			</div>
-			<div className="bg-white dark:bg-slate-800 rounded shadow border border-gray-300 dark:border-slate-700 border-opacity-80">
-				{schedule?.fetched === FetchState.Error ? (
-					<div className="bg-red-200/50 rounded dark:bg-red-900/20 mt-10">
-						<ErrorTemplate
-							message={
-								<>
-									There was an error getting subject list over network.
-									We will try again in {API_FAIL_RETRY_TIMER / 1000}{" "}
-									secs.
-								</>
-							}
-						/>
-					</div>
-				) : schedule?.fetched === FetchState.Fetching ? (
-					<>
-						<Spinner />
-					</>
-				) : sections && sections.length > 0 ? (
-					<>
-						{sections.map((schedule, index) => {
-							return (
+			{schedule?.fetched === FetchState.Fetching ? (
+				<>
+					<Spinner />
+				</>
+			) : sections && sections.length > 0 ? (
+				<div className="bg-white dark:bg-slate-800 rounded shadow border border-gray-300 dark:border-slate-700 border-opacity-80">
+					{sections.map((schedule, index) => {
+						return (
+							<div
+								key={index}
+								className="flex transition-colors text-gray-800 dark:text-white border-b border-gray-300 dark:border-slate-700 border-opacity-80 items-center"
+							>
 								<div
-									key={index}
-									className="flex transition-colors text-gray-800 dark:text-white border-b border-gray-300 dark:border-slate-700 border-opacity-80 items-center"
+									className={
+										"tw-gradient-tr-" +
+										getColor(schedule.subject_id).replace("#", "") +
+										" dark:tw-gradient-tr-" +
+										getColor(schedule.subject_id).replace("#", "") +
+										"w-16 text-slate-700 dark:text-slate-100 m-3 py-3 pl-5 pr-5 grid place-content-center rounded-lg ufvc-clip-right-arrow"
+									}
 								>
-									<div
-										className={
-											"tw-gradient-tr-" +
-											getColor(schedule.subject_id).replace(
-												"#",
-												""
-											) +
-											" dark:tw-gradient-tr-" +
-											getColor(schedule.subject_id).replace(
-												"#",
-												""
-											) +
-											"w-16 text-slate-700 dark:text-slate-100 m-3 py-3 pl-5 pr-5 grid place-content-center rounded-lg ufvc-clip-right-arrow"
-										}
-									>
-										<div className="text-center">
-											<div className="text-sm tracking-tight leading-3">
-												{days[
-													schedule.time_start.getDay()
-												].substring(0, 3)}
-											</div>
-											<div className="text-black dark:text-white font-bold text-2xl tracking-tighter leading-6 mt-1.5">
-												{schedule.time_end.getDate()}
-											</div>
+									<div className="text-center">
+										<div className="text-sm tracking-tight leading-3">
+											{days[schedule.time_start.getDay()].substring(
+												0,
+												3
+											)}
 										</div>
-									</div>
-									<div className="px-2 lg:pr-4 lg:pl-6 flex-1 grid grid-flow-row lg:grid-flow-col lg:grid-cols-12">
-										<div className="xl:col-span-2 lg:col-span-2">
-											<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
-												{schedule.is_lab ? (
-													<span className="mr-1.5 bg-black text-white bg-opacity-80 align-top px-1 rounded text-[0.8rem] font-medium">
-														LAB
-													</span>
-												) : (
-													"Class"
-												)}
-											</div>
-											<div className="text-[1rem] lg:text-[1.1rem] leading-[1.25rem] font-medium tracking-tight">
-												{schedule.subject_id}{" "}
-												{schedule.course.code}
-											</div>
-										</div>
-										<div className="xl:col-span-7 lg:col-span-8 flex pr-4">
-											<div className="hidden lg:block w-px h-8 bg-gray-400 dark:bg-slate-700 bg-opacity-40 my-auto mx-8 lg:mx-6 md:mx-4"></div>
-											<div>
-												<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
-													Time
-												</div>
-												<div className="text-[1rem] lg:text-[1.1rem] leading-6 lg:leading-[1.25rem] font-medium lowercase tracking-tight">
-													{schedule.time_start.getHours() !== 0
-														? schedule.time_start
-																.toLocaleTimeString()
-																.replace(/:\d+ /, " ") +
-														  " - " +
-														  schedule.time_end
-																.toLocaleTimeString()
-																.replace(/:\d+ /, " ")
-														: "not available"}
-												</div>
-											</div>
-										</div>
-										<div className="xl:col-span-3 lg:col-span-2">
-											<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
-												Location
-											</div>
-											<div className="text-[1rem] lg:text-[1.1rem] leading-[1.25rem] font-medium uppercase tracking-tight">
-												{schedule.location}
-											</div>
+										<div className="text-black dark:text-white font-bold text-2xl tracking-tighter leading-6 mt-1.5">
+											{schedule.time_end.getDate()}
 										</div>
 									</div>
 								</div>
-							);
-						})}
-						<div className="text-left">
-							<button
-								onClick={() => {
-									navigate(ROUTE.Calendar);
-								}}
-								className="tw-animate-to-right-parent m-2.5 tw-accent-light-button"
-							>
-								<span>Go to calendar</span>
-								<span className="tw-animate-to-right material-icons align-top text-base">
-									arrow_forward
-								</span>
-							</button>
-						</div>
-					</>
-				) : sections?.length === 0 ? (
-					<div className="px-4 py-8 text-lg text-center font-medium text-gray-800 dark:text-white">
-						<span className="material-icons text-gray-400 dark:text-slate-300 text-opacity-40 text-6xl font-bold">
-							sports_tennis
-						</span>
-						<div className="mt-1">Hurray, no classes :)</div>
+								<div className="px-2 lg:pr-4 lg:pl-6 flex-1 grid grid-flow-row lg:grid-flow-col lg:grid-cols-12">
+									<div className="xl:col-span-2 lg:col-span-2">
+										<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
+											{schedule.is_lab ? (
+												<span className="mr-1.5 bg-black text-white bg-opacity-80 align-top px-1 rounded text-[0.8rem] font-medium">
+													LAB
+												</span>
+											) : (
+												"Class"
+											)}
+										</div>
+										<div className="text-[1rem] lg:text-[1.1rem] leading-[1.25rem] font-medium tracking-tight">
+											{schedule.subject_id} {schedule.course.code}
+										</div>
+									</div>
+									<div className="xl:col-span-7 lg:col-span-8 flex pr-4">
+										<div className="hidden lg:block w-px h-8 bg-gray-400 dark:bg-slate-700 bg-opacity-40 my-auto mx-8 lg:mx-6 md:mx-4"></div>
+										<div>
+											<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
+												Time
+											</div>
+											<div className="text-[1rem] lg:text-[1.1rem] leading-6 lg:leading-[1.25rem] font-medium lowercase tracking-tight">
+												{schedule.time_start.getHours() !== 0
+													? schedule.time_start
+															.toLocaleTimeString()
+															.replace(/:\d+ /, " ") +
+													  " - " +
+													  schedule.time_end
+															.toLocaleTimeString()
+															.replace(/:\d+ /, " ")
+													: "not available"}
+											</div>
+										</div>
+									</div>
+									<div className="xl:col-span-3 lg:col-span-2">
+										<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
+											Location
+										</div>
+										<div className="text-[1rem] lg:text-[1.1rem] leading-[1.25rem] font-medium uppercase tracking-tight">
+											{schedule.location}
+										</div>
+									</div>
+								</div>
+							</div>
+						);
+					})}
+					<div className="text-left">
+						<button
+							onClick={() => {
+								navigate(ROUTE.Calendar);
+							}}
+							className="tw-animate-to-right-parent m-2.5 tw-accent-light-button"
+						>
+							<span>Go to calendar</span>
+							<span className="tw-animate-to-right material-icons align-top text-base">
+								arrow_forward
+							</span>
+						</button>
 					</div>
-				) : (
-					""
-				)}
-			</div>
+				</div>
+			) : sections?.length === 0 ? (
+				<div className="bg-white dark:bg-slate-800 rounded shadow border border-gray-300 dark:border-slate-700 border-opacity-80 px-4 py-8 text-lg text-center font-medium text-gray-800 dark:text-white">
+					<span className="material-icons text-gray-400 dark:text-slate-300 text-opacity-40 text-6xl font-bold">
+						sports_tennis
+					</span>
+					<div className="mt-1">Hurray, no classes :)</div>
+				</div>
+			) : (
+				""
+			)}
 		</div>
 	);
 }

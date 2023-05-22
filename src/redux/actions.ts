@@ -65,7 +65,7 @@ export const REMOVE_FROM_DETAILED_SCHEDULE = "REMOVE_FROM_DETAILED_SCHEDULE";
 export const setDetailedSchedule = (schedule: ReduxDetailedScheduleType) => {
 	return {
 		type: SET_DETAILED_SCHEDULE,
-		payload: schedule.sections,
+		payload: schedule,
 	};
 };
 

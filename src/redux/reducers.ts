@@ -69,10 +69,7 @@ export const detailedScheduleReducer: Reducer<ReduxDetailedScheduleType, AnyActi
 		case CLEAR_DETAILED_SCHEDULE:
 			return (state = { sections: [], fetched: 0 });
 		case SET_DETAILED_SCHEDULE:
-			return (state = {
-				sections: payload,
-				fetched: new Date().getTime(),
-			});
+			return (state = payload);
 		case ADD_TO_DETAILED_SCHEDULE:
 			let list = state.sections;
 			list.push(payload);

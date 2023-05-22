@@ -6,15 +6,12 @@ import { SectionsBrowserType } from "types/dbTypes";
 import { changeMySchedule } from "redux/actions";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { refactorTime } from "utils/RefactorDateTime";
-import { useFetchSpecificSectionData } from "../../hooks/useFetchTermData";
-import { FETCH } from "hooks/useFetchTermData";
 import { ReduxDetailedScheduleType } from "types/stateTypes";
+import { useFetchSpecificSections } from "services/core/fetch_specific_sections";
 
 export default function SelectionBar() {
 	const mySchedule = useAppSelector((state: RootState) => state.mySchedule);
-	const schedule: ReduxDetailedScheduleType = useFetchSpecificSectionData({
-		fetch: FETCH.SpecificSections,
-	});
+	const schedule: ReduxDetailedScheduleType = useFetchSpecificSections();
 	const dispatch = useAppDispatch();
 	// For expanding filter
 	const [expandCS, setExpandCS] = React.useState<boolean>(false);

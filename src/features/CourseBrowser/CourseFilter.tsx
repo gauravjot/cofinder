@@ -13,7 +13,9 @@ import { useFetchInstructors } from "services/core/fetch_instructors";
 import { useFetchSubjects } from "services/core/fetch_subjects";
 
 interface Props {
-	setData: (data: SectionsBrowserType[]) => void;
+	setData: React.Dispatch<React.SetStateAction<SectionsBrowserType[]>>;
+	setIsTFA: React.Dispatch<React.SetStateAction<boolean>>;
+	setIsKFA: React.Dispatch<React.SetStateAction<boolean>>;
 	setSubjectFilter?: string;
 	setKeywordFilter?: string;
 }
@@ -39,6 +41,8 @@ export default function CourseFilter(props: Props) {
 	const [activeFilterCount, setActiveFilterCount] = React.useState<number>(0);
 	// Preselected Subject from url /browse/courses/:subject
 	const [urlSelectedSubject, setUrlSelectedSubject] = React.useState<SubjectType>();
+	const setIsTFA = props.setIsTFA;
+	const setIsKFA = props.setIsKFA;
 
 	// Fetch and compute functions
 	const sectionsTermData: ReduxSectionDetailedType = useFetchSections();
@@ -52,10 +56,11 @@ export default function CourseFilter(props: Props) {
 					setUrlSelectedSubject(subjectsTermData.subjects[i]);
 					setSelectedSubjects([subjectsTermData.subjects[i]]);
 					setActiveFilterCount(1);
+					setIsTFA(true);
 				}
 			}
 		}
-	}, [subjectsTermData, props.setSubjectFilter]);
+	}, [subjectsTermData, props.setSubjectFilter, setIsTFA]);
 
 	React.useEffect(() => {
 		if (props.setKeywordFilter) {
@@ -67,7 +72,7 @@ export default function CourseFilter(props: Props) {
 
 	React.useEffect(() => {
 		// Apply Filters
-		if (sectionsTermData && sectionsTermData.fetched !== -1) {
+		if (sectionsTermData && sectionsTermData.fetched > 0) {
 			let list = sectionsTermData.sections.filter((row) => {
 				let val = false;
 				let filtersActiveCount = 0;
@@ -132,6 +137,7 @@ export default function CourseFilter(props: Props) {
 				return filtersActiveCount > 0 ? val : true;
 			});
 			// Return list to parent
+			setIsKFA(deferredKeyword.length > 1);
 			setData(list);
 		}
 	}, [
@@ -139,6 +145,7 @@ export default function CourseFilter(props: Props) {
 		selectedSubjects,
 		selectedInstructors,
 		sectionsTermData,
+		setIsKFA,
 		setData,
 	]);
 
@@ -159,6 +166,7 @@ export default function CourseFilter(props: Props) {
 			removeFilters();
 		} else {
 			setActiveFilterCount(subjsOnChange.length + profsOnChange.length);
+			setIsTFA(subjsOnChange.length + profsOnChange.length > 0);
 		}
 		toggleFilters();
 	};
@@ -169,6 +177,7 @@ export default function CourseFilter(props: Props) {
 		subjectsMultiSelectRef.current?.resetSelectedValues();
 		instructorsMultiSelectRef.current?.resetSelectedValues();
 		setActiveFilterCount(0);
+		setIsTFA(false);
 	};
 
 	/* Filter Toggle */

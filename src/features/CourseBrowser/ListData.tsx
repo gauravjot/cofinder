@@ -17,6 +17,8 @@ const ListRow = React.lazy(() => import("features/CourseBrowser/ListRow"));
 
 interface Props {
 	listData: SectionsBrowserType[];
+	isKFA: boolean;
+	isTFA: boolean;
 }
 
 export default function ListData(props: Props) {
@@ -106,6 +108,11 @@ export default function ListData(props: Props) {
 										/>
 									);
 								})
+							) : props.listData.length < 1 &&
+							  (props.isKFA || props.isTFA) ? (
+								<div className="grid items-center justify-center h-full py-24 dark:text-slate-300">
+									Unable to find sections with the keyword.
+								</div>
 							) : (
 								<div className="grid items-center justify-center h-full py-24 dark:text-slate-300">
 									Processing...
