@@ -299,12 +299,14 @@ export function ListRow(props: Props) {
 				ref={expandRef}
 				aria-expanded="false"
 			>
-				<ListRowExpandInfo
-					isLoadingSeats={isLoadingSeats}
-					seatInfo={seatInfo}
-					section={props.section}
-					term={props.term}
-				/>
+				{expandRef.current?.getAttribute("aria-expanded") === "true" && (
+					<ListRowExpandInfo
+						isLoadingSeats={isLoadingSeats}
+						seatInfo={seatInfo}
+						section={props.section}
+						term={props.term}
+					/>
+				)}
 			</div>
 		</div>
 	);

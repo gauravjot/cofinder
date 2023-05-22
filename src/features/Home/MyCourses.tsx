@@ -2,23 +2,27 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { SectionsBrowserType } from "types/dbTypes";
 import { ROUTE } from "../../routes";
-import { ReduxDetailedScheduleType } from "types/stateTypes";
 import { FetchState } from "types/apiResponseType";
 import { API_FAIL_RETRY_TIMER } from "config";
 import { ErrorTemplate } from "components/utils/ErrorTemplate";
 import Spinner from "components/ui/Spinner";
+import { useFetchSpecificSections } from "services/core/fetch_specific_sections";
+import { useAppSelector } from "redux/hooks";
+import { RootState } from "index";
 
-interface Props {
-	schedule: ReduxDetailedScheduleType;
-}
-
-export default function MyCourses(props: Props) {
+export default function MyCourses() {
 	const navigate = useNavigate();
-	const schedule = props.schedule;
+	const schedule = useFetchSpecificSections();
+	const currentTerm = useAppSelector((state: RootState) => state.currentTerm);
 
 	return (
 		<div>
-			<h2 className="mb-6 font-medium font-serif dark:text-white">My Courses</h2>
+			<h2 className="mb-6 font-medium font-serif dark:text-white">
+				My Courses{" "}
+				<span className="dark:text-slate-400 text-slate-500">
+					/ {currentTerm.name}
+				</span>
+			</h2>
 			{schedule?.fetched === FetchState.Error ? (
 				<div className="bg-red-200/50 rounded dark:bg-red-900/20">
 					<ErrorTemplate

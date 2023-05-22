@@ -81,11 +81,14 @@ export function useFetchSpecificSections(ignoreTerm?: false): ReduxDetailedSched
 			const pickTermSchedule = mySchedule.filter((row) => {
 				return row.term === currentTerm.id;
 			});
+			// If schedule is empty then we set an empty list
 			if (pickTermSchedule.length < 1) {
-				setData({
-					fetched: new Date().getTime(),
-					sections: [],
-				});
+				if (reduxScheduleSections.fetched < 1) {
+					setData({
+						fetched: new Date().getTime(),
+						sections: [],
+					});
+				}
 				return;
 			}
 			// Check if schedules saved locally is outdated
@@ -144,7 +147,6 @@ export function useFetchSpecificSections(ignoreTerm?: false): ReduxDetailedSched
 		if (data.fetched === 0) {
 			return;
 		}
-		console.log("updating local storage...");
 		dispatch(setDetailedSchedule(data));
 	}, [data, dispatch]);
 

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 /* CSS */
 import "./assets/css/common.css";
-import "./assets/css/main.css";
+import "./assets/css/global.css";
 /* Redux */
 import { compose } from "redux";
 import { configureStore } from "@reduxjs/toolkit";

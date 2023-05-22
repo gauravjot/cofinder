@@ -5,20 +5,15 @@ import { combineDateTime } from "utils/CheckTimeSlotCollision";
 import { SectionsBrowserType } from "types/dbTypes";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "routes";
-import { ReduxDetailedScheduleType } from "types/stateTypes";
 import { FetchState } from "types/apiResponseType";
-import { ErrorTemplate } from "components/utils/ErrorTemplate";
-import { API_FAIL_RETRY_TIMER } from "config";
 import Spinner from "components/ui/Spinner";
+import { useAppSelector } from "redux/hooks";
+import { RootState } from "index";
 
 interface UpcomingSection extends SectionsBrowserType {
 	time_start: Date;
 	time_end: Date;
 	location: string;
-}
-
-interface Props {
-	schedule: ReduxDetailedScheduleType;
 }
 
 const days: string[] = [
@@ -31,11 +26,11 @@ const days: string[] = [
 	"Saturday",
 ];
 
-export default function UpcomingClasses(props: Props) {
+export default function UpcomingClasses() {
 	const navigate = useNavigate();
 	const [sections, setSections] = React.useState<UpcomingSection[]>([]);
 	const [untilNextClass, setUntilNextClass] = React.useState<string>();
-	const schedule = props.schedule;
+	const schedule = useAppSelector((state: RootState) => state.detailedSchedule);
 
 	React.useEffect(() => {
 		let seventh_date = new Date();
@@ -107,6 +102,8 @@ export default function UpcomingClasses(props: Props) {
 				}
 			}
 			setSections(result);
+		} else {
+			setSections([]);
 		}
 	}, [schedule]);
 
