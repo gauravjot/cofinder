@@ -19,7 +19,7 @@ def handleDiscordResponse(request):
     if (code):
         try:
             r = requests.post(
-                url='https://discord.com/api/v10/oauth2/token',
+                url=config('DISCORD_OAUTH_BASE_URL')+'oauth2/token',
                 data={
                     'client_id': config('DISCORD_OAUTH_CLIENT_ID'),
                     'client_secret': config('DISCORD_OAUTH_SECRET'),
@@ -33,7 +33,7 @@ def handleDiscordResponse(request):
             if (r.status_code == 200):
                 discord_tokens = r.json()
                 u = requests.get(
-                    url="https://discord.com/api/v10/users/@me",
+                    url=config('DISCORD_OAUTH_BASE_URL')+"users/@me",
                     headers={
                         "Authorization": "Bearer " + discord_tokens['access_token'],
                     }
@@ -66,7 +66,7 @@ def handleDiscordResponse(request):
                     # Prepare Single Use Token
                     sut = issueSingleUseToken(request, user)
 
-                    return redirect('http://locahost:3000/auth/sut/'+sut+'/')
+                    return redirect(config('FRONTEND_AUTH_RECEIVE_URL')+sut+'/')
             raise Exception("Problem getting response from Discord API.")
         except:
             return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
@@ -111,7 +111,7 @@ def userInfo(request):
 
         if (user.provider_connected):
             u = requests.get(
-                url="https://discord.com/api/v10/users/@me",
+                url=config('DISCORD_OAUTH_BASE_URL')+"users/@me",
                 headers={
                     "Authorization": "Bearer " + user.provider_access_token,
                 }
@@ -156,7 +156,7 @@ def refreshDiscordToken(refresh_token, user):
     try:
         if (user.provider_connected):
             r = requests.post(
-                url='https://discord.com/api/v10/oauth2/token',
+                url=config('DISCORD_OAUTH_BASE_URL')+'oauth2/token',
                 data={
                     'client_id': config('DISCORD_OAUTH_CLIENT_ID'),
                     'client_secret': config('DISCORD_OAUTH_SECRET'),
