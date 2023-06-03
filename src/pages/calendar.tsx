@@ -1,9 +1,9 @@
 import * as React from "react";
-import Sidebar from "features/Sidebar/Sidebar";
-import Spinner from "components/ui/Spinner";
+import Sidebar from "@/features/Sidebar/Sidebar";
+import Spinner from "@/components/ui/Spinner";
 import { Helmet } from "react-helmet";
-import { APP_NAME } from "config";
-const Content = React.lazy(() => import("features/Calendar/CalendarContent"));
+import { APP_NAME } from "@/config";
+const Content = React.lazy(() => import("@/features/Calendar/CalendarContent"));
 
 export default function Calendar() {
 	React.useEffect(() => {

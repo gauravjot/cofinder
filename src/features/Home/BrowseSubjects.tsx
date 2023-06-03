@@ -1,12 +1,11 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ReduxSubjectType } from "types/stateTypes";
-import { ROUTE } from "routes";
-import { ErrorTemplate } from "components/utils/ErrorTemplate";
-import Spinner from "components/ui/Spinner";
-import { useFetchSubjects } from "services/core/fetch_subjects";
-import { FetchState } from "types/apiResponseType";
-import { API_FAIL_RETRY_TIMER } from "config";
+import { ReduxSubjectType } from "@/types/stateTypes";
+import { ROUTE } from "@/routes";
+import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
+import Spinner from "@/components/ui/Spinner";
+import { useFetchSubjects } from "@/services/core/fetch_subjects";
+import { FetchState } from "@/types/apiResponseType";
+import { API_FAIL_RETRY_TIMER } from "@/config";
 
 export default function BrowseSubjects() {
 	const navigate = useNavigate();

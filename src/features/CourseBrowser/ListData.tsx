@@ -1,19 +1,19 @@
 import * as React from "react";
-import Spinner from "components/ui/Spinner";
-import { ErrorTemplate } from "components/utils/ErrorTemplate";
-import { useAppSelector, useAppDispatch } from "redux/hooks";
-import { RootState } from "index";
-import { checkCollision } from "utils/CheckTimeSlotCollision";
-import { SectionsBrowserType } from "types/dbTypes";
+import Spinner from "@/components/ui/Spinner";
+import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { RootState } from "@/App";
+import { checkCollision } from "@/utils/CheckTimeSlotCollision";
+import { SectionsBrowserType } from "@/types/dbTypes";
 import {
 	addToDetailedSchedule,
 	removeFromDetailedSchedule,
 	addToMySchedule,
 	removeFromMySchedule,
-} from "redux/actions";
-import { FetchState } from "types/apiResponseType";
-import { API_FAIL_RETRY_TIMER } from "config";
-const ListRow = React.lazy(() => import("features/CourseBrowser/ListRow"));
+} from "@/redux/actions";
+import { FetchState } from "@/types/apiResponseType";
+import { API_FAIL_RETRY_TIMER } from "@/config";
+const ListRow = React.lazy(() => import("@/features/CourseBrowser/ListRow"));
 
 interface Props {
 	listData: SectionsBrowserType[];

@@ -6,16 +6,16 @@ import {
 	convertToJsDate,
 	getDayAfterDate,
 	Weekdays,
-} from "utils/CheckTimeSlotCollision";
+} from "@/utils/CheckTimeSlotCollision";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "assets/css/calendar.css";
-import { useFetchSpecificSections } from "services/core/fetch_specific_sections";
-import { ReduxDetailedScheduleType } from "types/stateTypes";
-import { ScheduleType } from "types/dbTypes";
-import { FetchState } from "types/apiResponseType";
-import Spinner from "components/ui/Spinner";
-import { ErrorTemplate } from "components/utils/ErrorTemplate";
-import { API_FAIL_RETRY_TIMER } from "config";
+import "@/assets/css/calendar.css";
+import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
+import { ReduxDetailedScheduleType } from "@/types/stateTypes";
+import { ScheduleType } from "@/types/dbTypes";
+import { FetchState } from "@/types/apiResponseType";
+import Spinner from "@/components/ui/Spinner";
+import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
+import { API_FAIL_RETRY_TIMER } from "@/config";
 
 const localizer = momentLocalizer(moment);
 

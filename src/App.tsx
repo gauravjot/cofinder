@@ -1,5 +1,3 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 /* CSS */
 import "./assets/css/common.css";
@@ -18,12 +16,12 @@ import {
 	detailedScheduleReducer,
 } from "./redux/reducers";
 /* Pages */
-import App from "./pages/home";
+import Home from "./pages/home";
 import About from "./pages/about";
 import Courses from "./pages/courses";
 import Calendar from "./pages/calendar";
 import { sectionsReducer } from "./redux/reducers";
-import { ROUTE } from "routes";
+import { ROUTE } from "@/routes";
 
 /*
  * LocalStorage and Redux
@@ -90,21 +88,25 @@ const store = configureStore({
 // Subscribe to store changes
 store.subscribe(() => saveToLocalStorage(store.getState()));
 
-/*
- * Paint the DOM and Redux
- */
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-root.render(
-	<Provider store={store}>
-		<Router>
-			<Routes>
-				<Route path={ROUTE.Home} element={<App />} />
-				<Route path={ROUTE.About} element={<About />} />
-				<Route path={ROUTE.Calendar} element={<Calendar />} />
-				<Route path={ROUTE.CourseBrowser} element={<Courses />} />
-				<Route path={ROUTE.CourseBrowserSubjectFilter()} element={<Courses />} />
-				<Route path={ROUTE.CourseBrowserKeywordFilter()} element={<Courses />} />
-			</Routes>
-		</Router>
-	</Provider>
-);
+export default function App() {
+	return (
+		<Provider store={store}>
+			<Router>
+				<Routes>
+					<Route path={ROUTE.Home} element={<Home />} />
+					<Route path={ROUTE.About} element={<About />} />
+					<Route path={ROUTE.Calendar} element={<Calendar />} />
+					<Route path={ROUTE.CourseBrowser} element={<Courses />} />
+					<Route
+						path={ROUTE.CourseBrowserSubjectFilter()}
+						element={<Courses />}
+					/>
+					<Route
+						path={ROUTE.CourseBrowserKeywordFilter()}
+						element={<Courses />}
+					/>
+				</Routes>
+			</Router>
+		</Provider>
+	);
+}

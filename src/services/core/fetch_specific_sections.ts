@@ -1,14 +1,14 @@
 import React from "react";
 import axios from "axios";
-import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "config";
-import { sectionsEP } from "server_eps";
-import { handleApiError } from "services/handle_error";
-import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
-import { MyScheduleTypeItem, ReduxDetailedScheduleType } from "types/stateTypes";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { RootState } from "index";
-import { setDetailedSchedule } from "redux/actions";
-import { TermType, SectionsBrowserType } from "types/dbTypes";
+import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "@/config";
+import { sectionsEP } from "@/server_eps";
+import { handleApiError } from "@/services/handle_error";
+import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
+import { MyScheduleTypeItem, ReduxDetailedScheduleType } from "@/types/stateTypes";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/App";
+import { setDetailedSchedule } from "@/redux/actions";
+import { TermType, SectionsBrowserType } from "@/types/dbTypes";
 import { difference } from "lodash";
 
 function sleep(ms: number) {
@@ -42,7 +42,7 @@ function encodeB64(rows: MyScheduleTypeItem[]) {
 /*
  *
  */
-export function useFetchSpecificSections(ignoreTerm?: false): ReduxDetailedScheduleType {
+export function useFetchSpecificSections(): ReduxDetailedScheduleType {
 	const [data, setData] = React.useState<ReduxDetailedScheduleType>({
 		fetched: 0,
 		sections: [],

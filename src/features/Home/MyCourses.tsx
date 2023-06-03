@@ -1,14 +1,13 @@
-import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { SectionsBrowserType } from "types/dbTypes";
-import { ROUTE } from "../../routes";
-import { FetchState } from "types/apiResponseType";
-import { API_FAIL_RETRY_TIMER } from "config";
-import { ErrorTemplate } from "components/utils/ErrorTemplate";
-import Spinner from "components/ui/Spinner";
-import { useFetchSpecificSections } from "services/core/fetch_specific_sections";
-import { useAppSelector } from "redux/hooks";
-import { RootState } from "index";
+import { SectionsBrowserType } from "@/types/dbTypes";
+import { ROUTE } from "@/routes";
+import { FetchState } from "@/types/apiResponseType";
+import { API_FAIL_RETRY_TIMER } from "@/config";
+import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
+import Spinner from "@/components/ui/Spinner";
+import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
+import { useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/App";
 
 export default function MyCourses() {
 	const navigate = useNavigate();

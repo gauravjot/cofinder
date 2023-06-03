@@ -3,7 +3,7 @@
  * - Supports TailwindCSS
  * - Adds 'dark' class to <body>
  */
-import useLocalStorage from "hooks/useLocalStorage";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export default function useTheme(autoapply = true): {
 	isDarkMode: boolean;

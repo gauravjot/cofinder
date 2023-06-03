@@ -1,6 +1,7 @@
 import { Reducer, AnyAction } from "redux";
 import { ADD_TO_MY_SCHEDULE, REMOVE_FROM_MY_SCHEDULE } from "./actions";
-import { TermsReducerType, TermType } from "types/dbTypes";
+import { TermsReducerType, TermType } from "@/types/dbTypes";
+import { SectionsBrowserType } from "../types/dbTypes";
 import {
 	ReduxCourseType,
 	ReduxSectionDetailedType,
@@ -8,7 +9,7 @@ import {
 	MyScheduleTypeItem,
 	ReduxDetailedScheduleType,
 	ReduxInstructorType,
-} from "types/stateTypes";
+} from "@/types/stateTypes";
 
 import {
 	CLEAR_MY_SCHEDULE,
@@ -78,7 +79,7 @@ export const detailedScheduleReducer: Reducer<ReduxDetailedScheduleType, AnyActi
 				fetched: state.fetched > 0 ? state.fetched : new Date().getTime(),
 			});
 		case REMOVE_FROM_DETAILED_SCHEDULE:
-			let list2 = state.sections.filter((section) => {
+			let list2 = state.sections.filter((section: SectionsBrowserType) => {
 				return section.crn !== payload;
 			});
 

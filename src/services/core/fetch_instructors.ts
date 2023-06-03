@@ -1,14 +1,14 @@
 import React from "react";
 import axios from "axios";
-import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "config";
-import { instructorsEP } from "server_eps";
-import { handleApiError } from "services/handle_error";
-import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
-import { ReduxInstructorType } from "types/stateTypes";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { RootState } from "index";
-import { setInstructors } from "redux/actions";
-import { TermType, InstructorType } from "types/dbTypes";
+import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "@/config";
+import { instructorsEP } from "@/server_eps";
+import { handleApiError } from "@/services/handle_error";
+import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
+import { ReduxInstructorType } from "@/types/stateTypes";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/App";
+import { setInstructors } from "@/redux/actions";
+import { TermType, InstructorType } from "@/types/dbTypes";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));

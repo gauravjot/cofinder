@@ -1,8 +1,8 @@
 import * as React from "react";
 import axios from "axios";
+import { RSS_NEWS_URL, NEWS_URL, SCHOOL_SHORT_NAME } from "@/config";
+import Spinner from "@/components/ui/Spinner";
 import { xml2json } from "xml-js";
-import { RSS_NEWS_URL, NEWS_URL, SCHOOL_SHORT_NAME } from "config";
-import Spinner from "components/ui/Spinner";
 
 interface FeedItem {
 	title: string;
@@ -46,6 +46,7 @@ export default function NewsFeed() {
 				setIsFetched(true);
 			})
 			.catch((error) => {
+				console.log(error);
 				setIsFetched(true);
 			});
 	}, []);

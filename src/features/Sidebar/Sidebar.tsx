@@ -1,13 +1,13 @@
 import * as React from "react";
-import logo from "assets/images/branding.png";
-import gitlab from "assets/svg/gitlab.svg";
-import { REPO_URL } from "config";
+import logo from "@/assets/images/branding.png";
+import gitlab from "@/assets/svg/gitlab.svg";
+import { REPO_URL } from "@/config";
 import { Link } from "react-router-dom";
 import TermSelector from "./TermSelector";
-import ErrorBoundary from "components/utils/ErrorBoundary";
-import ThemeToggle from "components/utils/ThemeToggle";
-import { ROUTE } from "routes";
-import { FEEDBACK_URL } from "../../config";
+import ErrorBoundary from "@/components/utils/ErrorBoundary";
+import ThemeToggle from "@/components/utils/ThemeToggle";
+import { ROUTE } from "@/routes";
+import { FEEDBACK_URL } from "@/config";
 import UserDataIE from "./UserDataIE";
 
 interface Props {
@@ -25,9 +25,9 @@ export default function Sidebar(props: Props) {
 			setExpand(false);
 		}
 	}
-	function isMobile(): boolean {
-		return window.innerWidth <= 1280;
-	}
+	// function isMobile(): boolean {
+	// 	return window.innerWidth <= 1280;
+	// }
 	toExpand();
 
 	window.addEventListener("resize", () => {

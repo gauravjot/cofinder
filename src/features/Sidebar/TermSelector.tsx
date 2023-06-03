@@ -1,11 +1,11 @@
 import * as React from "react";
-import { RootState } from "index";
-import { TermsReducerType, TermType } from "types/dbTypes";
+import { RootState } from "@/App";
+import { TermsReducerType, TermType } from "@/types/dbTypes";
 import axios from "axios";
-import { setTerms, setCurrentTerm } from "redux/actions";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { clearAllVariableStates } from "../../redux/actions";
-import { EP_TERMS } from "server_eps";
+import { setTerms, setCurrentTerm } from "@/redux/actions";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { clearAllVariableStates } from "@/redux/actions";
+import { EP_TERMS } from "@/server_eps";
 
 export default function TermSelector() {
 	const dispatch = useAppDispatch();
@@ -27,6 +27,7 @@ export default function TermSelector() {
 		) {
 			// fetch
 			setIsFetching(true);
+			console.log("eo", EP_TERMS);
 			axios
 				.get(EP_TERMS, {
 					headers: {
@@ -55,6 +56,7 @@ export default function TermSelector() {
 					}
 				})
 				.catch(function (error) {
+					console.log(error);
 					setIsFetching(false);
 				});
 		}

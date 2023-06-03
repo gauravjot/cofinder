@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { ResponseType } from "types/apiResponseType";
-import { ApiError } from "../types/apiResponseType";
+import { ResponseType } from "@/types/apiResponseType";
+import { ApiError } from "@/types/apiResponseType";
 
 export function handleApiError(err: Error | AxiosError): ResponseType<ApiError> {
 	if (axios.isAxiosError(err)) {

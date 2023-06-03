@@ -1,16 +1,16 @@
-import Spinner from "components/ui/Spinner";
+import Spinner from "@/components/ui/Spinner";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { InstructorType } from "types/dbTypes";
+import { InstructorType } from "@/types/dbTypes";
 import { getColor } from "../MyCourses";
 import {
 	ReduxCourseType,
 	ReduxInstructorType,
 	CourseSubjectType,
-} from "types/stateTypes";
-import { ROUTE } from "routes";
-import { useFetchCourses } from "../../../services/core/fetch_courses";
-import { useFetchInstructors } from "services/core/fetch_instructors";
+} from "@/types/stateTypes";
+import { ROUTE } from "@/routes";
+import { useFetchCourses } from "@/services/core/fetch_courses";
+import { useFetchInstructors } from "@/services/core/fetch_instructors";
 
 export default function Search() {
 	const navigate = useNavigate();

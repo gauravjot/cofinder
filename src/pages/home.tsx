@@ -1,19 +1,19 @@
 import React from "react";
-import Sidebar from "features/Sidebar/Sidebar";
-import Spinner from "components/ui/Spinner";
-import ErrorBoundary from "components/utils/ErrorBoundary";
+import Sidebar from "@/features/Sidebar/Sidebar";
+import Spinner from "@/components/ui/Spinner";
+import ErrorBoundary from "@/components/utils/ErrorBoundary";
 import { Helmet } from "react-helmet";
-import { APP_NAME, SCHOOL_FULL_NAME, SCHOOL_SHORT_NAME, SCHOOL_WEBSITE } from "config";
-import { ROUTE } from "routes";
+import { APP_NAME, SCHOOL_FULL_NAME, SCHOOL_SHORT_NAME, SCHOOL_WEBSITE } from "@/config";
+import { ROUTE } from "@/routes";
 import { Link } from "react-router-dom";
 
-const Topbar = React.lazy(() => import("features/Home/Topbar/Topbar"));
-const MyCourses = React.lazy(() => import("features/Home/MyCourses"));
-const BrowseSubjects = React.lazy(() => import("features/Home/BrowseSubjects"));
-const UpcomingClasses = React.lazy(() => import("features/Home/UpcomingClasses"));
-const NewsFeed = React.lazy(() => import("features/Home/NewsFeed"));
+const Topbar = React.lazy(() => import("@/features/Home/Topbar/Topbar"));
+const MyCourses = React.lazy(() => import("@/features/Home/MyCourses"));
+const BrowseSubjects = React.lazy(() => import("@/features/Home/BrowseSubjects"));
+const UpcomingClasses = React.lazy(() => import("@/features/Home/UpcomingClasses"));
+const NewsFeed = React.lazy(() => import("@/features/Home/NewsFeed"));
 
-function App() {
+function Home() {
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -90,4 +90,4 @@ function App() {
 	);
 }
 
-export default App;
+export default Home;

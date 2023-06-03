@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useAppSelector, useAppDispatch } from "redux/hooks";
-import { RootState } from "index";
-import { TermType } from "types/dbTypes";
-import { MyScheduleTypeItem } from "types/stateTypes";
-import { changeMySchedule, setCurrentTerm } from "redux/actions";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { RootState } from "@/App";
+import { TermType } from "@/types/dbTypes";
+import { MyScheduleTypeItem } from "@/types/stateTypes";
+import { changeMySchedule, setCurrentTerm } from "@/redux/actions";
 
 export default function UserDataIE() {
 	const dispatch = useAppDispatch();

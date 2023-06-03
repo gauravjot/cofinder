@@ -18,3 +18,7 @@ CoFinder helps you find course offerings for University of the Fraser Valley. We
 ## Backend
 
 For backend, we are using Google Cloud Functions.
+
+## License
+
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International Public License. Read [LICENSE.md](LICENSE.md) for details.

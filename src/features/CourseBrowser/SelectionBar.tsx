@@ -1,13 +1,13 @@
 import * as React from "react";
-import { setDetailedSchedule } from "redux/actions";
-import { RootState } from "index";
-import { getColor } from "features/Home/MyCourses";
-import { SectionsBrowserType } from "types/dbTypes";
-import { changeMySchedule } from "redux/actions";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { refactorTime } from "utils/RefactorDateTime";
-import { ReduxDetailedScheduleType } from "types/stateTypes";
-import { useFetchSpecificSections } from "services/core/fetch_specific_sections";
+import { setDetailedSchedule } from "@/redux/actions";
+import { RootState } from "@/App";
+import { getColor } from "@/features/Home/MyCourses";
+import { SectionsBrowserType } from "@/types/dbTypes";
+import { changeMySchedule } from "@/redux/actions";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { refactorTime } from "@/utils/RefactorDateTime";
+import { ReduxDetailedScheduleType } from "@/types/stateTypes";
+import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
 
 export default function SelectionBar() {
 	const mySchedule = useAppSelector((state: RootState) => state.mySchedule);

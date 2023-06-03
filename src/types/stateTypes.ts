@@ -1,4 +1,4 @@
-import { SectionsBrowserType } from "types/dbTypes";
+import { SectionsBrowserType } from "@/types/dbTypes";
 import { InstructorType, CourseType, SubjectType } from "./dbTypes";
 export interface MyScheduleTypeItem {
 	// term is term id

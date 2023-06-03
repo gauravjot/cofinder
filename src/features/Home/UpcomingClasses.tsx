@@ -1,14 +1,18 @@
-import { convertToJsDate, getDayAfterDate, Weekdays } from "utils/CheckTimeSlotCollision";
+import {
+	convertToJsDate,
+	getDayAfterDate,
+	Weekdays,
+} from "@/utils/CheckTimeSlotCollision";
 import React from "react";
 import { getColor } from "./MyCourses";
-import { combineDateTime } from "utils/CheckTimeSlotCollision";
-import { SectionsBrowserType } from "types/dbTypes";
+import { combineDateTime } from "@/utils/CheckTimeSlotCollision";
+import { SectionsBrowserType } from "@/types/dbTypes";
 import { useNavigate } from "react-router-dom";
-import { ROUTE } from "routes";
-import { FetchState } from "types/apiResponseType";
-import Spinner from "components/ui/Spinner";
-import { useAppSelector } from "redux/hooks";
-import { RootState } from "index";
+import { ROUTE } from "@/routes";
+import { FetchState } from "@/types/apiResponseType";
+import Spinner from "@/components/ui/Spinner";
+import { useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/App";
 
 interface UpcomingSection extends SectionsBrowserType {
 	time_start: Date;

@@ -1,11 +1,11 @@
 import * as React from "react";
-import Sidebar from "features/Sidebar/Sidebar";
-import github from "assets/svg/github.svg";
-import linkedin from "assets/svg/linkedin.svg";
-import logo from "assets/images/branding.png";
+import Sidebar from "@/features/Sidebar/Sidebar";
+import github from "@/assets/svg/github.svg";
+import linkedin from "@/assets/svg/linkedin.svg";
+import logo from "@/assets/images/branding.png";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { APP_NAME, VERSION_CODE } from "config";
+import { APP_NAME, VERSION_CODE } from "@/config";
 
 export default function About() {
 	React.useEffect(() => {

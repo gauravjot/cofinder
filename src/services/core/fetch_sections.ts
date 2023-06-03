@@ -1,14 +1,14 @@
 import React from "react";
 import axios from "axios";
-import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "config";
-import { sectionsEP } from "server_eps";
-import { handleApiError } from "services/handle_error";
-import { ApiError, FetchState, ResponseType } from "types/apiResponseType";
-import { ReduxSectionDetailedType } from "types/stateTypes";
-import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { RootState } from "index";
-import { setSections } from "redux/actions";
-import { TermType, SectionsBrowserType } from "types/dbTypes";
+import { API_FAIL_RETRY_TIMER, FETCH_TIME_GAP } from "@/config";
+import { sectionsEP } from "@/server_eps";
+import { handleApiError } from "@/services/handle_error";
+import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
+import { ReduxSectionDetailedType } from "@/types/stateTypes";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/App";
+import { setSections } from "@/redux/actions";
+import { TermType, SectionsBrowserType } from "@/types/dbTypes";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -17,6 +17,7 @@ function sleep(ms: number) {
 function fetchSections(
 	term: string
 ): Promise<ResponseType<SectionsBrowserType[] | ApiError>> {
+	console.log("ep", sectionsEP(term));
 	return axios
 		.get(sectionsEP(term))
 		.then(function (response) {
