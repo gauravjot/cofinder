@@ -42,6 +42,9 @@ export default function UpcomingClasses() {
 		let result: UpcomingSection[] = [];
 		if (schedule && schedule.sections?.length > 0) {
 			for (const section of schedule.sections) {
+				if (!section.is_active) {
+					continue;
+				}
 				for (const slot of section.schedule) {
 					let start_date = getDayAfterDate(
 						convertToJsDate(slot.date_start.toString()),

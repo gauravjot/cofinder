@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { refactorTime } from "@/utils/RefactorDateTime";
 import { ReduxDetailedScheduleType } from "@/types/stateTypes";
 import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
+import { INACTIVE_SECTION_MSG } from "@/strings";
 
 export default function SelectionBar() {
 	const mySchedule = useAppSelector((state: RootState) => state.mySchedule);
@@ -151,7 +152,14 @@ export default function SelectionBar() {
 											}}
 										></div>
 										<div className="rounded py-2.5 px-3 bg-white dark:bg-slate-800 bg-opacity-70 flex-1">
-											<h6 className="font-bold leading-5 dark:text-white">
+											<h6
+												className={
+													(!section.is_active
+														? "line-through "
+														: "") +
+													"font-bold leading-5 dark:text-white"
+												}
+											>
 												{section.subject_id} {section.course.code}
 												{" - "}
 												{section.name}
@@ -167,103 +175,115 @@ export default function SelectionBar() {
 												{section.instructor} • {section.crn} •{" "}
 												{section.medium}
 											</div>
-											<div className="pt-1">
-												{section.schedule
-													.slice()
-													.reverse()
-													.map((schedule, index) => {
-														return (
-															<span
-																key={index}
-																className="text-[0.925rem] text-gray-600 dark:text-slate-300"
-															>
-																<div
-																	className={
-																		section.schedule
-																			.slice()
-																			.reverse()[
-																			index - 1
-																		] &&
-																		section.schedule
-																			.slice()
-																			.reverse()[
-																			index - 1
-																		].date_start ===
-																			schedule.date_start &&
-																		section.schedule
-																			.slice()
-																			.reverse()[
-																			index - 1
-																		].date_end ===
-																			schedule.date_end
-																			? "hidden"
-																			: "block mb-3 mt-4"
-																	}
+											{section.is_active ? (
+												<div className="pt-1">
+													{section.schedule
+														.slice()
+														.reverse()
+														.map((schedule, index) => {
+															return (
+																<span
+																	key={index}
+																	className="text-[0.925rem] text-gray-600 dark:text-slate-300"
 																>
-																	<span className="text-accent-900 dark:text-white text-[0.9rem] font-medium bg-accent-200 dark:bg-accent-700 dark:bg-opacity-70 rounded px-2 py-0.5">
-																		{refactorDate(
-																			schedule.date_start
-																		)}
-																		{" — "}
-																		{refactorDate(
-																			schedule.date_end
-																		)}
+																	<div
+																		className={
+																			section.schedule
+																				.slice()
+																				.reverse()[
+																				index - 1
+																			] &&
+																			section.schedule
+																				.slice()
+																				.reverse()[
+																				index - 1
+																			]
+																				.date_start ===
+																				schedule.date_start &&
+																			section.schedule
+																				.slice()
+																				.reverse()[
+																				index - 1
+																			].date_end ===
+																				schedule.date_end
+																				? "hidden"
+																				: "block mb-3 mt-4"
+																		}
+																	>
+																		<span className="text-accent-900 dark:text-white text-[0.9rem] font-medium bg-accent-200 dark:bg-accent-700 dark:bg-opacity-70 rounded px-2 py-0.5">
+																			{refactorDate(
+																				schedule.date_start
+																			)}
+																			{" — "}
+																			{refactorDate(
+																				schedule.date_end
+																			)}
+																		</span>
+																	</div>
+																	{section.schedule
+																		.slice()
+																		.reverse()[
+																		index - 1
+																	] &&
+																	section.schedule
+																		.slice()
+																		.reverse()[
+																		index - 1
+																	].time_start ===
+																		schedule.time_start &&
+																	section.schedule
+																		.slice()
+																		.reverse()[
+																		index - 1
+																	].time_end ===
+																		schedule.time_end ? (
+																		<> </>
+																	) : (
+																		<span className="dark:text-white font-medium text-black text-[0.94rem]">
+																			{index !==
+																			0 ? (
+																				<div className="my-1 border dark:border-slate-700"></div>
+																			) : (
+																				<></>
+																			)}
+																			{refactorTime(
+																				schedule.time_start
+																			)}
+																			{" to "}
+																			{refactorTime(
+																				schedule.time_end
+																			)}
+																			{": "}
+																		</span>
+																	)}
+																	<span className="dark:text-white text-accent-700 font-medium">
+																		{schedule.weekday
+																			? Weekdays[
+																					schedule.weekday as keyof typeof Weekdays
+																			  ]
+																			: "[TBA]"}
 																	</span>
-																</div>
-																{section.schedule
-																	.slice()
-																	.reverse()[
-																	index - 1
-																] &&
-																section.schedule
-																	.slice()
-																	.reverse()[index - 1]
-																	.time_start ===
-																	schedule.time_start &&
-																section.schedule
-																	.slice()
-																	.reverse()[index - 1]
-																	.time_end ===
-																	schedule.time_end ? (
-																	<> </>
-																) : (
-																	<span className="dark:text-white font-medium text-black text-[0.94rem]">
-																		{index !== 0 ? (
-																			<div className="my-1 border dark:border-slate-700"></div>
-																		) : (
-																			<></>
-																		)}
-																		{refactorTime(
-																			schedule.time_start
-																		)}
-																		{" to "}
-																		{refactorTime(
-																			schedule.time_end
-																		)}
-																		{": "}
+																	{" at "}
+																	<span className="dark:text-white text-black font-medium">
+																		{schedule.location
+																			.campus +
+																			schedule
+																				.location
+																				.building +
+																			" " +
+																			schedule
+																				.location
+																				.room}
 																	</span>
-																)}
-																<span className="dark:text-white text-accent-700 font-medium">
-																	{schedule.weekday
-																		? Weekdays[
-																				schedule.weekday as keyof typeof Weekdays
-																		  ]
-																		: "[TBA]"}
 																</span>
-																{" at "}
-																<span className="dark:text-white text-black font-medium">
-																	{schedule.location
-																		.campus +
-																		schedule.location
-																			.building +
-																		" " +
-																		schedule.location
-																			.room}
-																</span>
-															</span>
-														);
-													})}
-											</div>
+															);
+														})}
+												</div>
+											) : (
+												<div className="font-bold text-red-700 dark:text-red-400 my-2 leading-5">
+													{INACTIVE_SECTION_MSG}
+												</div>
+											)}
 										</div>
 										<div className="flex-none">
 											<button

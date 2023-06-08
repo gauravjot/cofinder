@@ -52,7 +52,7 @@
 }
 
 .dark {
-	@apply bg-slate-1000;
+	@apply bg-slate-1000 text-gray-100;
 }
 
 a,

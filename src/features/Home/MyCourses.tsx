@@ -99,56 +99,64 @@ function SectionItem({ section }: { section: SectionsBrowserType }) {
 	let color: string = getColor(section.subject_id);
 	return (
 		<div className="bg-white dark:bg-slate-800 border-[0.025rem] border-gray-400 dark:border-slate-600 border-opacity-30 shadow-sm">
-			<div
-				className={
-					"tw-gradient-br-" +
-					color.replace("#", "") +
-					" dark:tw-gradient-br-" +
-					color.replace("#", "") +
-					" h-24 w-24 px-4 pt-4"
-				}
-				// style={{
-				// 	background: `linear-gradient(to bottom right, ${color}, #fff 70%)`,
-				// }}
-			></div>
+			{section.is_active ? (
+				<div
+					className={
+						"tw-gradient-br-" +
+						color.replace("#", "") +
+						" dark:tw-gradient-br-" +
+						color.replace("#", "") +
+						" h-24 w-24 px-4 pt-4"
+					}
+				></div>
+			) : (
+				<div className="h-24 w-24"></div>
+			)}
 			<div className="z-10 px-4 pb-3 -mt-20">
-				<div className="font-bold text-[1.125rem] dark:text-slate-100 leading-[1.125rem]">
-					{section.is_lab ? (
-						<span
-							style={{ color: color }}
-							className="mr-1.5 bg-black bg-opacity-80 align-top px-1 rounded text-[0.8rem] font-medium"
-						>
-							LAB
-						</span>
-					) : (
-						<></>
-					)}
-					{section.subject_id} {section.course.code}
-					{" - "}
-					{section.name}
-				</div>
-				<div className="mt-1.5">
-					<p className="mt-1 text-gray-700 dark:text-slate-300 leading-[1.125rem]">
-						<span className="block uppercase text-[0.9rem] font-bold">
-							{section.course.name}
-						</span>
-						<span className="mt-2 block leading-[1.125rem] text-[0.925rem] text-gray-800 dark:text-slate-300">
-							{section.instructor}
-						</span>
-					</p>
-					<p className="mt-3">
-						<span className="bg-gray-300 dark:bg-slate-700 dark:text-slate-100 bg-opacity-70 text-[0.9rem] text-gray-900 px-1 rounded">
-							{section.crn}
-						</span>
-						<span className="pl-1"></span>{" "}
-						<span className="bg-gray-300 dark:bg-slate-700 dark:text-slate-100 bg-opacity-70 text-[0.9rem] text-gray-900 px-1 rounded">
-							Credits: {section.course.credits}
-						</span>
-						<span className="pl-1"></span>{" "}
-						<span className="bg-gray-300 dark:bg-slate-700 dark:text-slate-100 bg-opacity-70 text-[0.9rem] text-gray-900 px-1 rounded">
-							{section.subject}
-						</span>
-					</p>
+				{!section.is_active && (
+					<div className="font-bold text-sm mb-4 uppercase py-0.5 mr-2 text-red-700 dark:text-red-200 bg-red-100 dark:bg-red-600/20 rounded inline-block px-2">
+						Cancelled
+					</div>
+				)}
+				<div className={!section.is_active ? "line-through" : ""}>
+					<div className="font-bold text-[1.125rem] dark:text-slate-100 leading-[1.125rem]">
+						{section.is_lab ? (
+							<span
+								style={{ color: color }}
+								className="mr-1.5 bg-black bg-opacity-80 align-top px-1 rounded text-[0.8rem] font-medium"
+							>
+								LAB
+							</span>
+						) : (
+							<></>
+						)}
+						{section.subject_id} {section.course.code}
+						{" - "}
+						{section.name}
+					</div>
+					<div className="mt-1.5">
+						<p className="mt-1 text-gray-700 dark:text-slate-300 leading-[1.125rem]">
+							<span className="block uppercase text-[0.9rem] font-bold">
+								{section.course.name}
+							</span>
+							<span className="mt-2 block leading-[1.125rem] text-[0.925rem] text-gray-800 dark:text-slate-300">
+								{section.instructor}
+							</span>
+						</p>
+						<p className="mt-3">
+							<span className="bg-gray-300 dark:bg-slate-700 dark:text-slate-100 bg-opacity-70 text-[0.9rem] text-gray-900 px-1 rounded">
+								{section.crn}
+							</span>
+							<span className="pl-1"></span>{" "}
+							<span className="bg-gray-300 dark:bg-slate-700 dark:text-slate-100 bg-opacity-70 text-[0.9rem] text-gray-900 px-1 rounded">
+								Credits: {section.course.credits}
+							</span>
+							<span className="pl-1"></span>{" "}
+							<span className="bg-gray-300 dark:bg-slate-700 dark:text-slate-100 bg-opacity-70 text-[0.9rem] text-gray-900 px-1 rounded">
+								{section.subject}
+							</span>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>

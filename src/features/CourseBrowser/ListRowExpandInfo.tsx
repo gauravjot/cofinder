@@ -1,3 +1,4 @@
+import { INACTIVE_SECTION_MSG } from "@/strings";
 import {
 	ScheduleType,
 	SeatsInfoType,
@@ -17,6 +18,11 @@ export interface IListRowExpandInfoProps {
 export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 	return (
 		<div className="bg-gray-300 dark:bg-slate-1000 bg-opacity-30 px-4 pl-14 py-4 pb-5 grid grid-flow-row gap-3">
+			{!props.section.is_active && (
+				<div className="font-bold text-red-700 dark:text-red-400">
+					{INACTIVE_SECTION_MSG}
+				</div>
+			)}
 			<div>
 				<span className="bg-gray-600 text-gray-200 rounded-lg px-1.5 py-0.5 mr-3 text-sm">
 					CRN

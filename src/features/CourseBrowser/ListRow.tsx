@@ -30,6 +30,9 @@ export function ListRow(props: Props) {
 	let expandRef: React.RefObject<any> = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
+		if (!props.section.is_active) {
+			return;
+		}
 		if (expand && seatInfo === null) {
 			setIsLoadingSeats(true);
 			axios
@@ -58,7 +61,7 @@ export function ListRow(props: Props) {
 	}, [expand, props.section.crn, seatInfo, props.term.date]);
 
 	function addToSelected() {
-		if (!props.doesCollide) {
+		if (!props.doesCollide && props.section.is_active) {
 			props.addToSchedule(props.section);
 		}
 	}
@@ -93,10 +96,14 @@ export function ListRow(props: Props) {
 		S: "Saturday",
 	};
 
+	const inactiveSectionClass = props.section.is_active
+		? ""
+		: " dark:text-white line-through opacity-50 ";
 	const rowItemClass =
 		(props.doesCollide && !props.isSelected ? "opacity-50" : "") +
 		" items-center text-smb leading-5 pr-4 lg:py-2" +
-		" text-gray-700 dark:text-white dark:text-opacity-80";
+		" text-gray-700 dark:text-white dark:text-opacity-80" +
+		inactiveSectionClass;
 
 	return (
 		<div>
@@ -106,7 +113,7 @@ export function ListRow(props: Props) {
 						? "bg-accent-200 dark:bg-slate-1000"
 						: props.isSelected
 						? "bg-accent-200 dark:bg-accent-700"
-						: props.doesCollide
+						: props.doesCollide || !props.section.is_active
 						? "bg-gray-100 dark:bg-slate-900"
 						: ""
 				}
@@ -125,6 +132,9 @@ export function ListRow(props: Props) {
 					<div className="col-span-3 flex pr-4">
 						<button
 							onClick={() => {
+								if (!props.isSelected && !props.section.is_active) {
+									return;
+								}
 								if (!props.doesCollide || props.isSelected)
 									toggleSelected();
 							}}
@@ -136,6 +146,7 @@ export function ListRow(props: Props) {
 									: "hover:bg-accent-300 text-gray-400 hover:text-gray-700 dark:hover:text-white dark:hover:bg-accent-700") +
 								" grid place-items-center px-4 tw-tooltip-parent"
 							}
+							disabled={!props.isSelected && !props.section.is_active}
 						>
 							<span
 								className={
@@ -174,7 +185,8 @@ export function ListRow(props: Props) {
 								onClick={() => toggleExpand()}
 								className={
 									(expand ? "bg-accent-300 dark:bg-slate-600" : "") +
-									" w-8 h-8 rounded-full hover:bg-accent-300 dark:hover:bg-slate-500 my-2 ml-2"
+									" w-8 h-8 rounded-full hover:bg-accent-300 dark:hover:bg-slate-500 my-2 ml-2" +
+									inactiveSectionClass
 								}
 							>
 								<span
@@ -197,7 +209,17 @@ export function ListRow(props: Props) {
 								" grid place-items-center ml-2 leading-5 lg:py-2 dark:text-white order-2 lg:order-3 flex-1 lg:flex-none"
 							}
 						>
-							<div className="w-full font-medium lg:font-normal">
+							{!props.section.is_active && (
+								<div className="opacity-70 place-self-start">
+									Cancelled
+								</div>
+							)}
+							<div
+								className={
+									"w-full font-medium lg:font-normal" +
+									inactiveSectionClass
+								}
+							>
 								{props.section.subject_id} {props.section.course.code}{" "}
 								{props.section.is_lab ? (
 									<span className="bg-accent-200 dark:bg-accent-600 ml-0.5 align-top text-accent-700 dark:text-white uppercase px-1 text-[0.8rem] font-medium rounded">
@@ -250,7 +272,7 @@ export function ListRow(props: Props) {
 					<div
 						className={
 							rowItemClass +
-							" lg:flex col-span-2 pl-[3.65rem] py-1 lg:py-0 lg:pl-0 pb-3 lg:pb-0"
+							" lg:flex col-span-2 pl-[3.65rem] py-1 lg:pt-0 lg:pl-0 pb-3 lg:pb-0"
 						}
 					>
 						{props.section.instructor}

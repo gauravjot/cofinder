@@ -37,6 +37,9 @@ export default function Content() {
 			// Iterate over all the sections user is enrolled in
 			for (let i = 0; i < detailedSchedule.sections.length; i++) {
 				let section = detailedSchedule.sections[i];
+				if (!section.is_active) {
+					continue;
+				}
 				// Iterate all schedule enteries that section has
 				for (let j = 0; j < section.schedule.length; j++) {
 					let section_schedule: ScheduleType =
