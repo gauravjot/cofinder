@@ -51,10 +51,9 @@ def handleDiscordResponse(request):
                         user.save()
                     except User.DoesNotExist:
                         user = User(
-                            name=discord_user['username'] +
-                            "#"+discord_user['discriminator'],
+                            name=discord_user['username'],
                             email=discord_user['email'],
-                            schedule=[],
+                            schedule=dict(sections=[]),
                             provider=1,
                             provider_uid=discord_user['id'],
                             provider_access_token=discord_tokens['access_token'],
