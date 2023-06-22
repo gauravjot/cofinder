@@ -55,3 +55,12 @@ export const seatsEP = (term_name: string | number, crn: string | number) => {
 		""
 	);
 };
+
+export const startSessionEP = (sut: string): string => {
+	return (
+		import.meta.env.VITE_START_AUTH_SESSION.replace(
+			import.meta.env.VITE_INSERTION_IDENTIFIER || "{}",
+			sut
+		) || ""
+	);
+};

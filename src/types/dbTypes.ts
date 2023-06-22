@@ -55,6 +55,12 @@ export interface TermType {
 	term_ident: string;
 }
 
+/**
+ *  {
+	    terms: TermType[];
+	    fetched: number;
+    }
+ */
 export interface TermsReducerType {
 	terms: TermType[];
 	fetched: number;

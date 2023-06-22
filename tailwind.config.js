@@ -5,6 +5,7 @@ module.exports = {
 	theme: {
 		extend: {
 			colors: {
+				discordblue: "#7289da",
 				accent: {
 					100: "#e9f0eb",
 					200: "#d7e4db",

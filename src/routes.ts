@@ -11,4 +11,5 @@ export const ROUTE = {
 			: "/browser/courses/search/:keyword";
 	},
 	Calendar: "/calendar",
+	DiscordAuthHandling: "/auth/sut/:token",
 };

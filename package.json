@@ -1,10 +1,11 @@
 {
 	"name": "cofinder",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"private": true,
 	"main": "src/index.tsx",
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.9.2",
+		"@tanstack/react-query": "^4.29.14",
 		"axios": "^1.2.6",
 		"buffer": "^6.0.3",
 		"lodash": "^4.17.21",
@@ -12,6 +13,7 @@
 		"multiselect-react-dropdown": "^2.0.25",
 		"react": "^18.2.0",
 		"react-big-calendar": "^1.6.8",
+		"react-cookie": "^4.1.1",
 		"react-dom": "^18.2.0",
 		"react-helmet": "^6.1.0",
 		"react-redux": "^8.0.5",
@@ -21,6 +23,7 @@
 		"redux": "^4.2.1",
 		"stream": "^0.0.2",
 		"use-debounce": "^9.0.4",
+		"use-doc-theme": "^0.1.41",
 		"vite-plugin-svgr": "^3.2.0",
 		"vite-tsconfig-paths": "^4.2.0",
 		"web-vitals": "^2.1.4",
@@ -28,7 +31,7 @@
 		"xml2js": "^0.6.0"
 	},
 	"scripts": {
-		"start": "vite",
+		"dev": "vite",
 		"build": "tsc && vite build",
 		"serve": "vite preview"
 	},

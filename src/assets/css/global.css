@@ -61,13 +61,7 @@ a,
 }
 a:hover,
 .tw-a-button:hover {
-	@apply dark:text-accent-100 text-accent-800;
-}
-
-a:hover::after,
-.tw-a-button:hover::after {
-	content: "";
-	@apply w-full absolute bottom-0 h-px bg-accent-600 left-0;
+	@apply dark:text-accent-100 text-accent-800 underline underline-offset-4;
 }
 
 .font-sans {
@@ -469,22 +463,24 @@ nav[aria-label="Main"] a[aria-current="page"] {
 	@apply bg-gray-100 text-black;
 }
 
-.darkmode-toggle .enabled {
+.dark .darkmode-toggle button {
 	left: 0.833rem;
 	@apply bg-accent-600 text-white;
 }
-
+.darkmode-toggle button span {
+	@apply transition-transform duration-500;
+}
 .darkmode-toggle .dm-moon-icon,
-.darkmode-toggle .enabled .dm-sun-icon {
-	@apply hidden text-[0.875rem] leading-4;
+.dark .darkmode-toggle .dm-sun-icon {
+	@apply opacity-0 text-[0.875rem] -rotate-90 absolute;
 }
 .darkmode-toggle .dm-sun-icon,
-.darkmode-toggle .enabled .dm-moon-icon {
-	@apply block text-[0.875rem] leading-4;
+.dark .darkmode-toggle .dm-moon-icon {
+	@apply opacity-100 text-[0.875rem] absolute top-[0.185rem] left-[0.175rem] rotate-0;
 }
 
-.tw-hover-no-underline::after {
-	@apply !bg-transparent !h-0;
+.tw-hover-no-underline:hover {
+	@apply no-underline;
 }
 
 .tw-tooltip-parent {

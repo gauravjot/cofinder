@@ -10,7 +10,11 @@ export function handleApiError(err: Error | AxiosError): ResponseType<ApiError> 
 				message:
 					err.response && err.response.data
 						? err.response.data
-						: err.response?.statusText || "Unable to reach server.",
+						: err.response?.statusText
+						? err.response.statusText
+						: err.message
+						? err.message
+						: "Unable to reach server.",
 			},
 		};
 	} else {

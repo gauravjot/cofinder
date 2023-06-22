@@ -1,5 +1,5 @@
 export const APP_NAME = "CoFinder";
-export const VERSION_CODE: string = "0.1.4";
+export const VERSION_CODE: string = "0.1.5";
 
 // School
 export const SCHOOL_FULL_NAME: string = "University of the Fraser Valley";

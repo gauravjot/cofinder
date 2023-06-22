@@ -1,7 +1,7 @@
 import * as React from "react";
 import logo from "@/assets/images/branding.png";
-import gitlab from "@/assets/svg/gitlab.svg";
-import { REPO_URL } from "@/config";
+import github from "@/assets/svg/github.svg";
+import { GITHUB_URL } from "@/config";
 import { Link } from "react-router-dom";
 import TermSelector from "./TermSelector";
 import ErrorBoundary from "@/components/utils/ErrorBoundary";
@@ -93,8 +93,8 @@ export default function Sidebar(props: Props) {
 						<ThemeToggle />
 					</div>
 				</div>
-
-				<div className="xl:mt-14 mb-3 ">
+				<div className="xl:mt-8 mb-4">{/* <User /> */}</div>
+				<div className="my-3">
 					<ErrorBoundary fallback={<></>}>
 						<TermSelector />
 					</ErrorBoundary>
@@ -171,13 +171,14 @@ export default function Sidebar(props: Props) {
 					</Link>
 				</nav>
 				<nav aria-label="Sidebar-Secondary" className="flex-none xl:mb-8">
-					<li className="flex mx-2">
+					<div className="flex mx-2">
 						<div className="flex-1 text-xs pr-3">
-							Open source. Developed as course project for COMP 370 Winter
-							2023.
-							<div className="p-1"></div>
+							<div className="py-1">
+								Open source. Developed as course project for COMP 370
+								Winter 2023.
+							</div>
 							<a
-								href={REPO_URL}
+								href={GITHUB_URL}
 								target="_blank"
 								rel="noreferrer"
 								aria-label="Link to repository"
@@ -188,20 +189,20 @@ export default function Sidebar(props: Props) {
 						</div>
 						<div className="mt-1 text-center flex-none place-content-center items-baseline flex">
 							<a
-								href={REPO_URL}
+								href={GITHUB_URL}
 								target="_blank"
 								rel="noreferrer"
 								aria-label="Link to repository"
 								className="block mt-1 hover:border-0 tw-hover-no-underline"
 							>
 								<img
-									className="hover:scale-125 transition-transform dark:invert"
-									src={gitlab}
-									alt="Gitlab"
+									className="hover:scale-125 transition-transform dark:invert opacity-70"
+									src={github}
+									alt="GitHub"
 								/>
 							</a>
 						</div>
-					</li>
+					</div>
 				</nav>
 			</div>
 		</div>
