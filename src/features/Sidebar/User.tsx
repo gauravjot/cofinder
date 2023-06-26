@@ -1,12 +1,12 @@
 import { useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
 import DiscordLogin from "@/features/User/LoginButton/DiscordLogin";
 import TopbarUserDrop from "@/features/User/TopbarUserDrop/TopbarUserDrop";
+import { selectUser } from "@/redux/users/userSlice";
 
 export function User() {
-	const user = useAppSelector((state: RootState) => state.user);
+	const user = useAppSelector(selectUser);
 
-	return user && user.token.length > 0 ? (
+	return user ? (
 		<div className="flex flex-col px-4 w-full">
 			<div className="flex-1 font-medium pb-2 text-gray-600 dark:text-slate-400">
 				Welcome

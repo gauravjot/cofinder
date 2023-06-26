@@ -6,9 +6,9 @@ import { handleApiError } from "@/services/handle_error";
 import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
 import { ReduxSectionDetailedType } from "@/types/stateTypes";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
-import { setSections } from "@/redux/actions";
+import { selectAllSections, set as setSections } from "@/redux/sections/sectionSlice";
 import { TermType, SectionsBrowserType } from "@/types/dbTypes";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -37,10 +37,8 @@ export function useFetchSections(): ReduxSectionDetailedType {
 		fetched: 0,
 		sections: [],
 	});
-	const reduxSections: ReduxSectionDetailedType = useAppSelector(
-		(state: RootState) => state.sections
-	);
-	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
+	const reduxSections: ReduxSectionDetailedType = useAppSelector(selectAllSections);
+	const currentTerm: TermType = useAppSelector(selectCurrentTerm);
 	const dispatch = useAppDispatch();
 	const TERM_ERROR = "Term information not present.";
 

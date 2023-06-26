@@ -499,6 +499,7 @@ nav[aria-label="Main"] a[aria-current="page"] {
 
 .tw-screen-prompt[aria-selected="true"] {
 	@apply fixed;
+	@apply bg-black/30 dark:bg-black/50;
 }
 .tw-screen-prompt[aria-selected="false"] {
 	@apply hidden;

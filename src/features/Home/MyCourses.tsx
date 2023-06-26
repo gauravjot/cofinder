@@ -7,13 +7,13 @@ import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
 import Spinner from "@/components/ui/Spinner";
 import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
 import { useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
 import { queryFetchSeats } from "@/services/core/fetch_seats";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
 export default function MyCourses() {
 	const navigate = useNavigate();
 	const schedule = useFetchSpecificSections();
-	const currentTerm = useAppSelector((state: RootState) => state.currentTerm);
+	const currentTerm = useAppSelector(selectCurrentTerm);
 
 	return (
 		<div>
@@ -122,24 +122,27 @@ function SectionItem({
 						color.replace("#", "") +
 						" dark:tw-gradient-br-" +
 						color.replace("#", "") +
-						" z-0 h-24 w-24 px-4 pt-4 absolute"
+						" z-0 h-32 w-32 px-4 pt-4 absolute"
 					}
 				></div>
 			) : (
 				<></>
 			)}
-			<div className="relative z-10 px-4 py-4 h-full">
-				{!section.is_active && (
-					<div className="font-bold text-sm mb-4 uppercase py-0.5 mr-2 text-red-700 dark:text-red-200 bg-red-100 dark:bg-red-600/20 rounded inline-block px-2">
-						Cancelled
-					</div>
-				)}
+			<div className="relative z-10 h-full">
 				<div
 					className={
-						(!section.is_active ? "line-through" : "") +
-						" flex flex-col h-full"
+						(!section.is_active
+							? "line-through bg-red-100/30 dark:bg-red-500/10 "
+							: "") + " px-4 py-4 flex flex-col h-full"
 					}
 				>
+					{!section.is_active && (
+						<div>
+							<span className="font-bold text-sm mb-4 uppercase py-0.5 mr-2 text-red-700 dark:text-red-100 bg-red-100 dark:bg-red-600/20 rounded inline-block px-2">
+								Cancelled
+							</span>
+						</div>
+					)}
 					<div className="font-bold text-[1.125rem] dark:text-slate-100 leading-[1.125rem]">
 						{section.is_lab ? (
 							<span
@@ -172,65 +175,93 @@ function SectionItem({
 						</div>
 					) : query.isSuccess ? (
 						<table className="mt-1.5 w-full border-spacing-y-1.5 border-separate">
-							<tr>
-								<td className="pr-2 w-20 text-gray-800 dark:text-slate-200 leading-[1.125rem] text-[0.95rem]">
-									Seats:
-								</td>
-								<td>
-									<div className="relative">
-										<div className="relative z-20 text-sm text-center">
-											{query.data.seats.Actual} /{" "}
-											{query.data.seats.Capacity}
-										</div>
-										<div
-											className="bg-black/10 dark:bg-white/10 absolute inset-0 z-10 rounded"
-											style={{ width: "100%" }}
-										>
+							<tbody>
+								<tr>
+									<td className="pr-2 w-20 text-gray-800 dark:text-slate-200 leading-[1.125rem] text-[0.95rem]">
+										Seats:
+									</td>
+									<td>
+										<div className="relative">
+											<div className="relative z-20 text-sm text-center">
+												{query.data.seats.Actual} /{" "}
+												{query.data.seats.Capacity}
+											</div>
 											<div
-												className="bg-accent-300 dark:bg-white/20 absolute inset-0 rounded"
-												style={{
-													width: `${
-														(query.data.seats.Actual * 100) /
-														(query.data.seats.Capacity > 0
-															? query.data.seats.Capacity
-															: 1)
-													}%`,
-												}}
-											></div>
+												className="bg-black/10 dark:bg-white/10 absolute inset-0 z-10 rounded"
+												style={{ width: "100%" }}
+											>
+												<div
+													className="bg-accent-300 dark:bg-white/20 absolute inset-0 rounded"
+													style={{
+														width: `${
+															(query.data.seats.Actual *
+																100) /
+																(query.data.seats
+																	.Capacity > 0
+																	? query.data.seats
+																			.Capacity
+																	: 1) >
+															100
+																? 0
+																: (query.data.seats
+																		.Actual *
+																		100) /
+																  (query.data.seats
+																		.Capacity > 0
+																		? query.data.seats
+																				.Capacity
+																		: 1)
+														}%`,
+													}}
+												></div>
+											</div>
 										</div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td className="pr-2 w-20 text-gray-800 dark:text-slate-200 leading-[1.125rem] text-[0.95rem]">
-									Waitlist:
-								</td>
-								<td>
-									<div className="relative">
-										<div className="relative z-20 text-sm text-center">
-											{query.data.waitlist.Actual} /{" "}
-											{query.data.waitlist.Capacity}
-										</div>
-										<div
-											className="bg-black/10 dark:bg-white/10 absolute inset-0 z-10 rounded"
-											style={{ width: "100%" }}
-										>
+									</td>
+								</tr>
+								<tr>
+									<td className="pr-2 w-20 text-gray-800 dark:text-slate-200 leading-[1.125rem] text-[0.95rem]">
+										Waitlist:
+									</td>
+									<td>
+										<div className="relative">
+											<div className="relative z-20 text-sm text-center">
+												{query.data.waitlist.Actual} /{" "}
+												{query.data.waitlist.Capacity}
+											</div>
 											<div
-												className="bg-accent-300 dark:bg-white/20 absolute inset-0 rounded"
-												style={{
-													width: `${
-														(query.data.waitlist.Actual *
-															100) /
-														(query.data.waitlist.Capacity > 0
-															? query.data.waitlist.Capacity
-															: 1)
-													}%`,
-												}}
-											></div>
+												className="bg-black/10 dark:bg-white/10 absolute inset-0 z-10 rounded"
+												style={{ width: "100%" }}
+											>
+												<div
+													className="bg-accent-300 dark:bg-white/20 absolute inset-0 rounded"
+													style={{
+														width: `${
+															(query.data.waitlist.Actual *
+																100) /
+																(query.data.waitlist
+																	.Capacity > 0
+																	? query.data.waitlist
+																			.Capacity
+																	: 1) >
+															100
+																? 0
+																: (query.data.waitlist
+																		.Actual *
+																		100) /
+																  (query.data.waitlist
+																		.Capacity > 0
+																		? query.data
+																				.waitlist
+																				.Capacity
+																		: 1)
+														}%`,
+													}}
+												></div>
+											</div>
 										</div>
-									</div>
-								</td>
-							</tr>
+									</td>
+								</tr>
+							</tbody>
 						</table>
 					) : query.isError ? (
 						<div className="text-gray-500 mt-2 leading-5 dark:text-slate-400 text-[0.95rem]">

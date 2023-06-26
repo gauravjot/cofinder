@@ -12,7 +12,7 @@ import { ROUTE } from "@/routes";
 import { FetchState } from "@/types/apiResponseType";
 import Spinner from "@/components/ui/Spinner";
 import { useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
+import { selectAllTermSchedules } from "@/redux/schedules/termScheduleSlice";
 
 interface UpcomingSection extends SectionsBrowserType {
 	time_start: Date;
@@ -29,12 +29,14 @@ const days: string[] = [
 	"Friday",
 	"Saturday",
 ];
+const todayIndex = new Date().getDay();
+const daysFromToday = [...days.slice(todayIndex), ...days.slice(0, todayIndex)];
 
 export default function UpcomingClasses() {
 	const navigate = useNavigate();
 	const [sections, setSections] = React.useState<UpcomingSection[]>([]);
 	const [untilNextClass, setUntilNextClass] = React.useState<string>();
-	const schedule = useAppSelector((state: RootState) => state.detailedSchedule);
+	const schedule = useAppSelector(selectAllTermSchedules);
 
 	React.useEffect(() => {
 		let seventh_date = new Date();
@@ -131,7 +133,7 @@ export default function UpcomingClasses() {
 			<div className="flex mb-2">
 				<h2 className="flex-1 font-medium font-serif">Next 7 days</h2>
 				<div className="flex pt-0.5">
-					{days.map((day, index) => {
+					{daysFromToday.map((day, index) => {
 						return (
 							<div key={index}>
 								<div
@@ -139,14 +141,18 @@ export default function UpcomingClasses() {
 										(markDays.includes(day)
 											? "bg-gray-700 text-white rounded-full"
 											: "text-gray-600") +
+										(index === 0
+											? " border border-gray-400 dark:border-slate-600 rounded-full"
+											: "") +
 										" px-1 user-select-none font-medium ml-1 w-7 h-7 text-center text-sm grid place-items-center"
 									}
+									title={day}
 								>
-									{index !== 0
-										? index === 4
-											? "R"
-											: day.charAt(0)
-										: ""}
+									{day === "Sunday"
+										? "U"
+										: day === "Thursday"
+										? "R"
+										: day.charAt(0)}
 								</div>
 							</div>
 						);

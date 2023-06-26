@@ -1,7 +1,7 @@
 import * as React from "react";
 import logo from "@/assets/images/branding.png";
 import github from "@/assets/svg/github.svg";
-import { GITHUB_URL } from "@/config";
+import { GITHUB_URL, VERSION_CODE, VERSION_DATE } from "@/config";
 import { Link } from "react-router-dom";
 import TermSelector from "./TermSelector";
 import ErrorBoundary from "@/components/utils/ErrorBoundary";
@@ -86,10 +86,13 @@ export default function Sidebar(props: Props) {
 							<span className="font-serif font-bold text-gray-800 dark:text-white text-3xl pt-[0.3rem] hidden xl:inline">
 								<span className="text-accent-700">o</span>Finder
 							</span>
+							<span className="pl-1 font-medium text-sm">
+								v{VERSION_CODE}
+							</span>
 						</div>
 					</a>
 
-					<div className="flex-1 text-right leading-[0.8rem] mt-0.5 mr-4 xl:block hidden">
+					<div className="flex-1 text-right leading-[0.8rem] mr-4 xl:block hidden">
 						<ThemeToggle />
 					</div>
 				</div>
@@ -172,11 +175,10 @@ export default function Sidebar(props: Props) {
 				</nav>
 				<nav aria-label="Sidebar-Secondary" className="flex-none xl:mb-8">
 					<div className="flex mx-2">
-						<div className="flex-1 text-xs pr-3">
-							<div className="py-1">
-								Open source. Developed as course project for COMP 370
-								Winter 2023.
-							</div>
+						<div className="flex-1 text-sm pr-3">
+							Open source. Version Date: {VERSION_DATE}.{" "}
+							<span className="xl:hidden">v{VERSION_CODE}.</span>
+							<br />
 							<a
 								href={GITHUB_URL}
 								target="_blank"

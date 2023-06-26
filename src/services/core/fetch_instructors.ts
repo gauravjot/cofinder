@@ -6,9 +6,12 @@ import { handleApiError } from "@/services/handle_error";
 import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
 import { ReduxInstructorType } from "@/types/stateTypes";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
-import { setInstructors } from "@/redux/actions";
+import {
+	selectAllInstructors,
+	set as setInstructors,
+} from "@/redux/instructor/instructorSlice";
 import { TermType, InstructorType } from "@/types/dbTypes";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,10 +39,8 @@ export function useFetchInstructors(): ReduxInstructorType {
 		fetched: 0,
 		instructors: [],
 	});
-	const reduxinstructors: ReduxInstructorType = useAppSelector(
-		(state: RootState) => state.instructors
-	);
-	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
+	const reduxinstructors: ReduxInstructorType = useAppSelector(selectAllInstructors);
+	const currentTerm: TermType = useAppSelector(selectCurrentTerm);
 	const dispatch = useAppDispatch();
 	const TERM_ERROR = "Term information not present.";
 

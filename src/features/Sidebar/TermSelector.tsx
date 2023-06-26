@@ -1,18 +1,22 @@
 import * as React from "react";
-import { RootState } from "@/App";
 import { TermsReducerType, TermType } from "@/types/dbTypes";
 import axios from "axios";
-import { setTerms, setCurrentTerm } from "@/redux/actions";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { clearAllVariableStates } from "@/redux/actions";
 import { EP_TERMS } from "@/server_eps";
 import { useQuery } from "@tanstack/react-query";
 import { FETCH_TIME_GAP } from "@/config";
+import { selectAllTerms, set as setTerms } from "@/redux/terms/termSlice";
+import { selectCurrentTerm, set as setCurrentTerm } from "@/redux/terms/currentTermSlice";
+import { clear as clearTermSchedule } from "@/redux/schedules/termScheduleSlice";
+import { clear as clearSections } from "@/redux/sections/sectionSlice";
+import { clear as clearInstructors } from "@/redux/instructor/instructorSlice";
+import { clear as clearSubjects } from "@/redux/subjects/subjectSlice";
+import { clear as clearCourses } from "@/redux/courses/courseSlice";
 
 export default function TermSelector() {
 	const dispatch = useAppDispatch();
-	const termsData: TermsReducerType = useAppSelector((state: RootState) => state.terms);
-	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
+	const termsData: TermsReducerType = useAppSelector(selectAllTerms);
+	const currentTerm: TermType = useAppSelector(selectCurrentTerm);
 	const termsButtonRef = React.useRef<HTMLButtonElement>(null);
 	const termsMenuRef = React.useRef<HTMLDivElement>(null);
 	const [isTermsExpanded, setIsTermsExpanded] = React.useState<boolean>(false);
@@ -53,12 +57,13 @@ export default function TermSelector() {
 			})
 		);
 		if (currentTerm && currentTerm.id === "0") {
+			let term = query.data.terms[0];
 			dispatch(
 				setCurrentTerm({
-					id: query.data.terms[0].id,
-					name: query.data.terms[0].name,
-					date: query.data.terms[0].date,
-					term_ident: query.data.terms[0].term_ident || "",
+					id: term.id,
+					name: term.name,
+					date: term.date,
+					term_ident: term.term_ident || "",
 				})
 			);
 		}
@@ -66,7 +71,13 @@ export default function TermSelector() {
 
 	const setAppTerm = (term: TermType) => {
 		if (currentTerm.id !== term.id) {
-			clearAllVariableStates(dispatch);
+			// Clear all states
+			dispatch(clearCourses());
+			dispatch(clearInstructors());
+			dispatch(clearSections());
+			dispatch(clearSubjects());
+			dispatch(clearTermSchedule());
+			// Set new Term state
 			dispatch(setCurrentTerm(term));
 			toggleTermsMenu();
 		}

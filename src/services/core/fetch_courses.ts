@@ -6,9 +6,9 @@ import { handleApiError } from "@/services/handle_error";
 import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
 import { CourseSubjectType, ReduxCourseType } from "@/types/stateTypes";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
-import { setCourses } from "@/redux/actions";
+import { selectAllCourses, set as setCourses } from "@/redux/courses/courseSlice";
 import { TermType } from "@/types/dbTypes";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,10 +36,8 @@ export function useFetchCourses(): ReduxCourseType {
 		fetched: 0,
 		courses: [],
 	});
-	const reduxCourses: ReduxCourseType = useAppSelector(
-		(state: RootState) => state.courses
-	);
-	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
+	const reduxCourses: ReduxCourseType = useAppSelector(selectAllCourses);
+	const currentTerm: TermType = useAppSelector(selectCurrentTerm);
 	const dispatch = useAppDispatch();
 	const TERM_ERROR = "Term information not present.";
 

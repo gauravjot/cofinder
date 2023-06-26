@@ -6,10 +6,14 @@ import { handleApiError } from "@/services/handle_error";
 import { ApiError, FetchState, ResponseType } from "@/types/apiResponseType";
 import { MyScheduleTypeItem, ReduxDetailedScheduleType } from "@/types/stateTypes";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { RootState } from "@/App";
-import { setDetailedSchedule } from "@/redux/actions";
+import {
+	selectAllTermSchedules,
+	set as setDetailedSchedule,
+} from "@/redux/schedules/termScheduleSlice";
 import { TermType, SectionsBrowserType } from "@/types/dbTypes";
 import { difference } from "lodash";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
+import { selectAllSchedules } from "@/redux/schedules/scheduleSlice";
 
 function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -47,13 +51,10 @@ export function useFetchSpecificSections(): ReduxDetailedScheduleType {
 		fetched: 0,
 		sections: [],
 	});
-	const mySchedule: MyScheduleTypeItem[] = useAppSelector(
-		(state: RootState) => state.mySchedule
-	);
-	const reduxScheduleSections: ReduxDetailedScheduleType = useAppSelector(
-		(state: RootState) => state.detailedSchedule
-	);
-	const currentTerm: TermType = useAppSelector((state: RootState) => state.currentTerm);
+	const mySchedule: MyScheduleTypeItem[] = useAppSelector(selectAllSchedules);
+	const reduxScheduleSections: ReduxDetailedScheduleType =
+		useAppSelector(selectAllTermSchedules);
+	const currentTerm: TermType = useAppSelector(selectCurrentTerm);
 	const dispatch = useAppDispatch();
 	const TERM_ERROR = "Term information not present.";
 

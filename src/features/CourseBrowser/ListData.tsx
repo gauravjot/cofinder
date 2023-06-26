@@ -2,17 +2,22 @@ import * as React from "react";
 import Spinner from "@/components/ui/Spinner";
 import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { RootState } from "@/App";
 import { checkCollision } from "@/utils/CheckTimeSlotCollision";
 import { SectionsBrowserType } from "@/types/dbTypes";
-import {
-	addToDetailedSchedule,
-	removeFromDetailedSchedule,
-	addToMySchedule,
-	removeFromMySchedule,
-} from "@/redux/actions";
 import { FetchState } from "@/types/apiResponseType";
 import { API_FAIL_RETRY_TIMER } from "@/config";
+import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
+import { selectAllSections } from "@/redux/sections/sectionSlice";
+import {
+	add as addToMySchedule,
+	remove as removeFromMySchedule,
+} from "@/redux/schedules/scheduleSlice";
+import {
+	add as addToTermSchedule,
+	remove as removeFromTermSchedule,
+} from "@/redux/schedules/termScheduleSlice";
+
 const ListRow = React.lazy(() => import("@/features/CourseBrowser/ListRow"));
 
 interface Props {
@@ -23,9 +28,9 @@ interface Props {
 
 export default function ListData(props: Props) {
 	const dispatch = useAppDispatch();
-	const detailedSchedule = useAppSelector((state: RootState) => state.detailedSchedule);
-	const currentTerm = useAppSelector((state: RootState) => state.currentTerm);
-	const fetchState = useAppSelector((state: RootState) => state.sections).fetched;
+	const detailedSchedule = useFetchSpecificSections();
+	const currentTerm = useAppSelector(selectCurrentTerm);
+	const fetchState = useAppSelector(selectAllSections).fetched;
 
 	const addToSchedule = (section: SectionsBrowserType) => {
 		dispatch(
@@ -36,12 +41,12 @@ export default function ListData(props: Props) {
 				},
 			])
 		);
-		dispatch(addToDetailedSchedule(section));
+		dispatch(addToTermSchedule(section));
 	};
 
 	const removeFromSchedule = (section: SectionsBrowserType) => {
+		dispatch(removeFromTermSchedule(section.crn));
 		dispatch(removeFromMySchedule([{ section: section.crn, term: currentTerm.id }]));
-		dispatch(removeFromDetailedSchedule(section.crn));
 	};
 
 	return (

@@ -96,11 +96,30 @@ export function ListRow(props: Props) {
 		S: "Saturday",
 	};
 
+	// Sort the days from Monday - Saturday
+	const order = ["M", "T", "W", "R", "F", "S"];
+	const daysSort = (a: string, b: string) => {
+		const indexA = order.indexOf(a);
+		const indexB = order.indexOf(b);
+
+		return indexA - indexB;
+	};
+	let daysOfWeekArray: string[] = [];
+	for (let i = 0; i < props.section.schedule.length; i++) {
+		if (daysOfWeekArray.length > 6) {
+			break;
+		}
+		let day = props.section.schedule[i].weekday;
+		if (day.length > 0 && order.includes(day) && !daysOfWeekArray.includes(day)) {
+			daysOfWeekArray.push(day);
+		}
+	}
+	daysOfWeekArray.sort(daysSort);
+
 	const inactiveSectionClass = props.section.is_active
 		? ""
 		: " dark:text-white line-through opacity-50 ";
 	const rowItemClass =
-		(props.doesCollide && !props.isSelected ? "opacity-50" : "") +
 		" items-center text-smb leading-5 pr-4 lg:py-2" +
 		" text-gray-700 dark:text-white dark:text-opacity-80" +
 		inactiveSectionClass;
@@ -113,7 +132,7 @@ export function ListRow(props: Props) {
 						? "bg-accent-200 dark:bg-slate-1000"
 						: props.isSelected
 						? "bg-accent-200 dark:bg-accent-700"
-						: props.doesCollide || !props.section.is_active
+						: !props.section.is_active
 						? "bg-gray-100 dark:bg-slate-900"
 						: ""
 				}
@@ -142,7 +161,7 @@ export function ListRow(props: Props) {
 								(props.isSelected
 									? "bg-accent-300 dark:bg-accent-800"
 									: props.doesCollide && !props.isSelected
-									? "bg-red-600 bg-opacity-5"
+									? "bg-red-300 dark:bg-red-700/30 bg-opacity-30"
 									: "hover:bg-accent-300 text-gray-400 hover:text-gray-700 dark:hover:text-white dark:hover:bg-accent-700") +
 								" grid place-items-center px-4 tw-tooltip-parent"
 							}
@@ -191,9 +210,6 @@ export function ListRow(props: Props) {
 							>
 								<span
 									className={
-										(props.doesCollide && !props.isSelected
-											? "opacity-30"
-											: "") +
 										" material-icons text-xl text-black dark:text-white mt-0.5"
 									}
 								>
@@ -203,9 +219,6 @@ export function ListRow(props: Props) {
 						</div>
 						<div
 							className={
-								(props.doesCollide && !props.isSelected
-									? "opacity-30"
-									: "") +
 								" grid place-items-center ml-2 leading-5 lg:py-2 dark:text-white order-2 lg:order-3 flex-1 lg:flex-none"
 							}
 						>
@@ -285,34 +298,17 @@ export function ListRow(props: Props) {
 						{props.section.medium}
 					</div>
 					<div className={rowItemClass + " hidden lg:flex col-span-1"}>
-						{props.section.schedule
-							.slice()
-							.reverse()
-							.map((schedule, index) => {
-								return schedule.weekday.length > 0 &&
-									props.section.schedule
-										.slice()
-										.reverse()
-										.slice(0, index)
-										.map(({ weekday }) => weekday)
-										.indexOf(schedule.weekday) > -1 ? (
-									<></>
-								) : (
-									<span
-										key={index}
-										className={
-											schedule.weekday.length > 0 ? "mx-0.5" : ""
-										}
-										title={
-											Weekdays[
-												schedule.weekday as keyof typeof Weekdays
-											]
-										}
-									>
-										{schedule.weekday}
-									</span>
-								);
-							})}
+						{daysOfWeekArray.map((day, index) => {
+							return (
+								<span
+									key={index}
+									className="mx-0.5"
+									title={Weekdays[day as keyof typeof Weekdays]}
+								>
+									{day}
+								</span>
+							);
+						})}
 					</div>
 				</div>
 			</div>

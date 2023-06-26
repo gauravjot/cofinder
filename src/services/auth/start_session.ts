@@ -5,7 +5,7 @@ import { ApiError, ResponseType } from "@/types/apiResponseType";
 import { useAppDispatch } from "@/redux/hooks";
 import { UserType } from "@/types/userTypes";
 import { startSessionEP } from "@/server_eps";
-import { setUser } from "@/redux/user_actions";
+import { setUser } from "@/redux/users/userSlice";
 
 function reachServer(sut: string): Promise<ResponseType<UserType | ApiError>> {
 	return axios
