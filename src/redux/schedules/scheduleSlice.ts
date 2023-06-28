@@ -21,7 +21,7 @@ export const scheduleSlice = createSlice({
 			});
 		},
 		remove: (state, action) => {
-			state.filter((entry) => entry.section !== action.payload);
+			return state.filter((entry) => entry.section !== action.payload);
 		},
 	},
 });

@@ -22,7 +22,9 @@ export const termScheduleSlice = createSlice({
 			state.fetched = new Date().getTime();
 		},
 		remove: (state, action) => {
-			state.sections.filter((section) => section.crn !== action.payload);
+			state.sections = state.sections.filter(
+				(section) => section.crn !== action.payload
+			);
 		},
 	},
 });
