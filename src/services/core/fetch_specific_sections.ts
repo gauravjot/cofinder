@@ -85,12 +85,10 @@ export function useFetchSpecificSections(): ReduxDetailedScheduleType {
 			});
 			// If schedule is empty then we set an empty list
 			if (pickTermSchedule.length < 1) {
-				if (reduxScheduleSections.fetched < 1) {
-					setData({
-						fetched: new Date().getTime(),
-						sections: [],
-					});
-				}
+				setData({
+					fetched: new Date().getTime(),
+					sections: [],
+				});
 				return;
 			}
 			// Check if schedules saved locally is outdated
