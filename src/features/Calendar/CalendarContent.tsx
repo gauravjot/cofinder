@@ -9,13 +9,13 @@ import {
 } from "@/utils/CheckTimeSlotCollision";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@/assets/css/calendar.css";
-import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
 import { ReduxDetailedScheduleType } from "@/types/stateTypes";
 import { ScheduleType } from "@/types/dbTypes";
 import { FetchState } from "@/types/apiResponseType";
 import Spinner from "@/components/ui/Spinner";
 import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
 import { API_FAIL_RETRY_TIMER } from "@/config";
+import { useFetchSchedule } from "@/services/core/fetch_schedule";
 
 const localizer = momentLocalizer(moment);
 
@@ -28,7 +28,7 @@ export default function Content() {
 	}
 
 	const [events, setEvents] = React.useState<Event[]>([]);
-	const detailedSchedule: ReduxDetailedScheduleType = useFetchSpecificSections();
+	const detailedSchedule: ReduxDetailedScheduleType = useFetchSchedule();
 
 	// Get "events" for Calendar to populate
 	React.useEffect(() => {

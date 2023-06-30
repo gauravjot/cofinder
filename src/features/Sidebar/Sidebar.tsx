@@ -1,7 +1,7 @@
 import * as React from "react";
 import logo from "@/assets/images/branding.png";
 import github from "@/assets/svg/github.svg";
-import { GITHUB_URL, VERSION_CODE, VERSION_DATE } from "@/config";
+import { GITHUB_URL, VERSION_CODE, VERSION_DATE, VERSION_RELEASE_PAGE } from "@/config";
 import { Link } from "react-router-dom";
 import TermSelector from "./TermSelector";
 import ErrorBoundary from "@/components/utils/ErrorBoundary";
@@ -15,47 +15,29 @@ interface Props {
 }
 
 export default function Sidebar(props: Props) {
-	const [expand, setExpand] = React.useState<boolean>(false);
-	let expandRef: React.RefObject<any> = React.useRef<HTMLDivElement>(null);
+	const [expand, setExpand] = React.useState<boolean>(window.innerWidth >= 1280);
 
-	function toExpand() {
+	window.addEventListener("resize", () => {
 		if (window.innerWidth >= 1280 && !expand) {
 			setExpand(true);
 		} else if (window.innerWidth < 1280 && expand) {
 			setExpand(false);
 		}
-	}
-	// function isMobile(): boolean {
-	// 	return window.innerWidth <= 1280;
-	// }
-	toExpand();
-
-	window.addEventListener("resize", () => {
-		toExpand();
 	});
 
-	const toggleExpand = () => {
-		if (expandRef.current) {
-			let attribValue = expandRef.current.getAttribute("aria-expanded");
-			expandRef.current.setAttribute(
-				"aria-expanded",
-				attribValue === "true" ? "false" : "true"
-			);
-			setExpand(attribValue === "true" ? false : true);
-		}
-	};
-
 	return (
-		<div>
+		<>
 			<div className="xl:hidden h-[4rem] w-[4rem] absolute xl:left-auto lg:left-14 md:left-2 sm:left-0 left-0">
 				<button
-					onClick={() => toggleExpand()}
+					onClick={() => {
+						setExpand((val) => !val);
+					}}
+					aria-hidden={!expand}
 					className={
 						(expand
-							? "bg-accent-700 text-white "
-							: "bg-white dark:bg-slate-1000 text-black dark:text-white ") +
-						"flex-none h-[3rem] w-[3rem] m-2 rounded " +
-						" hover:bg-accent-200 dark:hover:bg-slate-600 text-center"
+							? "bg-accent-700 hover:bg-accent-600/90 text-white rounded-full "
+							: "bg-white hover:bg-gray-200 dark:bg-slate-1000 dark:hover:bg-slate-800 text-black dark:text-white rounded-md ") +
+						" hamburger flex-none h-[3rem] w-[3rem] m-2 text-center"
 					}
 				>
 					<span className="material-icons align-middle text-2xl">
@@ -64,12 +46,12 @@ export default function Sidebar(props: Props) {
 				</button>
 			</div>
 			<div
-				ref={expandRef}
 				aria-expanded={expand}
 				className={
-					"tw-sidebar-menu text-gray-800 lg:border-r lg:border-gray-300" +
-					" lg:dark:border-slate-800 dark:text-white dark:bg-slate-1000" +
-					" xl:min-h-screen xl:bg-transparent bg-white dark:bg-slate-1000"
+					"tw-sidebar-menu text-gray-800" +
+					" dark:border-slate-800 dark:text-white dark:bg-slate-1000" +
+					" xl:min-h-screen xl:bg-transparent bg-white dark:bg-slate-1000" +
+					" border lg:border-t-0 lg:border-b-0 lg:border-l-0 lg:border-r lg:border-gray-300"
 				}
 			>
 				<div className="items-center hidden xl:flex">
@@ -176,17 +158,16 @@ export default function Sidebar(props: Props) {
 				<nav aria-label="Sidebar-Secondary" className="flex-none xl:mb-8">
 					<div className="flex mx-2">
 						<div className="flex-1 text-sm pr-3">
-							Open source. Version Date: {VERSION_DATE}.{" "}
+							Open source. Release: {VERSION_DATE}.{" "}
 							<span className="xl:hidden">v{VERSION_CODE}.</span>
-							<br />
 							<a
-								href={GITHUB_URL}
+								href={VERSION_RELEASE_PAGE}
 								target="_blank"
 								rel="noreferrer"
 								aria-label="Link to repository"
-								className="text-sm"
+								className="text-sm block leading-7"
 							>
-								Check repository
+								Check changelog
 							</a>
 						</div>
 						<div className="mt-1 text-center flex-none place-content-center items-baseline flex">
@@ -207,6 +188,6 @@ export default function Sidebar(props: Props) {
 					</div>
 				</nav>
 			</div>
-		</div>
+		</>
 	);
 }

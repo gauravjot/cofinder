@@ -17,7 +17,6 @@ function sleep(ms: number) {
 function fetchSections(
 	term: string
 ): Promise<ResponseType<SectionsBrowserType[] | ApiError>> {
-	console.log("ep", sectionsEP(term));
 	return axios
 		.get(sectionsEP(term))
 		.then(function (response) {

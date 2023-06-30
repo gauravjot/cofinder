@@ -5,14 +5,14 @@ import { FetchState } from "@/types/apiResponseType";
 import { API_FAIL_RETRY_TIMER } from "@/config";
 import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
 import Spinner from "@/components/ui/Spinner";
-import { useFetchSpecificSections } from "@/services/core/fetch_specific_sections";
 import { useAppSelector } from "@/redux/hooks";
 import { queryFetchSeats } from "@/services/core/fetch_seats";
 import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
+import { useFetchSchedule } from "@/services/core/fetch_schedule";
 
 export default function MyCourses() {
 	const navigate = useNavigate();
-	const schedule = useFetchSpecificSections();
+	const schedule = useFetchSchedule();
 	const currentTerm = useAppSelector(selectCurrentTerm);
 
 	return (

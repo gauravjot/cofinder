@@ -1,6 +1,6 @@
 {
 	"name": "cofinder",
-	"version": "0.1.6",
+	"version": "0.2.0",
 	"private": true,
 	"main": "src/index.tsx",
 	"dependencies": {
@@ -18,8 +18,7 @@
 		"react-helmet": "^6.1.0",
 		"react-redux": "^8.0.5",
 		"react-router-dom": "^6.8.0",
-		"react-virtualized-auto-sizer": "^1.0.9",
-		"react-window": "^1.8.8",
+		"react-virtuoso": "^4.3.11",
 		"stream": "^0.0.2",
 		"use-doc-theme": "^0.2.0",
 		"vite-plugin-svgr": "^3.2.0",

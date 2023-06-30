@@ -1,6 +1,5 @@
 export const sectionsEP = (term: string, encodedCRNs: string | null = null): string => {
 	if (encodedCRNs) {
-		console.log(import.meta.env.VITE_INSERTION_IDENTIFIER);
 		return (
 			import.meta.env.VITE_SPECIFIC_SECTION_EP?.replace(
 				import.meta.env.VITE_INSERTION_IDENTIFIER || "{}",

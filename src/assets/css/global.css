@@ -508,6 +508,10 @@ nav[aria-label="Main"] a[aria-current="page"] {
 /*
 * Mobile
 */
+.hamburger[aria-hidden="false"]:after {
+	content: "";
+	@apply inset-0 bg-black/20 absolute z-10 h-screen w-screen;
+}
 .tw-sidebar-menu[aria-expanded="false"] {
 	@apply hidden;
 }
@@ -517,6 +521,7 @@ nav[aria-label="Main"] a[aria-current="page"] {
 	@apply m-2 xl:m-0 lg:ml-14 md:ml-4;
 	@apply fixed xl:relative top-16 xl:top-auto xl:flex xl:flex-col;
 	@apply shadow-xl rounded xl:shadow-[0] xl:rounded-none;
+	@apply relative z-20;
 }
 
 .rbc-calendar .rbc-toolbar {
