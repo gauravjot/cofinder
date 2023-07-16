@@ -9,6 +9,7 @@ from .models import User, Session, SingleUseToken
 from secrets import token_hex
 import hashlib
 from decouple import config
+import json
 
 # Create your views here.
 
@@ -140,13 +141,19 @@ def userInfo(request):
 
 
 @api_view(['POST'])
-def alterSchedule(request):
-    pass
-
-
-@api_view(['POST'])
-def alterProfile(request):
-    pass
+def alterSchedule(request, term_id):
+    if term_id and request.data['schedule']:
+        user = getUserID(request)
+        try:
+            userSchedule = json.loads(user.schedule)
+        except:
+            userSchedule = dict()
+        userSchedule[term_id] = request.data['schedule'].split("--")
+        user.schedule = json.dumps(userSchedule)
+        user.save()
+        return Response(data=userSchedule, status=status.HTTP_200_OK)
+    else:
+        return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
 
 ##################################################################################
 
