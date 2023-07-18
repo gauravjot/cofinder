@@ -79,12 +79,13 @@ WSGI_APPLICATION = 'cofinder.wsgi.application'
 # https://github.com/adamchainz/django-cors-headers
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 CORS_ORIGIN_WHITELIST = CORS_ALLOWED_ORIGINS
@@ -100,7 +101,7 @@ CORS_ALLOW_METHODS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
-    'http://localhost:3000',
+    'http://localhost:5173',
 ]
 
 # Database

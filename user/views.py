@@ -99,7 +99,10 @@ def startSession(request, sut):
         response['session'] = dict(
             token=session_token)
 
-        return Response(data=response, status=status.HTTP_200_OK)
+        res = Response(data=response, status=status.HTTP_200_OK)
+        res.set_cookie('USAT', session_token,
+                       httponly=True, domain="localhost")
+        return res
     else:
         return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
 
@@ -152,6 +155,14 @@ def alterSchedule(request, term_id):
         user.schedule = json.dumps(userSchedule)
         user.save()
         return Response(data=userSchedule, status=status.HTTP_200_OK)
+    else:
+        return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def bulkScheduleUpdate(request):
+    if request.data['schedule']:
+        pass
     else:
         return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
 
