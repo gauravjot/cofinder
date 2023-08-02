@@ -160,6 +160,30 @@ def alterSchedule(request, term_id):
 
 
 @api_view(['POST'])
+def alterBulkSchedule(request):
+    if request.data:
+        schedule = unflatten_dict(request.data.dict())
+        user = getUserID(request)
+        userSchedule = dict()
+        for key, value in schedule.items():
+            print(value['section']['data'])
+            print(value['term']['data'])
+            try:
+                if value['section']['data'] not in userSchedule[value['term']['data']]:
+                    userSchedule[value['term']['data']].append(
+                        value['section']['data'])
+            except KeyError:
+                userSchedule[value['term']['data']] = [
+                    value['section']['data']]
+        print(userSchedule)
+        user.schedule = json.dumps(userSchedule)
+        user.save()
+        return Response(data=userSchedule, status=status.HTTP_200_OK)
+    else:
+        return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
 def bulkScheduleUpdate(request):
     if request.data['schedule']:
         pass
@@ -270,3 +294,24 @@ def _getClientIP(request):
 
 def _getUserAgent(request):
     return request.META.get('HTTP_USER_AGENT')
+
+# Unflatten local schedule from frontend
+
+
+def unflatten_dict(flat_dict):
+    unflattened_dict = {}
+
+    for key, value in flat_dict.items():
+        current_dict = unflattened_dict
+        parts = key.split('[')
+        main_key = parts[0]  # Get the main key without index
+
+        for part in parts[1:]:
+            part = part.rstrip(']')
+            if part not in current_dict:
+                current_dict[part] = {}
+            current_dict = current_dict[part]
+
+        current_dict[main_key] = value
+
+    return unflattened_dict
