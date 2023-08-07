@@ -13,6 +13,9 @@ from django.db.models import Prefetch
 from datetime import datetime
 from .get_seats import get_seats
 import pytz
+import redis
+import json
+from decouple import config
 
 # Create your views here.
 
@@ -110,6 +113,14 @@ def getSpecificTermSections(request, termid, crns):
 def getTermCourses(request, termid):
     print("["+str(datetime.now(pytz.utc))+"] DJANGO: Request for /api/"+termid +
           "/courses/ by ("+request.META.get('REMOTE_ADDR')+")")
+    # Redis Cache check
+    # r = makeRedisConn()
+    # r_key = 'courses-'+termid
+    # df_redis = r.get(r_key)
+    # if df_redis:
+    #     print("[>] Success from Upstash.")
+    #     return Response(data={'courses': json.loads(df_redis)}, status=status.HTTP_200_OK)
+    # Pull from Database
     sections = Sections.objects.select_related(
         'course', 'course__subject').filter(term=termid).distinct('course')
     result = list()
@@ -119,6 +130,8 @@ def getTermCourses(request, termid):
             subject_id=section.course.subject.id, **CourseSerializer(section.course).data))
     sortResult = sorted(
         result, key=lambda item: item['subject_id']+item['code'])
+    # Save to Redis
+    # saveToRedis(r, r_key, sortResult)
     return Response(data={'courses': sortResult}, status=status.HTTP_200_OK)
 
 
@@ -148,3 +161,25 @@ def getTermInstructors(request, termid):
 
 def errorMessage(message):
     return dict(action="failed", message=message)
+
+
+def makeRedisConn():
+    return redis.Redis(
+        host=config('REDIS_HOST'),
+        port=config('REDIS_PORT'),
+        password=config('REDIS_PASSWORD'),
+        ssl=True
+    )
+
+
+def saveToRedis(redis_conn, key, data):
+    # Save to Redis
+    try:
+        jsd = json.dumps(data)
+        if len(jsd) < 1000000:
+            redis_conn.set(key, jsd, ex=600)
+        else:
+            print("[-] Warning:", "Not sent to Redis. Size limit exceeded.")
+    except:
+        print("[-] Warning:", "Redis failed to save.")
+        pass
