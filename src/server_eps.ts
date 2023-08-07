@@ -63,3 +63,17 @@ export const startSessionEP = (sut: string): string => {
 		) || ""
 	);
 };
+
+export const saveScheduleEP = (term_id: string): string => {
+	return (
+		import.meta.env.VITE_SAVE_SCHEDULE.replace(
+			import.meta.env.VITE_INSERTION_IDENTIFIER || "{}",
+			term_id
+		) || ""
+	);
+};
+
+export const EP_USER_INFO: string = import.meta.env.VITE_USER_INFO || "";
+
+export const EP_SAVE_BULK_SCHEDULE: string =
+	import.meta.env.VITE_SAVE_BULK_SCHEDULE || "";

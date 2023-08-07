@@ -99,13 +99,13 @@ export function useFetchSchedule(
 			}
 			// Check if schedules saved locally is outdated
 			// i.e. enteries are removed or added since then
-			let list1: number[] = [];
+			let list1: string[] = [];
 			pickTermSchedule.forEach((row) => {
-				list1.push(row.section);
+				list1.push(row.section.toString());
 			});
-			let list2: number[] = [];
+			let list2: string[] = [];
 			reduxScheduleSections.sections.forEach((row) => {
-				list2.push(row.crn);
+				list2.push(row.crn.toString());
 			});
 			/*********/
 			if (

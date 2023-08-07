@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { UserType } from "../../types/userTypes";
 
-const initialState = null;
+const initialState: UserType | null = null;
 
 export const userSlice = createSlice({
 	name: "subjects",
@@ -16,6 +17,6 @@ export const userSlice = createSlice({
 	},
 });
 
-export const selectUser = (state: RootState) => state.user;
+export const selectUser = (state: RootState): UserType | null => state.user;
 export const { setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;

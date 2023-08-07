@@ -6,6 +6,8 @@ import { selectAllSchedules } from "@/redux/schedules/scheduleSlice";
 import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 import { set as setMySchedule } from "@/redux/schedules/scheduleSlice";
 import { set as setCurrentTerm } from "@/redux/terms/currentTermSlice";
+import alterBulkSchedule from "@/services/user/section/alter_bulk_schedule";
+import { selectUser } from "@/redux/users/userSlice";
 
 export default function UserDataIE() {
 	const dispatch = useAppDispatch();
@@ -13,7 +15,9 @@ export default function UserDataIE() {
 	const currentTerm = useAppSelector(selectCurrentTerm);
 	const [importPrompt, setImportPrompt] = React.useState<boolean>(false);
 	const [importData, setImportData] = React.useState<ImportFormat>();
+	const [disableBtns, setDisableBtns] = React.useState<boolean>(false);
 	let importFileRef = React.useRef<HTMLInputElement>(null);
+	const user = useAppSelector(selectUser);
 
 	interface ImportFormat {
 		schedule: MyScheduleTypeItem[];
@@ -76,7 +80,7 @@ export default function UserDataIE() {
 					exportToFile();
 				}}
 			>
-				<span className="material-icons">ios_share</span>
+				<span className="ic ic-md ic-menu-export dark:invert inline-block"></span>
 				<span>Export Data</span>
 			</button>
 			<button
@@ -86,7 +90,7 @@ export default function UserDataIE() {
 					importFileRef?.current?.click();
 				}}
 			>
-				<span className="material-icons">system_update_alt</span>
+				<span className="ic ic-md ic-menu-import dark:invert inline-block"></span>
 				<span>Import from File</span>
 			</button>
 			<input
@@ -105,7 +109,7 @@ export default function UserDataIE() {
 			>
 				{importData?.schedule && importData.schedule.length > 0 ? (
 					<div className="max-w-[30rem] w-[80%] bg-white dark:bg-slate-700 rounded shadow-xl lg:right-[calc(50%-15rem)] p-4 -mt-20">
-						<h3 className="text-black dark:text-white font-medium mb-3">
+						<h3 className="text-black dark:text-white font-bold mb-3">
 							<span className="material-icons text-2xl mr-2 align-middle">
 								help_outline
 							</span>
@@ -114,9 +118,11 @@ export default function UserDataIE() {
 							</span>
 						</h3>
 						<p className="leading-6 my-3 text-gray-500 dark:text-slate-200">
-							If you import this file, your current saved courses will be
-							overridden.
-							<div className="py-1"></div>
+							If you import this file, your{" "}
+							<u className="text-red-700 dark:text-red-300">
+								current selected courses will be overridden
+							</u>
+							.<div className="py-1"></div>
 							Are you sure you want to do this?
 						</p>
 						<div className="text-right mt-6">
@@ -124,16 +130,34 @@ export default function UserDataIE() {
 								onClick={() => {
 									setImportPrompt(false);
 								}}
+								disabled={disableBtns}
 								className="px-4 py-1.5 bg-gray-200 dark:bg-slate-800 font-medium rounded-md mr-4 hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
 							>
 								Cancel
 							</button>
 							<button
 								onClick={() => {
-									dispatch(setMySchedule(importData.schedule));
-									dispatch(setCurrentTerm(importData.currentTerm));
-									setImportPrompt(false);
+									setDisableBtns(true);
+									if (user?.token) {
+										alterBulkSchedule(
+											importData.schedule,
+											user?.token
+										)
+											.then(() => {
+												dispatch(
+													setMySchedule(importData.schedule)
+												);
+												dispatch(
+													setCurrentTerm(importData.currentTerm)
+												);
+												setImportPrompt(false);
+											})
+											.catch(() => {
+												setDisableBtns(false);
+											});
+									}
 								}}
+								disabled={disableBtns}
 								className="px-4 py-1.5 bg-laccent-800 text-white font-medium rounded-md shadow hover:bg-laccent-700 transition-colors"
 							>
 								Continue

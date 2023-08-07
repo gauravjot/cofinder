@@ -1,6 +1,8 @@
 import { UserType } from "@/types/userTypes";
 import { useAppDispatch } from "@/redux/hooks";
 import { clearUser } from "@/redux/users/userSlice";
+import { clear as clearSchedule } from "@/redux/schedules/scheduleSlice";
+import { clear as clearTermSchedule } from "@/redux/schedules/termScheduleSlice";
 
 interface Props {
 	user: UserType;
@@ -27,6 +29,8 @@ export default function TopbarUserDrop(props: Props) {
 			<button
 				onClick={() => {
 					dispatch(clearUser());
+					dispatch(clearSchedule());
+					dispatch(clearTermSchedule());
 				}}
 				title="Logout"
 				aria-label="Logout"

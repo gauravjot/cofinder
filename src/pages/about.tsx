@@ -62,6 +62,18 @@ export default function About() {
 									process for students, making it easier and
 									stress-free.
 								</p>
+								<h4 className="font-medium font-serif mt-8 mb-2">
+									Want to talk?
+								</h4>
+								<p className="max-w-[70ch] text-lg lg:leading-9 leading-8 text-gray-800 dark:text-slate-400">
+									Contact us:{" "}
+									<a
+										className="font-medium italic font-mono tracking-tight"
+										href="mailto:admin@cofinder.ca"
+									>
+										admin@cofinder.ca
+									</a>
+								</p>
 								<div className="mt-12 mb-4">
 									<h3
 										className="font-medium font-serif"

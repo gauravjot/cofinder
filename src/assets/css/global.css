@@ -36,9 +36,6 @@
 }
 
 @layer components {
-}
-
-@layer utilities {
 	.user-select-none {
 		-webkit-user-select: none; /* Safari */
 		-moz-user-select: none; /* Firefox */
@@ -49,6 +46,14 @@
 	.w-112 {
 		width: 28rem;
 	}
+
+	.card-shadow {
+		box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.1),
+			0px 0px 15px 5px rgba(0, 0, 0, 0.1);
+	}
+}
+
+@layer utilities {
 }
 
 .dark {

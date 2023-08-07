@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { TermsReducerType } from "@/types/dbTypes";
 
 const initialState = { terms: [], fetched: 0 };
 
@@ -16,6 +17,6 @@ export const termSlice = createSlice({
 	},
 });
 
-export const selectAllTerms = (state: RootState) => state.terms;
+export const selectAllTerms = (state: RootState): TermsReducerType => state.terms;
 export const { set, clear } = termSlice.actions;
 export default termSlice.reducer;

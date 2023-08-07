@@ -9,6 +9,7 @@ import ThemeToggle from "@/components/utils/ThemeToggle";
 import { ROUTE } from "@/routes";
 import { FEEDBACK_URL } from "@/config";
 import UserDataIE from "./UserDataIE";
+import { User } from "./User";
 
 interface Props {
 	current?: string;
@@ -49,8 +50,8 @@ export default function Sidebar(props: Props) {
 				aria-expanded={expand}
 				className={
 					"tw-sidebar-menu text-gray-800" +
-					" dark:border-slate-800 dark:text-white dark:bg-slate-1000" +
-					" xl:min-h-screen xl:bg-transparent bg-white dark:bg-slate-1000" +
+					" dark:border-slate-800 dark:text-white dark:bg-slate-1000 overflow-y-auto" +
+					" xl:min-h-screen xl:max-h-screen xl:bg-transparent bg-white dark:bg-slate-1000" +
 					" border lg:border-t-0 lg:border-b-0 lg:border-l-0 lg:border-r lg:border-gray-300"
 				}
 			>
@@ -78,7 +79,9 @@ export default function Sidebar(props: Props) {
 						<ThemeToggle />
 					</div>
 				</div>
-				<div className="xl:mt-8 mb-4">{/* <User /> */}</div>
+				<div className="xl:mt-8 mb-4">
+					<User />
+				</div>
 				<div className="my-3">
 					<ErrorBoundary fallback={<></>}>
 						<TermSelector />
@@ -98,7 +101,7 @@ export default function Sidebar(props: Props) {
 						className="tw-sidebar-nav-btn tw-hover-no-underline text-black dark:text-white"
 						to={ROUTE.Home}
 					>
-						<span className="material-icons">school</span>
+						<span className="ic ic-md ic-menu-home dark:invert inline-block"></span>
 						<span>Courses Home</span>
 					</Link>
 					<Link
@@ -110,7 +113,7 @@ export default function Sidebar(props: Props) {
 						className="tw-sidebar-nav-btn tw-hover-no-underline text-black dark:text-white"
 						to={ROUTE.Calendar}
 					>
-						<span className="material-icons">calendar_month</span>
+						<span className="ic ic-md ic-menu-calendar dark:invert inline-block"></span>
 						<span>Calendar</span>
 					</Link>
 					<Link
@@ -122,7 +125,7 @@ export default function Sidebar(props: Props) {
 						className="tw-sidebar-nav-btn tw-hover-no-underline text-black dark:text-white"
 						to={ROUTE.CourseBrowser}
 					>
-						<span className="material-icons">category</span>
+						<span className="ic ic-md ic-menu-shapes dark:invert inline-block"></span>
 						<span>Course Browser</span>
 					</Link>
 					<Link
@@ -132,7 +135,7 @@ export default function Sidebar(props: Props) {
 						className="tw-sidebar-nav-btn tw-hover-no-underline text-black dark:text-white"
 						to={ROUTE.About}
 					>
-						<span className="material-icons">group_work</span>
+						<span className="ic ic-md ic-menu-team dark:invert inline-block"></span>
 						<span>Dev Team</span>
 					</Link>
 					<div className="mt-8 ml-2 text-base pb-2 text-gray-600 dark:text-slate-400">

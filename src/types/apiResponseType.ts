@@ -12,3 +12,8 @@ export interface ResponseType<T> {
 export interface ApiError {
 	message: string;
 }
+
+export interface QueryScheduleSaveType {
+	term: string;
+	schedules: string[];
+}

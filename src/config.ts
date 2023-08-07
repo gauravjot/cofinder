@@ -1,8 +1,8 @@
 export const APP_NAME = "CoFinder";
-export const VERSION_CODE: string = "0.2.0";
-export const VERSION_DATE: string = "June 30, 2023";
+export const VERSION_CODE: string = "0.3.0";
+export const VERSION_DATE: string = "August 7, 2023";
 export const VERSION_RELEASE_PAGE =
-	"https://github.com/gauravjot/cofinder-frontend/pull/13";
+	"https://github.com/gauravjot/cofinder-frontend/pull/14";
 
 // School
 export const SCHOOL_FULL_NAME: string = "University of the Fraser Valley";

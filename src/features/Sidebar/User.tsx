@@ -16,10 +16,10 @@ export function User() {
 	) : (
 		<div className="w-full px-4 flex flex-col">
 			<div className="flex-1 text-base font-medium pb-1 text-gray-800 dark:text-slate-200">
-				CoFinder Social
+				Join CoFinder
 			</div>
 			<p className="text-[0.925rem] mb-3 text-gray-600 dark:text-slate-400">
-				Save you course selections and talk with your classmates.
+				Save you course selections in cloud.
 			</p>
 			<DiscordLogin />
 		</div>
