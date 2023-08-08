@@ -230,7 +230,7 @@ def getUserID(request):
         token = request.headers['Authorization'].split()[-1]
         if len(token) < 48:
             raise KeyError
-    except KeyError:
+    except (KeyError, IndexError) as error:
         return Response(data="Unauthorized.", status=status.HTTP_401_UNAUTHORIZED)
     # Check if token is present in database and is valid
     try:
