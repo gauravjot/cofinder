@@ -54,7 +54,7 @@ def handleDiscordResponse(request):
                         user = User(
                             name=discord_user['username'],
                             email=discord_user['email'],
-                            schedule=dict(sections=[]),
+                            schedule=dict(),
                             provider=1,
                             provider_uid=discord_user['id'],
                             provider_access_token=discord_tokens['access_token'],
