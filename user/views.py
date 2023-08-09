@@ -145,7 +145,7 @@ def userInfo(request):
 
 @api_view(['POST'])
 def alterSchedule(request, term_id):
-    if term_id and request.data['schedule']:
+    if term_id:
         user = getUserID(request)
         try:
             userSchedule = json.loads(user.schedule)
