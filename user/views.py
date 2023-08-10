@@ -10,9 +10,15 @@ from secrets import token_hex
 import hashlib
 from decouple import config
 import json
+from .send_email import send_welcome_email
 
 # Create your views here.
 
+
+@api_view(['GET'])
+def send_email(request):
+    send_welcome_email("gauravjotg@gmail.com")
+    print("sent")
 
 @api_view(['GET'])
 def handleDiscordResponse(request):
