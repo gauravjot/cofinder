@@ -16,11 +16,6 @@ from .send_email import send_welcome_email
 
 
 @api_view(['GET'])
-def send_email(request):
-    send_welcome_email("gauravjotg@gmail.com")
-    print("sent")
-
-@api_view(['GET'])
 def handleDiscordResponse(request):
     code = request.GET['code']
     if (code):
@@ -60,7 +55,7 @@ def handleDiscordResponse(request):
                         user = User(
                             name=discord_user['username'],
                             email=discord_user['email'],
-                            schedule=dict(),
+                            schedule=json.dumps(dict()),
                             provider=1,
                             provider_uid=discord_user['id'],
                             provider_access_token=discord_tokens['access_token'],
@@ -68,6 +63,8 @@ def handleDiscordResponse(request):
                             provider_token_expiry=discord_tokens['expires_in']
                         )
                         user.save()
+                        send_welcome_email(
+                            discord_user['email'], discord_user['username'])
 
                     # Prepare Single Use Token
                     sut = issueSingleUseToken(request, user)

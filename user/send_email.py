@@ -1,7 +1,9 @@
-from django.core.mail import send_mail, EmailMessage, get_connection
+from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
+from .welcome_template import template
 
-def send_welcome_email(email_addr):
+
+def send_welcome_email(email_addr, username):
     with get_connection(
         host=settings.EMAIL_HOST,
         port=settings.EMAIL_PORT,
@@ -9,10 +11,11 @@ def send_welcome_email(email_addr):
         password=settings.EMAIL_HOST_PASSWORD,
         use_tls=settings.EMAIL_USE_TLS
     ) as connection:
-        subject = "Welcome to CoFinder"
-        email_from = settings.EMAIL_HOST_USER
+        subject = settings.EMAIL_WELCOME_EMAIL_SUBJECT
+        email_from = settings.EMAIL_SEND_EMAIL_ADDR
         recipient_list = [email_addr, ]
-        message = '''<h1>this is an automated message</h1>'''
-        msg = EmailMessage(subject, message, email_from, recipient_list, connection=connection)
+        message = template(username)
+        msg = EmailMessage(subject, message, email_from,
+                           recipient_list, connection=connection)
         msg.content_subtype = "html"
         msg.send()
