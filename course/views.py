@@ -1,4 +1,3 @@
-import hashlib
 import base64
 # RestFramework
 from rest_framework import status
@@ -6,9 +5,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import *
 from .models import *
-from .summer_2023_parse import parseData as summer2023Parser
-from .winter_2023_parse import parseData as winter2023Parser
-from .fall_2023_parse import parseData as fall2023Parser
 from django.db.models import Prefetch
 from datetime import datetime
 from .get_seats import get_seats
@@ -16,25 +12,15 @@ import pytz
 import redis
 import json
 from decouple import config
+from course.grabber.do_database import push
 
 # Create your views here.
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def pushData(request):
-    if 'key' in request.data and hashlib.sha256(request.data['key'].encode()).hexdigest() == "68f6b138e5341203035153862b65361eb47fdeee6206bd5aa6808e346b8c2047":
-        if request.data['termdate'] == "202301":
-            result = winter2023Parser(
-                request.FILES['file'], request.data['term'], request.data['termdate'])
-        elif request.data['termdate'] == "202305":
-            result = summer2023Parser(
-                request.FILES['file'], request.data['term'], request.data['termdate'])
-        else:
-            result = fall2023Parser(
-                request.FILES['file'], request.data['term'], request.data['termdate'])
-        return Response(data=result, status=status.HTTP_200_OK)
-    else:
-        return Response(errorMessage("Request could not be completed."), status=status.HTTP_400_BAD_REQUEST)
+    push()
+    return Response(status=204)
 
 
 @api_view(['GET'])
@@ -54,41 +40,12 @@ def getTerms(request):
     return Response(data=dict(success=True, terms=termSerializer.data), status=status.HTTP_200_OK)
 
 
-def _getTermSections(sections, termid):
-    # Get data from foreign keys
-    result = list()
-    for section in sections:
-        row = dict(course=CourseSerializer(section.course).data,
-                   subject=section.course.subject.name,
-                   subject_id=section.course.subject.id,
-                   instructor=section.instructor.name,
-                   medium=section.medium.name
-                   )
-        schedules = section.sec_schedules
-        schList = list()
-        for schedule in schedules:
-            schRow = dict(location=LocationSerializer(schedule.location).data)
-            schList.append({**schRow, **ScheduleSerializer(schedule).data})
-        result.append(
-            {**row, **SectionSerializer(section).data, 'schedule': schList})
-    return Response(data={'sections': result}, status=status.HTTP_200_OK)
-
-
 @api_view(['GET'])
 def getTermSections(request, termid):
     print("["+str(datetime.now(pytz.utc))+"] DJANGO: Request for /api/"+termid +
           "/sections/ by ("+request.META.get('REMOTE_ADDR')+")")
-    sections = Sections.objects \
-        .select_related('course', 'instructor', 'medium', 'term', 'course__subject') \
-        .prefetch_related(
-            Prefetch('schedules_set',
-                     queryset=Schedules.objects.select_related(
-                         'location'
-                     ),
-                     to_attr='sec_schedules')
-        ) \
-        .filter(term=termid)
-    return _getTermSections(sections, termid)
+    sections = Sections.objects.filter(term=termid)
+    return Response(data={'sections': SectionSerializer(sections, many=True).data}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -96,17 +53,8 @@ def getSpecificTermSections(request, termid, crns):
     print("["+str(datetime.now(pytz.utc))+"] DJANGO: Request for /api/"+termid+"/sections/" +
           crns+"/ by ("+request.META.get('REMOTE_ADDR')+")")
     crnList = base64.urlsafe_b64decode(crns).decode('utf-8').split(",")
-    sections = Sections.objects \
-        .select_related('course', 'instructor', 'medium', 'term', 'course__subject') \
-        .prefetch_related(
-            Prefetch('schedules_set',
-                     queryset=Schedules.objects.select_related(
-                         'location'
-                     ),
-                     to_attr='sec_schedules')
-        ) \
-        .filter(term=termid, pk__in=crnList)
-    return _getTermSections(sections, termid)
+    sections = Sections.objects.filter(term=termid, pk__in=crnList)
+    return Response(data={'sections': SectionSerializer(sections, many=True).data}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

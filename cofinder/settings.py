@@ -107,16 +107,32 @@ CSRF_TRUSTED_ORIGINS = [
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USERNAME'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
-}
+
+def get_database():
+    if config('DB_HOST', default=None) is None or config('DB_HOST', default=None) == '':
+        Path(str(BASE_DIR) +
+             "/db").mkdir(parents=True, exist_ok=True)
+        return {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db' / 'db.sqlite3',
+            }
+        }
+    else:
+        return {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': config('DB_NAME'),
+                'USER': config('DB_USERNAME'),
+                'PASSWORD': config('DB_PASSWORD'),
+                'HOST': config('DB_HOST'),
+                'PORT': config('DB_PORT'),
+            }
+        }
+
+
+# If no database is provided, use sqlite3
+DATABASES = get_database()
 
 
 # Password validation
