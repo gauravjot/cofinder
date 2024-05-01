@@ -11,14 +11,14 @@ class InstructorSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
-        fields = ['name', 'id', 'credits', 'prereqs', 'coreqs', 'note']
+        fields = ['name', 'code', 'credits', 'prereqs', 'coreqs', 'note']
 
 
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sections
         fields = ['crn', 'name', 'is_active', 'is_lab', 'status', 'enrolled',
-                  'capacity', 'waitlist', 'waitlist_capacity', 'note']
+                  'capacity', 'waitlist', 'locations', 'schedule', 'note']
 
 
 class InstructionMediumSerializer(serializers.ModelSerializer):

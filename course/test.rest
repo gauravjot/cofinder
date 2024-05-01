@@ -1,1 +1,22 @@
-GET http://localhost:8000/api/push/
+POST http://localhost:8000/api/push/
+Content-Type: application/json
+
+{
+  "password": "yourpassword"
+}
+
+### Get term sections
+GET http://localhost:8000/api/202405/sections/
+
+### Get term courses
+GET http://localhost:8000/api/202405/courses/
+
+
+### Get specific term sections
+GET http://localhost:8000/api/202405/sections/NTAwNTcsNTAyNTMsNTAwNjE=/
+
+### Get term subjects
+GET http://localhost:8000/api/202405/subjects/
+
+### Get term instructors
+GET http://localhost:8000/api/202405/instructors/

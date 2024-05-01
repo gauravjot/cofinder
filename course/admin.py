@@ -7,8 +7,8 @@ from .models import Sections, Subjects, InstructionMediums, Instructors, Courses
 class SectionsAdmin(admin.ModelAdmin):
     list_display = ('crn', 'name', 'instructor', 'course',
                     'is_active', 'is_lab', 'medium')
-    raw_id_fields = ['instructor', 'course']
-    search_fields = ['crn', 'instructor__name']
+    raw_id_fields = ['course']
+    search_fields = ['crn', 'instructor']
     search_help_text = 'Search with CRN or instructor name.'
     sortable_by = ['crn', 'name', 'is_active', 'is_lab']
     ordering = ('-crn',)
@@ -69,11 +69,11 @@ admin.site.register(Instructors, InstructorsAdmin)
 
 
 class CoursesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'subject', 'name', 'credits')
-    search_fields = ['id', 'name', 'subject__code']
-    search_help_text = 'Search with id, name or code.'
-    sortable_by = ['id', 'name']
-    ordering = ('id', 'name',)
+    list_display = ('code', 'subject', 'name', 'credits')
+    search_fields = ['code', 'name', 'subject__code']
+    search_help_text = 'Search with code, name or code.'
+    sortable_by = ['code', 'name']
+    ordering = ('code', 'name',)
     list_per_page = 10
     save_on_top = True
     readonly_fields = ['get_readonly_fields']

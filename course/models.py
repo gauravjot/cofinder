@@ -34,8 +34,8 @@ class Terms(models.Model):
 
 
 class Courses(models.Model):
-    # id is subject code + course code
-    id = models.CharField(max_length=16, primary_key=True)
+    # primary key is subject code + course code
+    code = models.CharField(max_length=16, primary_key=True)
     name = models.CharField(max_length=192)
     credits = models.FloatField()
     subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
@@ -60,22 +60,26 @@ class InstructionMediums(models.Model):
 
 
 class Sections(models.Model):
+    STATUS_CHOICES = (
+        ('Open', 'Open'),
+        ('Waitlist', 'Waitlist'),
+        ('Full', 'Full')
+    )
     hash = models.CharField(max_length=40)
     crn = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=16)
+    instructor = models.CharField(max_length=96, null=True)
     term = models.ForeignKey(Terms, on_delete=models.CASCADE)
-    instructor = models.ForeignKey(
-        Instructors, on_delete=models.SET_NULL, null=True)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     medium = models.ForeignKey(
         InstructionMediums, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
     is_lab = models.BooleanField(default=False)
-    status = models.CharField(max_length=16, null=True)
+    status = models.CharField(max_length=16, null=True,
+                              choices=STATUS_CHOICES, default='Open')
     enrolled = models.IntegerField(default=0)
     capacity = models.IntegerField(default=0)
     waitlist = models.IntegerField(default=0)
-    waitlist_capacity = models.IntegerField(default=0)
     note = models.TextField(null=True)
     schedule = models.JSONField(null=True)
     locations = models.JSONField(null=True)

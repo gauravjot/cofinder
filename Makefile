@@ -10,9 +10,8 @@ venv:
 	.venv/bin/python -m pip install -r requirements.txt
 
 resetdb:
-	rm -rf ./db
-	mkdir db
 	find . -type d -name migrations -prune -not -path "./.venv/*" -exec rm -rf {} \;
+	.venv/bin/python manage.py makemigrations
 	.venv/bin/python manage.py makemigrations $(apps)
 	.venv/bin/python manage.py migrate
 
