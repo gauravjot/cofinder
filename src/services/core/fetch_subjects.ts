@@ -64,7 +64,7 @@ export function useFetchSubjects(): ReduxSubjectType {
 					fetched: FetchState.Fetching,
 					subjects: [],
 				});
-				apiCall(currentTerm.id)
+				apiCall(currentTerm.code)
 					.then((response) => {
 						setData(response);
 					})
@@ -95,7 +95,7 @@ export function useFetchSubjects(): ReduxSubjectType {
 			}
 		}
 		main();
-	}, [apiCall, reduxSubjects, currentTerm.id]);
+	}, [apiCall, reduxSubjects, currentTerm.code]);
 
 	React.useEffect(() => {
 		if (data.fetched === 0) {

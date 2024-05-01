@@ -1,11 +1,9 @@
 import * as React from "react";
-import { TermsReducerType, TermType } from "@/types/dbTypes";
+import { TermType } from "@/types/dbTypes";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { EP_TERMS } from "@/server_eps";
 import { useQuery } from "@tanstack/react-query";
-import { FETCH_TIME_GAP } from "@/config";
-import { selectAllTerms, set as setTerms } from "@/redux/terms/termSlice";
 import { selectCurrentTerm, set as setCurrentTerm } from "@/redux/terms/currentTermSlice";
 import { clear as clearTermSchedule } from "@/redux/schedules/termScheduleSlice";
 import { clear as clearSections } from "@/redux/sections/sectionSlice";
@@ -15,7 +13,6 @@ import { clear as clearCourses } from "@/redux/courses/courseSlice";
 
 export default function TermSelector() {
 	const dispatch = useAppDispatch();
-	const termsData: TermsReducerType = useAppSelector(selectAllTerms);
 	const currentTerm: TermType = useAppSelector(selectCurrentTerm);
 	const termsButtonRef = React.useRef<HTMLButtonElement>(null);
 	const termsMenuRef = React.useRef<HTMLDivElement>(null);
@@ -27,13 +24,7 @@ export default function TermSelector() {
 	 * @returns Terms
 	 */
 	const getTerms = () => {
-		// If we have terms in localstorage
-		if (
-			termsData.fetched > 0 ||
-			new Date().getTime() - termsData.fetched > FETCH_TIME_GAP
-		) {
-			if (termsData.terms.length > 0) return termsData;
-		}
+		console.log("Fetching terms");
 		return axios
 			.get(EP_TERMS, {
 				headers: {
@@ -50,27 +41,19 @@ export default function TermSelector() {
 		if (!query.data) {
 			return;
 		}
-		dispatch(
-			setTerms({
-				terms: query.data.terms,
-				fetched: new Date().getTime(),
-			})
-		);
-		if (currentTerm && currentTerm.id === "0") {
+		if (currentTerm && currentTerm.code === "0") {
 			let term = query.data.terms[0];
 			dispatch(
 				setCurrentTerm({
-					id: term.id,
+					code: term.code,
 					name: term.name,
-					date: term.date,
-					term_ident: term.term_ident || "",
 				})
 			);
 		}
 	}, [query.data]);
 
 	const setAppTerm = (term: TermType) => {
-		if (currentTerm.id !== term.id) {
+		if (currentTerm.code !== term.code) {
 			// Clear all states
 			dispatch(clearCourses());
 			dispatch(clearInstructors());
@@ -168,18 +151,19 @@ export default function TermSelector() {
 					>
 						<div className="h-px border-t border-gray-300 dark:border-slate-800 mt-px"></div>
 						<div className="py-2" role="none">
-							{termsData.terms.map((term) => {
-								return (
-									<button
-										className="term-selector-dropdown-item"
-										key={term.id}
-										onClick={() => setAppTerm(term)}
-										aria-current={term.id === currentTerm.id}
-									>
-										{term.name}
-									</button>
-								);
-							})}
+							{query.isSuccess &&
+								query.data.terms.map((term: TermType) => {
+									return (
+										<button
+											className="term-selector-dropdown-item"
+											key={term.code}
+											onClick={() => setAppTerm(term)}
+											aria-current={term.code === currentTerm.code}
+										>
+											{term.name}
+										</button>
+									);
+								})}
 						</div>
 					</div>
 				</>

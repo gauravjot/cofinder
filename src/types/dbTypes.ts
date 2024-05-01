@@ -1,11 +1,12 @@
 export interface SubjectType {
-	id: string;
+	code: string;
 	name: string;
 }
 export interface InstructorType {
 	name: string;
 }
 export interface InstructionMediumType {
+	code: string;
 	name: string;
 }
 export interface CourseType {
@@ -18,14 +19,13 @@ export interface CourseType {
 	note: string;
 }
 export interface LocationType {
-	campus: string;
 	building: string;
 	room: string;
 }
 export interface ScheduleType {
 	location: LocationType;
 	is_weekly: boolean;
-	weekday: string;
+	days: string;
 	time_start: number;
 	time_end: number;
 	date_start: number;
@@ -49,10 +49,8 @@ export interface SectionsBrowserType {
 }
 
 export interface TermType {
-	id: string;
+	code: string;
 	name: string;
-	date: number;
-	term_ident: string;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-const initialState = { id: "0", name: "0", date: 0, term_ident: "" };
+const initialState = { code: "0", name: "0" };
 
 export const currentTermSlice = createSlice({
 	name: "currentTerm",
