@@ -1,7 +1,5 @@
 from django.urls import path
-from .views import pushData, getTermSections, getTerms, \
-    getTermCourses, getTermInstructors, getTermSubjects, \
-    getSpecificTermSections, getSectionSeats
+from .views import *
 
 urlpatterns = [
     path('api/push/', pushData),
