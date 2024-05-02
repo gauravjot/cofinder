@@ -77,9 +77,34 @@ export default function About() {
 								<div className="mt-12 mb-4">
 									<h3
 										className="font-medium font-serif"
+										id="maintainer"
+									>
+										Active Maintainer
+									</h3>
+								</div>
+								<div className="max-w-[70ch] text-lg lg:leading-9 leading-8 text-gray-800 dark:text-slate-400">
+									<div className="border px-4 py-3 border-gray-300 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-1000 hover:bg-opacity-40 rounded shadow-sm">
+									<h4 className="font-medium font-serif">Gauravjot Garaya</h4>
+									<p className="leading-7 pt-1 pl-4">Contact: <a
+										className="font-medium italic font-mono tracking-tight"
+										href="mailto:connect@gauravjot.com"
+									>
+										connect@gauravjot.com
+									</a></p>
+									<p className="pl-4">LinkedIn: <a
+										className="font-medium italic font-mono tracking-tight"
+										href="https://linkedin.com/in/gauravjot"
+									>
+										linkedin/gauravjot
+									</a></p>
+									</div>
+								</div>
+								<div className="mt-12 mb-4">
+									<h3
+										className="font-medium font-serif"
 										id="about-team"
 									>
-										About Team
+										Founding Team
 									</h3>
 								</div>
 								<p className="mt-4 mb-8 dark:text-slate-300">
@@ -255,6 +280,9 @@ export default function About() {
 										<a href="#about-cofinder">About Cofinder</a>
 									</li>
 									<li className="pt-1.5 pl-2 ml-4 list-disc text-gray-400 dark:text-slate-400">
+										<a href="#maintainer">Maintainer</a>
+									</li>
+									<li className="pt-1.5 pl-2 ml-4 list-disc text-gray-400 dark:text-slate-400">
 										<a href="#about-team">About Team</a>
 									</li>
 									<li className="pt-1.5 pl-2 ml-4 list-disc text-gray-400 dark:text-slate-400">
@@ -328,7 +356,7 @@ function TeamMember(props: TmProps) {
 						className="text-base mr-3 inline-block px-1.5 py-0.5 border border-transparent rounded-md align-middle hover:bg-gray-300 dark:hover:bg-slate-800 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer text-gray-500 tw-hover-no-underline"
 					>
 						<img
-							className="hover:scale-125 align-middle inline-block transition-transform h-5 w-5 dark:invert"
+							className="align-middle inline-block transition-transform h-5 w-5 dark:invert"
 							src={github}
 							alt={"Github " + props.name}
 						/>
@@ -347,7 +375,7 @@ function TeamMember(props: TmProps) {
 						className="text-base mr-3 inline-block px-1.5 py-0.5 border border-transparent rounded-md align-middle hover:bg-gray-300 dark:hover:bg-slate-800 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer text-gray-500 tw-hover-no-underline"
 					>
 						<img
-							className="hover:scale-125 align-middle inline-block transition-transform h-5 w-5 dark:invert"
+							className="align-middle inline-block transition-transform h-5 w-5 dark:invert"
 							src={linkedin}
 							alt={"LinkedIn " + props.name}
 						/>
@@ -365,7 +393,7 @@ function TeamMember(props: TmProps) {
 						href={"mailto:" + props.email}
 						className="text-base inline-block px-1.5 py-0.5 border border-transparent rounded-md align-middle hover:bg-gray-300 dark:hover:bg-slate-800 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer text-gray-500 tw-hover-no-underline"
 					>
-						<span className="material-icons text-black text-[1.415rem] align-middle hover:scale-125 transition-transform dark:invert">
+						<span className="material-icons text-black text-[1.415rem] align-middle transition-transform dark:invert">
 							email
 						</span>
 						<span className="text-black dark:text-white font-mono font-medium ml-2 align-middle">

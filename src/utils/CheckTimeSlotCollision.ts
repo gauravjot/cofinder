@@ -2,25 +2,26 @@ import { ScheduleType } from "@/types/dbTypes";
 import { ReduxDetailedScheduleType } from "@/types/stateTypes";
 
 export enum Weekdays {
-	"U",
-	"M",
-	"T",
-	"W",
-	"R",
-	"F",
-	"S",
+	"Sun",
+	"Mon",
+	"Tue",
+	"Wed",
+	"Thu",
+	"Fri",
+	"Sat",
 }
 
 // Takes Date obj given by convertToJsDate fnc and
 // takes time in hours like 1930
 // Gives out a valid Date obj with date and Time
-export function combineDateTime(date: Date, time: number) {
+export function combineDateTime(date: Date, time: string | undefined) {
+	time = time ?? "00:00";
 	return new Date(
 		date.toDateString() +
 			" " +
-			time.toString().substring(0, time.toString().length - 2) +
+			time.toString().split(":")[0] +
 			":" +
-			time.toString().slice(-2)
+			time.toString().split(":")[1]
 	);
 }
 
@@ -63,46 +64,27 @@ export interface CollisionListItem {
 }
 
 export function checkCollision(
-	schedule: ScheduleType[],
+	schedule: ScheduleType[] | undefined,
 	detailedSchedule: ReduxDetailedScheduleType
 ) {
 	// Get a timeslot list from sections in schedule
 	let scheduleList: CollisionListItem[] = [];
-	for (const slot of schedule) {
-		let start_date = getDayAfterDate(
-			convertToJsDate(slot.date_start.toString()),
-			Weekdays[slot.weekday as keyof typeof Weekdays]
-		);
-		let end_date = convertToJsDate(slot.date_end.toString());
-		if (start_date === end_date) {
-			// We are fine, this is only one time class
-			let obj: CollisionListItem = {
-				start: combineDateTime(start_date, slot.time_start),
-				end: combineDateTime(end_date, slot.time_end),
-			};
-			scheduleList.push({ ...obj });
-		} else {
-			for (
-				let d = new Date(start_date);
-				d <= new Date(end_date);
-				d.setDate(d.getDate() + 7)
-			) {
-				let obj: CollisionListItem = {
-					start: combineDateTime(d, slot.time_start),
-					end: combineDateTime(d, slot.time_end),
-				};
-				scheduleList.push({ ...obj });
-			}
-		}
+	if (schedule === null || schedule === undefined) {
+		return false;
 	}
-
-	// Get time slot list from detailed schedule
-	let alreadyScheduleList: CollisionListItem[] = [];
-	for (const schedule of detailedSchedule.sections) {
-		for (const slot of schedule.schedule) {
+	for (const slot of schedule) {
+		// days
+		if (!slot.hasOwnProperty('days')) {
+			continue
+		}
+		let days = slot.days;
+		if (!days) {
+			continue;
+		}
+		for (let i = 0; i < days.length; i++) {
 			let start_date = getDayAfterDate(
 				convertToJsDate(slot.date_start.toString()),
-				Weekdays[slot.weekday as keyof typeof Weekdays]
+				Weekdays[days[i] as keyof typeof Weekdays]
 			);
 			let end_date = convertToJsDate(slot.date_end.toString());
 			if (start_date === end_date) {
@@ -111,7 +93,7 @@ export function checkCollision(
 					start: combineDateTime(start_date, slot.time_start),
 					end: combineDateTime(end_date, slot.time_end),
 				};
-				alreadyScheduleList.push({ ...obj });
+				scheduleList.push({ ...obj });
 			} else {
 				for (
 					let d = new Date(start_date);
@@ -122,7 +104,52 @@ export function checkCollision(
 						start: combineDateTime(d, slot.time_start),
 						end: combineDateTime(d, slot.time_end),
 					};
+					scheduleList.push({ ...obj });
+				}
+			}
+		}
+	}
+
+	// Get time slot list from detailed schedule
+	let alreadyScheduleList: CollisionListItem[] = [];
+	for (const schedule of detailedSchedule.sections) {
+		if (schedule.schedule === null || !schedule.schedule) {
+			continue;
+		}
+		for (const slot of schedule.schedule) {
+			// days
+			if (!slot.hasOwnProperty('days')) {
+				continue
+			}
+			let days = slot.days;
+			if (!days) {
+				continue;
+			}
+			for (let i = 0; i < days.length; i++) {
+				let start_date = getDayAfterDate(
+					convertToJsDate(slot.date_start.toString()),
+					Weekdays[days[i] as keyof typeof Weekdays]
+				);
+				let end_date = convertToJsDate(slot.date_end.toString());
+				if (start_date === end_date) {
+					// We are fine, this is only one time class
+					let obj: CollisionListItem = {
+						start: combineDateTime(start_date, slot.time_start),
+						end: combineDateTime(end_date, slot.time_end),
+					};
 					alreadyScheduleList.push({ ...obj });
+				} else {
+					for (
+						let d = new Date(start_date);
+						d <= new Date(end_date);
+						d.setDate(d.getDate() + 7)
+					) {
+						let obj: CollisionListItem = {
+							start: combineDateTime(d, slot.time_start),
+							end: combineDateTime(d, slot.time_end),
+						};
+						alreadyScheduleList.push({ ...obj });
+					}
 				}
 			}
 		}

@@ -44,7 +44,7 @@ export function filterData(
 
 		// Filter subject
 		for (let i = 0; i < filterBySubject.length; i++) {
-			if (filterBySubject[i].name === section.subject) {
+			if (filterBySubject[i].name === section.subject.name) {
 				return true;
 			}
 		}
@@ -55,22 +55,24 @@ export function filterData(
 }
 
 function keywordFilter(section: SectionsBrowserType, keyword: string): boolean {
+	keyword = keyword.toLowerCase();
 	return (
 		section.course.code.toLowerCase().includes(keyword) ||
 		section.course.name.toLowerCase().includes(keyword) ||
-		section.instructor.toLowerCase().includes(keyword) ||
-		section.subject_id.toLowerCase().includes(keyword) ||
-		section.subject.toLowerCase().includes(keyword) ||
+		(section.instructor ?? "").toLowerCase().includes(keyword) ||
+		section.subject.code.toLowerCase().includes(keyword) ||
+		section.subject.name.toLowerCase().includes(keyword) ||
 		section.crn.toString().includes(keyword) ||
 		(
-			section.subject_id.toLowerCase() +
+			section.subject.code.toLowerCase() +
 			" " +
 			section.course.code.toLowerCase()
 		).includes(keyword) ||
-		(section.subject_id.toLowerCase() + section.course.code.toLowerCase()).includes(
+		(section.subject.code.toLowerCase() + section.course.code.toLowerCase()).includes(
 			keyword
 		) ||
 		(keyword === "lab" && section.is_lab) ||
-		section.medium.toLowerCase().includes(keyword)
+		(section.medium?.code ?? "").toLowerCase().includes(keyword) ||
+		(section.medium?.name ?? "").toLowerCase().includes(keyword)
 	);
 }

@@ -265,9 +265,7 @@ export default function Search() {
 												onClick={() => {
 													navigate(
 														ROUTE.CourseBrowserKeywordFilter(
-															course.subject_id +
-																" " +
-																course.code
+															course.code
 														)
 													);
 												}}

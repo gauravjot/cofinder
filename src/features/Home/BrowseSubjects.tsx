@@ -46,7 +46,7 @@ export default function BrowseSubjects() {
 						)}
 						<button
 							onClick={() => {
-								navigate(ROUTE.CourseBrowserSubjectFilter(subject.id));
+								navigate(ROUTE.CourseBrowserSubjectFilter(subject.code));
 							}}
 							className="font-medium text-sm text-gray-800 bg-slate-300 dark:text-slate-200 dark:bg-slate-800 px-4 py-2 rounded-md shadow-sm dark:shadow-slate-700 inline-block mt-2.5 mr-2.5 hover:cursor-pointer dark:hover:bg-slate-700 hover:bg-slate-400"
 						>

@@ -56,7 +56,7 @@ export default function StartSessionPage() {
 	}, [userInfo.isSuccess, userInfo.data, scheduleLocal]);
 
 	function getTermFromID(term_id: string) {
-		return terms.terms.filter((t) => t.id === term_id)[0];
+		return terms.terms.filter((t) => t.code === term_id)[0];
 	}
 
 	function saveSchedule() {

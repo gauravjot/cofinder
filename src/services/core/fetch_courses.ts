@@ -69,7 +69,7 @@ export function useFetchCourses(): ReduxCourseType {
 					fetched: FetchState.Fetching,
 					courses: [],
 				});
-				apiCall(currentTerm.id)
+				apiCall(currentTerm.code)
 					.then((response) => {
 						setData(response);
 					})
@@ -99,7 +99,7 @@ export function useFetchCourses(): ReduxCourseType {
 			}
 		}
 		main();
-	}, [apiCall, reduxCourses, currentTerm.id]);
+	}, [apiCall, reduxCourses, currentTerm.code]);
 
 	React.useEffect(() => {
 		if (data.fetched === 0) {
