@@ -15,6 +15,7 @@ export interface ReduxInstructorType {
 }
 export interface CourseSubjectType extends CourseType {
 	subject: string;
+	subject_id: string;
 }
 export interface ReduxCourseType {
 	courses: CourseSubjectType[];

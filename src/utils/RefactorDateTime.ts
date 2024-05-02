@@ -13,17 +13,16 @@ export const months = [
 	"Dec",
 ];
 
-export function refactorTime(fourDigitTime: number) {
-	let time = fourDigitTime.toString().padStart(4, "0");
-	let hours24 = parseInt(time.substring(0, 2), 10);
-	let hours = ((hours24 + 11) % 12) + 1;
-	let amPm = hours24 > 11 ? "pm" : "am";
-	let minutes = time.substring(2);
+export function refactorTime(time: string) {
+	let hours24 = time.split(":")[0]
+	let hours = ((parseInt(hours24) + 11) % 12) + 1;
+	let amPm = parseInt(hours24) > 11 ? "pm" : "am";
+	let minutes = time.split(":")[1];
 
 	return hours + ":" + minutes + amPm;
 }
 
-export function refactorDate(date: number) {
+export function refactorDate(date: string) {
 	const months = [
 		"Jan",
 		"Feb",
@@ -50,13 +49,13 @@ export function refactorDate(date: number) {
 
 export function refactorWeekDay(d: string) {
 	const days: { [key: string]: string } = {
-		M: "Monday",
-		T: "Tuesday",
-		W: "Wednesday",
-		R: "Thursday",
-		F: "Friday",
-		S: "Saturday",
-		U: "Sunday",
+		Mon: "Monday",
+		Tue: "Tuesday",
+		Wed: "Wednesday",
+		Thu: "Thursday",
+		Fri: "Friday",
+		Sat: "Saturday",
+		Sun: "Sunday",
 	};
 	return d in days ? days[d] : "Day N/A";
 }

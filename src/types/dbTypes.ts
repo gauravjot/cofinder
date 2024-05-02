@@ -13,39 +13,40 @@ export interface CourseType {
 	name: string;
 	code: string;
 	credits: Float32Array;
-	subject_id: string;
-	prereqs: string;
-	coreqs: string;
-	note: string;
+	prereqs?: string;
+	coreqs?: string;
+	note?: string;
 }
 export interface LocationType {
 	building: string;
 	room: string;
 }
 export interface ScheduleType {
-	location: LocationType;
-	is_weekly: boolean;
-	days: string;
-	time_start: number;
-	time_end: number;
-	date_start: number;
-	date_end: number;
+	location?: LocationType;
+	is_weekly?: boolean;
+	days?: string[];
+	time_start?: string;
+	time_end?: string;
+	date_start: string;
+	date_end: string;
 }
 
 export interface SectionsBrowserType {
 	course: CourseType;
-	subject: string;
-	subject_id: string;
-	instructor: string;
-	medium: string;
+	subject: SubjectType;
+	instructor?: string;
 	crn: number;
 	name: string;
 	is_active: boolean;
 	is_lab: boolean;
+	status: string;
 	enrolled: number;
 	capacity: number;
-	note: string;
-	schedule: ScheduleType[];
+	waitlist: number;
+	note?: string;
+	medium?: InstructionMediumType;
+	schedule?: ScheduleType[];
+	locations?: LocationType[];
 }
 
 export interface TermType {

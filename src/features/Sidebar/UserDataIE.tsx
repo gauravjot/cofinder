@@ -33,7 +33,9 @@ export default function UserDataIE() {
 				try {
 					let f: ImportFormat = JSON.parse(reader.result.toString());
 					setImportData(f);
-				} catch (err) {}
+				} catch (err) {
+					console.log(err)
+				}
 				setImportPrompt(true);
 			}
 		};
@@ -56,7 +58,6 @@ export default function UserDataIE() {
 		);
 		const link = document.createElement("a");
 
-		console.log(new Date().toLocaleString().toString());
 		link.download = "cofinder-export-" + new Date().toLocaleDateString() + ".json";
 		link.href = window.URL.createObjectURL(blob);
 		link.dataset.downloadurl = ["text/json", link.download, link.href].join(":");
@@ -119,10 +120,10 @@ export default function UserDataIE() {
 						</h3>
 						<p className="leading-6 my-3 text-gray-500 dark:text-slate-200">
 							If you import this file, your{" "}
-							<u className="text-red-700 dark:text-red-300">
+							<em className="text-red-700 dark:text-red-300">
 								current selected courses will be overridden
-							</u>
-							.<div className="py-1"></div>
+							</em>
+							.<span className="block py-1"></span>
 							Are you sure you want to do this?
 						</p>
 						<div className="text-right mt-6">

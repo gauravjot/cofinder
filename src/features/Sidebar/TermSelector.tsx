@@ -151,7 +151,7 @@ export default function TermSelector() {
 					>
 						<div className="h-px border-t border-gray-300 dark:border-slate-800 mt-px"></div>
 						<div className="py-2" role="none">
-							{query.isSuccess &&
+							{query.isSuccess && query.data.terms &&
 								query.data.terms.map((term: TermType) => {
 									return (
 										<button

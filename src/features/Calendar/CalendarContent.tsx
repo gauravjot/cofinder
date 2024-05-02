@@ -37,65 +37,69 @@ export default function Content() {
 			// Iterate over all the sections user is enrolled in
 			for (let i = 0; i < detailedSchedule.sections.length; i++) {
 				let section = detailedSchedule.sections[i];
-				if (!section.is_active) {
+				if (!section.is_active || !section.schedule) {
 					continue;
 				}
 				// Iterate all schedule enteries that section has
 				for (let j = 0; j < section.schedule.length; j++) {
-					let section_schedule: ScheduleType =
-						detailedSchedule.sections[i].schedule[j];
-					// Get the first date of class for this schedule
-					let start_date = getDayAfterDate(
-						convertToJsDate(section_schedule.date_start.toString()),
-						Weekdays[section_schedule.weekday as keyof typeof Weekdays]
-					);
-					let end_date = convertToJsDate(section_schedule.date_end.toString());
-					let calendar_entry_title =
-						section.subject_id +
-						" " +
-						section.course.code +
-						" " +
-						section.name +
-						" - " +
-						section_schedule.location.campus +
-						section_schedule.location.building +
-						" " +
-						section_schedule.location.room;
-					// If the start date and end date are different then we have
-					// a date range.
-					if (start_date !== end_date) {
-						for (
-							let d = start_date;
-							d <= end_date;
-							d.setDate(d.getDate() + 7)
-						) {
+					// days
+					if (!section.schedule[j].hasOwnProperty('days')) {
+						continue;
+					}
+					let days = section.schedule[j].days;
+					if (!days) {
+						continue;
+					}
+					let section_schedule: ScheduleType = section.schedule[j];
+					for (let k = 0; k < days.length ; k++) {
+						// Get the first date of class for this schedule
+						let start_date = getDayAfterDate(
+							convertToJsDate(section_schedule.date_start.toString()),
+							Weekdays[days[k] as keyof typeof Weekdays]
+						);
+						let end_date = convertToJsDate(section_schedule.date_end.toString());
+						let calendar_entry_title =
+							section.name +
+							" - " +
+							section_schedule.location?.building +
+							" " +
+							section_schedule.location?.room;
+						// If the start date and end date are different then we have
+						// a date range.
+						if (start_date !== end_date) {
+							for (
+								let d = start_date;
+								d <= end_date;
+								d.setDate(d.getDate() + 7)
+							) {
+								let obj = {
+									id:
+										calendar_entry_title.trim() +
+										section_schedule.time_start +
+										d,
+									title: calendar_entry_title,
+									start: combineDateTime(d, section_schedule.time_start),
+									end: combineDateTime(d, section_schedule.time_end),
+								};
+								local_list.push({ ...obj });
+							}
+						} else {
+							// If start date and end date are same then it is one
+							// time occurance schedule
 							let obj = {
 								id:
 									calendar_entry_title +
 									section_schedule.time_start +
-									d,
+									start_date,
 								title: calendar_entry_title,
-								start: combineDateTime(d, section_schedule.time_start),
-								end: combineDateTime(d, section_schedule.time_end),
+								start: combineDateTime(
+									start_date,
+									section_schedule.time_start
+								),
+								end: combineDateTime(end_date, section_schedule.time_end),
 							};
 							local_list.push({ ...obj });
 						}
-					} else {
-						// If start date and end date are same then it is one
-						// time occurance schedule
-						let obj = {
-							id:
-								calendar_entry_title +
-								section_schedule.time_start +
-								start_date,
-							title: calendar_entry_title,
-							start: combineDateTime(
-								start_date,
-								section_schedule.time_start
-							),
-							end: combineDateTime(end_date, section_schedule.time_end),
-						};
-						local_list.push({ ...obj });
 					}
 				}
 			}

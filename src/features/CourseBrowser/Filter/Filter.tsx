@@ -44,7 +44,7 @@ export default function Filter(props: Props) {
 
 	React.useEffect(() => {
 		for (let i = 0; i < subjectsTermData.subjects.length; i++) {
-			if (props.setSubjectFilter === subjectsTermData.subjects[i].id) {
+			if (props.setSubjectFilter === subjectsTermData.subjects[i].code) {
 				setUrlSelectedSubject(subjectsTermData.subjects[i]);
 				setSelectedSubjects([subjectsTermData.subjects[i]]);
 				setActiveFilterCount(1);

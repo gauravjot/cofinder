@@ -35,7 +35,7 @@ export default function ShowSelectedToggle({
 			}
 			disabled={
 				mySchedule.filter((sch) => {
-					return sch.term === currentTerm.id;
+					return sch.term === currentTerm.code;
 				}).length < 1
 			}
 			onClick={() => {

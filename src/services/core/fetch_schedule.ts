@@ -84,7 +84,7 @@ export function useFetchSchedule(
 	React.useEffect(() => {
 		function getData() {
 			const pickTermSchedule = mySchedule.filter((row) => {
-				return row.term === currentTerm.id;
+				return row.term === currentTerm.code;
 			});
 			// If schedule is empty then we set an empty list
 			if (
@@ -117,7 +117,7 @@ export function useFetchSchedule(
 					fetched: FetchState.Fetching,
 					sections: [],
 				});
-				apiCall(currentTerm.id, pickTermSchedule)
+				apiCall(currentTerm.code, pickTermSchedule)
 					.then((response) => {
 						setData(response);
 					})
@@ -147,7 +147,7 @@ export function useFetchSchedule(
 			}
 		}
 		main();
-	}, [apiCall, reduxScheduleSections, mySchedule, currentTerm.id, dispatch]);
+	}, [apiCall, reduxScheduleSections, mySchedule, currentTerm.code, dispatch]);
 
 	React.useEffect(() => {
 		if (data.fetched === 0) {

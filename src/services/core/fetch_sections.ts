@@ -66,7 +66,7 @@ export function useFetchSections(): ReduxSectionDetailedType {
 					fetched: FetchState.Fetching,
 					sections: [],
 				});
-				apiCall(currentTerm.id)
+				apiCall(currentTerm.code)
 					.then((response) => {
 						setData(response);
 					})
@@ -96,7 +96,7 @@ export function useFetchSections(): ReduxSectionDetailedType {
 			}
 		}
 		main();
-	}, [apiCall, reduxSections, currentTerm.id, dispatch]);
+	}, [apiCall, reduxSections, currentTerm.code, dispatch]);
 
 	React.useEffect(() => {
 		if (data.fetched === 0) {

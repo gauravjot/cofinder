@@ -45,7 +45,7 @@ export default function List(props: Props) {
 		dispatch(
 			addToMySchedule([
 				{
-					term: currentTerm.id,
+					term: currentTerm.code,
 					section: section.crn,
 					userToken: userToken,
 				},
@@ -59,7 +59,7 @@ export default function List(props: Props) {
 		dispatch(
 			removeFromMySchedule([
 				{
-					term: currentTerm.id,
+					term: currentTerm.code,
 					section: section.crn,
 					userToken: userToken,
 				},
@@ -118,11 +118,11 @@ export default function List(props: Props) {
 					<div className="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-md py-2 h-full overflow-hidden">
 						<div className="hidden lg:grid grid-cols-12 tracking-wide font-medium dark:text-white pb-4 pt-3 border-b border-gray-300 dark:border-slate-700">
 							<div className="col-span-3 pl-16">Course</div>
+							<div className="col-span-1 pr-4">Seats</div>
 							<div className="col-span-3 pr-4">Name (credits)</div>
-							<div className="col-span-2 pr-4">Subject</div>
 							<div className="col-span-2 pr-4">Instructor</div>
 							<div className="col-span-1 pr-4">Medium</div>
-							<div className="col-span-1 pr-4">Weekday/s</div>
+							<div className="col-span-2 pr-4">Weekday/s</div>
 						</div>
 						<React.Suspense
 							fallback={

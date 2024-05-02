@@ -36,7 +36,7 @@ export function ListRow(props: Props) {
 		if (expand && seatInfo === null) {
 			setIsLoadingSeats(true);
 			axios
-				.get(seatsEP(props.term.date, props.section.crn))
+				.get(seatsEP(props.term.code, props.section.crn))
 				.then(function (response) {
 					setSeatInfo({
 						seats: {
@@ -58,7 +58,7 @@ export function ListRow(props: Props) {
 					setIsLoadingSeats(false);
 				});
 		}
-	}, [expand, props.section.crn, seatInfo, props.term.date]);
+	}, [expand, props.section.crn, seatInfo, props.term.code]);
 
 	function addToSelected() {
 		if (!props.doesCollide && props.section.is_active) {
@@ -88,16 +88,17 @@ export function ListRow(props: Props) {
 	};
 
 	const Weekdays = {
-		M: "Monday",
-		T: "Tuesday",
-		W: "Wednesday",
-		R: "Thursday",
-		F: "Friday",
-		S: "Saturday",
+		Mon: "Monday",
+		Tue: "Tuesday",
+		Wed: "Wednesday",
+		Thu: "Thursday",
+		Fri: "Friday",
+		Sat: "Saturday",
+		Sun: "Sunday",
 	};
 
 	// Sort the days from Monday - Saturday
-	const order = ["M", "T", "W", "R", "F", "S"];
+	const order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 	const daysSort = (a: string, b: string) => {
 		const indexA = order.indexOf(a);
 		const indexB = order.indexOf(b);
@@ -105,13 +106,20 @@ export function ListRow(props: Props) {
 		return indexA - indexB;
 	};
 	let daysOfWeekArray: string[] = [];
-	for (let i = 0; i < props.section.schedule.length; i++) {
-		if (daysOfWeekArray.length > 6) {
-			break;
-		}
-		let day = props.section.schedule[i].weekday;
-		if (day.length > 0 && order.includes(day) && !daysOfWeekArray.includes(day)) {
-			daysOfWeekArray.push(day);
+	if (props.section.schedule){
+		for (let i = 0; i < props.section.schedule.length; i++) {
+			if (daysOfWeekArray.length > 6) {
+				break;
+			}
+			let days = props.section.schedule[i].days;
+			if (days) {
+				for (let j = 0; j < days.length; j++) {
+					let day = days[j];
+					if (day.length > 0 && order.includes(day) && !daysOfWeekArray.includes(day)) {
+						daysOfWeekArray.push(day);
+					}
+				}
+			}
 		}
 	}
 	daysOfWeekArray.sort(daysSort);
@@ -161,7 +169,7 @@ export function ListRow(props: Props) {
 								(props.isSelected
 									? "bg-accent-300 dark:bg-accent-800"
 									: props.doesCollide && !props.isSelected
-									? "bg-red-300 dark:bg-red-700/30 bg-opacity-30"
+									? "bg-zinc-300 dark:bg-zinc-500/30 bg-opacity-30"
 									: "hover:bg-accent-300 text-gray-400 hover:text-gray-700 dark:hover:text-white dark:hover:bg-accent-700") +
 								" grid place-items-center px-4 tw-tooltip-parent"
 							}
@@ -172,7 +180,7 @@ export function ListRow(props: Props) {
 									(props.isSelected
 										? "text-accent-700 dark:text-white"
 										: props.doesCollide
-										? "opacity-40"
+										? "opacity-20"
 										: "") + " dark:text-white material-icons text-lg"
 								}
 							>
@@ -233,7 +241,7 @@ export function ListRow(props: Props) {
 									inactiveSectionClass
 								}
 							>
-								{props.section.subject_id} {props.section.course.code}{" "}
+								{props.section.course.code}{" "}
 								{props.section.is_lab ? (
 									<span className="bg-accent-200 dark:bg-accent-600 ml-0.5 align-top text-accent-700 dark:text-white uppercase px-1 text-[0.8rem] font-medium rounded">
 										lab
@@ -243,33 +251,28 @@ export function ListRow(props: Props) {
 								)}
 								<span className="text-gray-700 dark:text-white dark:text-opacity-80 mr-2.5">
 									{" - "}
-									{props.section.name}
-								</span>
-								<div className="hidden lg:block 2xl:hidden"></div>
-								<span>
-									{seatInfo ? (
-										<span
-											className={
-												(seatInfo.seats.Actual ===
-												seatInfo.seats.Capacity
-													? "bg-red-200 text-red-900 dark:bg-red-900 dark:bg-opacity-70 dark:text-red-100"
-													: seatInfo.seats.Actual /
-															seatInfo.seats.Capacity >
-													  0.9
-													? "bg-orange-200 text-orange-900 dark:bg-orange-900 dark:bg-opacity-70 dark:text-orange-100"
-													: "bg-accent-200 text-accent-900 dark:bg-accent-600 dark:bg-opacity-80 dark:text-accent-100") +
-												" py-0.5 text-sm px-0.5 rounded font-mono"
-											}
-										>
-											{seatInfo.seats.Actual}/
-											{seatInfo.seats.Capacity}
-										</span>
-									) : (
-										<></>
-									)}
+									{props.section.name.replace(props.section.course.code,'')}
 								</span>
 							</div>
 						</div>
+					</div>
+					<div
+						className={
+							rowItemClass +
+							" flex col-span-1 pl-[3.65rem] -mt-2 lg:mt-0 lg:pl-0"
+						}
+					>
+						{seatInfo ? 
+							(
+								<SeatInfoBadge
+									actual={seatInfo.seats.Actual}
+									capacity={seatInfo.seats.Capacity}/>
+								
+							) : (
+								<SeatInfoBadge
+									actual={props.section.enrolled}
+									capacity={props.section.capacity}/>
+							)}
 					</div>
 					<div
 						className={
@@ -279,25 +282,21 @@ export function ListRow(props: Props) {
 					>
 						{props.section.course.name} ({props.section.course.credits})
 					</div>
-					<div className={rowItemClass + " hidden lg:flex col-span-2"}>
-						{props.section.subject}
-					</div>
 					<div
 						className={
 							rowItemClass +
-							" lg:flex col-span-2 pl-[3.65rem] py-1 lg:pt-0 lg:pl-0 pb-3 lg:pb-0"
+							" lg:flex col-span-2 pl-[3.65rem] pt-1 lg:py-1.5 lg:pl-0 pb-3"
 						}
 					>
-						{props.section.instructor}
+						{props.section.instructor && props.section.instructor.split(";").map((instructor)=><>{instructor}<br/></>)}
 						<span className="lg:hidden pl-1.5">
-							{" • "}
-							{props.section.medium}
+							{props.section.medium ? props.section.medium.code : ""}
 						</span>
 					</div>
 					<div className={rowItemClass + " hidden lg:flex col-span-1"}>
-						{props.section.medium}
+						{props.section.medium ? props.section.medium.code : ""}
 					</div>
-					<div className={rowItemClass + " hidden lg:flex col-span-1"}>
+					<div className={rowItemClass + " hidden lg:flex col-span-2"}>
 						{daysOfWeekArray.map((day, index) => {
 							return (
 								<span
@@ -328,6 +327,23 @@ export function ListRow(props: Props) {
 			</div>
 		</div>
 	);
+}
+
+function SeatInfoBadge({actual, capacity} : {actual: number; capacity:number}) {
+	return <span
+	title="Expand Row to see up-to-date information"
+	className={
+		(actual === capacity
+			? "bg-red-50 text-red-900 dark:bg-red-600/20 dark:text-red-100"
+			: actual / capacity > 0.9
+			? "bg-orange-50 text-orange-900 dark:bg-orange-600/20 dark:text-orange-100"
+			: "bg-accent-100/50 text-accent-900 dark:bg-accent-600/20 dark:text-accent-100") +
+		" py-0.5 text-[98%] px-1 rounded font-mono"
+	}
+>
+	{actual}/
+	{capacity}
+</span>
 }
 
 /*

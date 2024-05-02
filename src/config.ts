@@ -1,8 +1,8 @@
 export const APP_NAME = "CoFinder";
-export const VERSION_CODE: string = "0.3.0";
-export const VERSION_DATE: string = "August 7, 2023";
+export const VERSION_CODE: string = "1.0.0";
+export const VERSION_DATE: string = "May 1, 2024";
 export const VERSION_RELEASE_PAGE =
-	"https://github.com/gauravjot/cofinder-frontend/pull/14";
+	"https://github.com/gauravjot/cofinder-frontend/pull/15";
 
 // School
 export const SCHOOL_FULL_NAME: string = "University of the Fraser Valley";
@@ -10,7 +10,7 @@ export const SCHOOL_SHORT_NAME: string = "UFV";
 export const SCHOOL_WEBSITE: string = "https://ufv.ca";
 
 // URLs
-export const REPO_URL = "https://cisgitlab.ufv.ca/300186344/UniversityFuture";
+export const REPO_URL = "https://github.com/gauravjot/cofinder-frontend";
 export const GITHUB_URL: string = "https://github.com/gauravjot/cofinder-frontend";
 export const NEWS_URL: string = "https://blogs.ufv.ca/urgent-news/";
 export const RSS_NEWS_URL: string =

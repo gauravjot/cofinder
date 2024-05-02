@@ -109,9 +109,9 @@ function SectionItem({
 	section: SectionsBrowserType;
 	term: TermType;
 }) {
-	let color: string = getColor(section.subject_id);
+	let color: string = getColor(section.subject.code);
 
-	const query = queryFetchSeats(term.term_ident, section.crn);
+	const query = queryFetchSeats(term.code, section.crn);
 
 	return (
 		<div className="bg-white dark:bg-slate-800 border-[0.025rem] border-gray-400 dark:border-slate-600 border-opacity-30 shadow-sm relative z-0">
@@ -154,8 +154,6 @@ function SectionItem({
 						) : (
 							<></>
 						)}
-						{section.subject_id} {section.course.code}
-						{" - "}
 						{section.name}
 					</div>
 					<div className="mt-2 mb-1 flex-1">

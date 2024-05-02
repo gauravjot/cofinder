@@ -69,7 +69,7 @@ export function useFetchInstructors(): ReduxInstructorType {
 					fetched: FetchState.Fetching,
 					instructors: [],
 				});
-				apiCall(currentTerm.id)
+				apiCall(currentTerm.code)
 					.then((response) => {
 						setData(response);
 					})
@@ -99,7 +99,7 @@ export function useFetchInstructors(): ReduxInstructorType {
 			}
 		}
 		main();
-	}, [apiCall, reduxinstructors, currentTerm.id]);
+	}, [apiCall, reduxinstructors, currentTerm.code]);
 
 	React.useEffect(() => {
 		if (data.fetched === 0) {

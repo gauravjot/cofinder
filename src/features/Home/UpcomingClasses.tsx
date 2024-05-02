@@ -44,50 +44,56 @@ export default function UpcomingClasses() {
 		let result: UpcomingSection[] = [];
 		if (schedule && schedule.sections?.length > 0) {
 			for (const section of schedule.sections) {
-				if (!section.is_active) {
+				if (!section.is_active || !section.schedule) {
 					continue;
 				}
 				for (const slot of section.schedule) {
-					let start_date = getDayAfterDate(
-						convertToJsDate(slot.date_start.toString()),
-						Weekdays[slot.weekday as keyof typeof Weekdays]
-					);
-					let end_date = convertToJsDate(slot.date_end.toString());
-					if (
-						start_date === end_date &&
-						combineDateTime(start_date, slot.time_start) < seventh_date &&
-						combineDateTime(start_date, slot.time_start) > new Date()
-					) {
-						result.push({
-							...section,
-							time_start: combineDateTime(start_date, slot.time_start),
-							time_end: combineDateTime(end_date, slot.time_end),
-							location:
-								slot.location.campus +
-								slot.location.building +
-								" " +
-								slot.location.room,
-						});
-					} else {
-						for (
-							let d = new Date(start_date);
-							d <= new Date(end_date);
-							d.setDate(d.getDate() + 7)
+					// days
+					if (!slot.hasOwnProperty('days')) {
+						continue;
+					}
+					let days = slot.days;
+					if (!days) {
+						continue;
+					}
+					for (let i = 0; i < days.length ; i++) {
+						let start_date = getDayAfterDate(
+							convertToJsDate(slot.date_start.toString()),
+							Weekdays[days[i] as keyof typeof Weekdays]
+						);
+						let end_date = convertToJsDate(slot.date_end.toString());
+						if (
+							start_date === end_date &&
+							combineDateTime(start_date, slot.time_start) < seventh_date &&
+							combineDateTime(start_date, slot.time_start) > new Date()
 						) {
-							if (
-								combineDateTime(d, slot.time_start) < seventh_date &&
-								combineDateTime(d, slot.time_start) > new Date()
+							result.push({
+								...section,
+								time_start: combineDateTime(start_date, slot.time_start),
+								time_end: combineDateTime(end_date, slot.time_end),
+								location: slot.location ? (slot.location.building +
+									" " +
+									slot.location.room) : "",
+							});
+						} else {
+							for (
+								let d = new Date(start_date);
+								d <= new Date(end_date);
+								d.setDate(d.getDate() + 7)
 							) {
-								result.push({
-									...section,
-									time_start: combineDateTime(d, slot.time_start),
-									time_end: combineDateTime(d, slot.time_end),
-									location:
-										slot.location.campus +
-										slot.location.building +
-										" " +
-										slot.location.room,
-								});
+								if (
+									combineDateTime(d, slot.time_start) < seventh_date &&
+									combineDateTime(d, slot.time_start) > new Date()
+								) {
+									result.push({
+										...section,
+										time_start: combineDateTime(d, slot.time_start),
+										time_end: combineDateTime(d, slot.time_end),
+										location: slot.location ? (slot.location.building +
+											" " +
+											slot.location.room) : "",
+									});
+								}
 							}
 						}
 					}
@@ -193,9 +199,9 @@ export default function UpcomingClasses() {
 								<div
 									className={
 										"tw-gradient-tr-" +
-										getColor(schedule.subject_id).replace("#", "") +
+										getColor(schedule.subject.code).replace("#", "") +
 										" dark:tw-gradient-tr-" +
-										getColor(schedule.subject_id).replace("#", "") +
+										getColor(schedule.subject.code).replace("#", "") +
 										"w-16 text-slate-700 dark:text-slate-100 m-3 py-3 pl-5 pr-5 grid place-content-center rounded-lg ufvc-clip-right-arrow"
 									}
 								>
@@ -223,7 +229,7 @@ export default function UpcomingClasses() {
 											)}
 										</div>
 										<div className="text-[1rem] lg:text-[1.1rem] leading-[1.25rem] font-medium tracking-tight">
-											{schedule.subject_id} {schedule.course.code}
+											{schedule.course.code}
 										</div>
 									</div>
 									<div className="xl:col-span-7 lg:col-span-8 flex pr-4">
