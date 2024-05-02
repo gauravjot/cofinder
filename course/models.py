@@ -68,13 +68,14 @@ class Sections(models.Model):
     hash = models.CharField(max_length=40)
     crn = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=16)
-    instructor = models.CharField(max_length=96, null=True)
+    instructor = models.CharField(max_length=1000,null=True)
     term = models.ForeignKey(Terms, on_delete=models.CASCADE)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     medium = models.ForeignKey(
         InstructionMediums, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
     is_lab = models.BooleanField(default=False)
+    no_auto_update = models.BooleanField(default=False)
     status = models.CharField(max_length=16, null=True,
                               choices=STATUS_CHOICES, default='Open')
     enrolled = models.IntegerField(default=0)

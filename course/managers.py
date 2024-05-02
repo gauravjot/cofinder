@@ -78,9 +78,14 @@ class SectionManager(models.Manager):
         """
         # Create a unique id for the section
         h = self.get_hash(data, schedule, locations)
-        if self.model.objects.filter(hash=h).exists():
+        row = self.model.objects.filter(hash=h)
+        if row.exists():
             # Section already exists and is up to date
             return None
+        for r in row:
+            if r.no_auto_update:
+                # Section is not to be updated
+                return None
         # Create/Update the object
         section = self.model(
             hash=h,

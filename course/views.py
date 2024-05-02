@@ -41,10 +41,12 @@ def getTerms(request):
 
 @api_view(['GET'])
 def getTermSections(request, termid):
-    sections = Sections.objects.filter(term=termid).select_related("course")
+    sections = Sections.objects.filter(term=termid).select_related("course","course__subject","medium").order_by('name')
     result = list()
     for section in sections:
         result.append(dict(course=CourseSerializer(section.course).data,
+                           subject=SubjectSerializer(section.course.subject).data,
+                           medium=InstructionMediumSerializer(section.medium).data,
                            **SectionSerializer(section).data))
     return Response(data={'sections': result}, status=status.HTTP_200_OK)
 
@@ -53,10 +55,12 @@ def getTermSections(request, termid):
 def getSpecificTermSections(request, termid, crns):
     crnList = base64.urlsafe_b64decode(crns).decode('utf-8').split(",")
     sections = Sections.objects.filter(
-        term=termid, pk__in=crnList).select_related("course")
+        term=termid, pk__in=crnList).select_related("course","course__subject","medium").order_by('name')
     result = list()
     for section in sections:
         result.append(dict(course=CourseSerializer(section.course).data,
+                           subject=SubjectSerializer(section.course.subject).data,
+                           medium=InstructionMediumSerializer(section.medium).data,
                            **SectionSerializer(section).data))
     return Response(data={'sections': result}, status=status.HTTP_200_OK)
 

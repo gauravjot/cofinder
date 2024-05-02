@@ -2,6 +2,7 @@ from course.grabber.grabber import GrabUFV
 from course.models import *
 from course.utils import *
 import time
+from cofinder.settings import BASE_DIR
 
 
 def push():
@@ -78,7 +79,7 @@ def push():
                     schedules = section['Schedule'] if 'Schedule' in section else None
                     locations = section['Location'] if 'Location' in section else None
                     instruct_method = section['Instructional Method'].split(
-                        " (")[0].strip() if section['Instructional Method'] is not '\xa0' else None
+                        " (")[0].strip() if section['Instructional Method'] != '\xa0' else None
                     Sections.objects.create_section(
                         data,
                         Terms.objects.get(code=term['code']),
@@ -90,9 +91,9 @@ def push():
                         schedules,
                         locations)
                 except Exception as e:
-                    print("-----")
-                    print(e)
-                    print(section)
-                    print("-----")
+                    section_errors.append([e, section])
 
+            # Save errors to BASE_DIR
+            with open(BASE_DIR / "section_errors.txt", "w") as f:
+                f.write(str(section_errors))
             print(f"finished {subject['code']}")
