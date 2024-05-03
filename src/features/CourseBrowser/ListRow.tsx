@@ -3,6 +3,7 @@ import { SeatsInfoType, SectionsBrowserType, TermType } from "@/types/dbTypes";
 import axios from "axios";
 import ListRowExpandInfo from "./ListRowExpandInfo";
 import { seatsEP } from "@/server_eps";
+import { friendlyInstructionMethod } from "../../utils/process_instruction_method";
 
 /*
 
@@ -38,18 +39,7 @@ export function ListRow(props: Props) {
 			axios
 				.get(seatsEP(props.term.code, props.section.crn))
 				.then(function (response) {
-					setSeatInfo({
-						seats: {
-							Actual: response.data.seats.seats.Actual,
-							Capacity: response.data.seats.seats.Capacity,
-							Remaining: response.data.seats.seats.Remaining,
-						},
-						waitlist: {
-							Actual: response.data.seats.waitlist.Actual,
-							Capacity: response.data.seats.waitlist.Capacity,
-							Remaining: response.data.seats.waitlist.Remaining,
-						},
-					});
+					setSeatInfo(response.data.seats);
 					setIsLoadingSeats(false);
 				})
 				.catch(function (error) {
@@ -106,7 +96,7 @@ export function ListRow(props: Props) {
 		return indexA - indexB;
 	};
 	let daysOfWeekArray: string[] = [];
-	if (props.section.schedule){
+	if (props.section.schedule) {
 		for (let i = 0; i < props.section.schedule.length; i++) {
 			if (daysOfWeekArray.length > 6) {
 				break;
@@ -115,7 +105,11 @@ export function ListRow(props: Props) {
 			if (days) {
 				for (let j = 0; j < days.length; j++) {
 					let day = days[j];
-					if (day.length > 0 && order.includes(day) && !daysOfWeekArray.includes(day)) {
+					if (
+						day.length > 0 &&
+						order.includes(day) &&
+						!daysOfWeekArray.includes(day)
+					) {
 						daysOfWeekArray.push(day);
 					}
 				}
@@ -227,7 +221,7 @@ export function ListRow(props: Props) {
 						</div>
 						<div
 							className={
-								" grid place-items-center ml-2 leading-5 lg:py-2 dark:text-white order-2 lg:order-3 flex-1 lg:flex-none"
+								" grid place-items-center ml-2 leading-5 pt-3 lg:py-2 dark:text-white order-2 lg:order-3 flex-1 lg:flex-none"
 							}
 						>
 							{!props.section.is_active && (
@@ -237,7 +231,7 @@ export function ListRow(props: Props) {
 							)}
 							<div
 								className={
-									"w-full font-medium lg:font-normal" +
+									"w-full font-medium leading-6 lg:leading-5 lg:font-normal" +
 									inactiveSectionClass
 								}
 							>
@@ -251,33 +245,58 @@ export function ListRow(props: Props) {
 								)}
 								<span className="text-gray-700 dark:text-white dark:text-opacity-80 mr-2.5">
 									{" - "}
-									{props.section.name.replace(props.section.course.code,'')}
+									{props.section.name.replace(
+										props.section.course.code,
+										""
+									)}
+								</span>
+								<span className="lg:hidden pl-1 text-md">
+									{seatInfo ? (
+										<SeatInfoBadge
+											actual={seatInfo.seats.Actual}
+											capacity={seatInfo.seats.Capacity}
+										/>
+									) : (
+										<SeatInfoBadge
+											actual={props.section.enrolled}
+											capacity={props.section.capacity}
+										/>
+									)}
+									{props.section.medium?.code ? (
+										<>
+											<br />
+											<span className="dark:text-slate-300">
+												{friendlyInstructionMethod(
+													props.section.medium.code
+												)}
+											</span>
+										</>
+									) : (
+										""
+									)}
 								</span>
 							</div>
 						</div>
 					</div>
 					<div
-						className={
-							rowItemClass +
-							" flex col-span-1 pl-[3.65rem] -mt-2 lg:mt-0 lg:pl-0"
-						}
+						className={rowItemClass + " lg:flex col-span-1 hidden mt-0 pl-0"}
 					>
-						{seatInfo ? 
-							(
-								<SeatInfoBadge
-									actual={seatInfo.seats.Actual}
-									capacity={seatInfo.seats.Capacity}/>
-								
-							) : (
-								<SeatInfoBadge
-									actual={props.section.enrolled}
-									capacity={props.section.capacity}/>
-							)}
+						{seatInfo ? (
+							<SeatInfoBadge
+								actual={seatInfo.seats.Actual}
+								capacity={seatInfo.seats.Capacity}
+							/>
+						) : (
+							<SeatInfoBadge
+								actual={props.section.enrolled}
+								capacity={props.section.capacity}
+							/>
+						)}
 					</div>
 					<div
 						className={
 							rowItemClass +
-							" flex col-span-3 pl-[3.65rem] -mt-2 lg:mt-0 lg:pl-0"
+							" flex col-span-3 pl-[3.65rem] pt-1 lg:pt-0 lg:mt-0 lg:pl-0"
 						}
 					>
 						{props.section.course.name} ({props.section.course.credits})
@@ -288,13 +307,23 @@ export function ListRow(props: Props) {
 							" lg:flex col-span-2 pl-[3.65rem] pt-1 lg:py-1.5 lg:pl-0 pb-3"
 						}
 					>
-						{props.section.instructor && props.section.instructor.split(";").map((instructor)=><>{instructor}<br/></>)}
-						<span className="lg:hidden pl-1.5">
-							{props.section.medium ? props.section.medium.code : ""}
-						</span>
+						{props.section.instructor &&
+							props.section.instructor
+								.split(";")
+								.map((instructor, index) => (
+									<>
+										{instructor}
+										{index + 1 !==
+										props.section.instructor?.split(";").length
+											? " • "
+											: ""}
+									</>
+								))}
 					</div>
 					<div className={rowItemClass + " hidden lg:flex col-span-1"}>
-						{props.section.medium ? props.section.medium.code : ""}
+						{props.section.medium
+							? friendlyInstructionMethod(props.section.medium.code)
+							: ""}
 					</div>
 					<div className={rowItemClass + " hidden lg:flex col-span-2"}>
 						{daysOfWeekArray.map((day, index) => {
@@ -329,21 +358,22 @@ export function ListRow(props: Props) {
 	);
 }
 
-function SeatInfoBadge({actual, capacity} : {actual: number; capacity:number}) {
-	return <span
-	title="Expand Row to see up-to-date information"
-	className={
-		(actual === capacity
-			? "bg-red-50 text-red-900 dark:bg-red-600/20 dark:text-red-100"
-			: actual / capacity > 0.9
-			? "bg-orange-50 text-orange-900 dark:bg-orange-600/20 dark:text-orange-100"
-			: "bg-accent-100/50 text-accent-900 dark:bg-accent-600/20 dark:text-accent-100") +
-		" py-0.5 text-[98%] px-1 rounded font-mono"
-	}
->
-	{actual}/
-	{capacity}
-</span>
+function SeatInfoBadge({ actual, capacity }: { actual: number; capacity: number }) {
+	return (
+		<span
+			title="Expand Row to see up-to-date information"
+			className={
+				(actual >= capacity
+					? "bg-red-50 text-red-900 dark:bg-red-600/20 dark:text-red-100"
+					: actual / capacity > 0.9
+					? "bg-orange-50 text-orange-900 dark:bg-orange-600/20 dark:text-orange-100"
+					: "bg-accent-100/50 text-accent-900 dark:bg-accent-600/20 dark:text-accent-100") +
+				" py-0.5 text-[98%] px-1 rounded font-mono"
+			}
+		>
+			{actual}/{capacity}
+		</span>
+	);
 }
 
 /*

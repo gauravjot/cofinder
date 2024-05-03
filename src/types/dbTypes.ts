@@ -68,4 +68,5 @@ export interface TermsReducerType {
 export interface SeatsInfoType {
 	seats: { Capacity: number; Actual: number; Remaining: number };
 	waitlist: { Capacity: number; Actual: number; Remaining: number };
+	restrictions?: string[];
 }

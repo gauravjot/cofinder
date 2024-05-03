@@ -16,6 +16,26 @@ export interface IListRowExpandInfoProps {
 }
 
 export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
+	function process_pre_reqs() {
+		if (props.seatInfo?.restrictions) {
+			let restrictions = props.seatInfo.restrictions;
+			let has_prereqs = false;
+			let pre_reqs = [];
+			for (let i = 0; i < restrictions.length; i++) {
+				if (has_prereqs) {
+					pre_reqs.push(restrictions[i].replaceAll("Credit level", "").trim());
+				}
+				if (restrictions[i].includes("Prerequisites:")) {
+					has_prereqs = true;
+				}
+			}
+			return pre_reqs;
+		}
+		return [props.section.course.prereqs ?? ""];
+	}
+
+	const pre_reqs = process_pre_reqs;
+
 	return (
 		<div className="bg-gray-300 dark:bg-slate-1000 bg-opacity-30 px-4 pl-14 py-4 pb-5 grid grid-flow-row gap-3">
 			{!props.section.is_active && (
@@ -80,14 +100,25 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 					)}
 				</span>
 			</div>
-			<div>
-				<span className="bg-gray-600 text-gray-200 rounded-lg px-1.5 py-0.5 mr-3 text-sm">
-					Pre-requisites
-				</span>
-				<span className="text-gray-800 dark:text-slate-200">
-					{props.section.course.prereqs}
-				</span>
-			</div>
+			{pre_reqs.length > 0 ? (
+				<div>
+					<span className="bg-gray-600 text-gray-200 rounded-lg px-1.5 py-0.5 mr-3 text-sm">
+						Pre-requisites
+					</span>
+					<span className="text-gray-800 dark:text-slate-200">
+						{pre_reqs().map((prereq) => {
+							return (
+								<span>
+									{prereq}
+									<br />
+								</span>
+							);
+						})}
+					</span>
+				</div>
+			) : (
+				<></>
+			)}
 			{props.section.course.coreqs &&
 			!props.section.course.coreqs.toLowerCase().includes("none") ? (
 				<div>
@@ -129,46 +160,63 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 							<div>End</div>
 							<div>Location</div>
 						</div>
-						{props.section.schedule && props.section.schedule.map((s: ScheduleType, index: number) => {
-							return (
-								<div
-									key={props.section.crn + "-" + index}
-									className="md:grid grid-cols-6 text-gray-800 dark:text-slate-200 border-b border-gray-400 dark:border-slate-600 py-1.5 tracking-wide md:px-1 text-smb"
-								>
-									{s.days ? <span className="col-span-1">
-										{s.days.join(", ")}
-										<span className="md:hidden"> • </span>
-									</span>:<></>}
-									<span className="col-span-1">
-										{refactorDate(s.date_start)}
-									</span>
-									<span className="col-span-1">
-										<span className="md:hidden"> - </span>
-										{refactorDate(s.date_end)}
-									</span>
-									<div className="block md:hidden"></div>
-									<span className="col-span-1">
-										{s.time_start ? (
-											refactorTime(s.time_start)
-										) : (
-											<></>
-										)}
-									</span>
-									<span className="col-span-1">
-										<span className="md:hidden"> - </span>
-										{s.time_end ? (
-											refactorTime(s.time_end)
-										) : (
-											<></>
-										)}
-									</span>
-									{s.location ? <span className="col-span-1">
-										<span className="md:hidden"> • </span>
-										{s.location.building} {s.location.room}
-									</span> : <></>}
-								</div>
-							);
-						})}
+						{props.section.schedule && props.section.schedule.length > 0 ? (
+							props.section.schedule.map(
+								(s: ScheduleType, index: number) => {
+									return (
+										<div
+											key={props.section.crn + "-" + index}
+											className="md:grid grid-cols-6 text-gray-800 dark:text-slate-200 border-b border-gray-400 dark:border-slate-600 py-1.5 tracking-wide md:px-1 text-smb"
+										>
+											{s.days ? (
+												<span className="col-span-1">
+													{s.days.join(", ")}
+													<span className="md:hidden"> • </span>
+												</span>
+											) : (
+												<></>
+											)}
+											<span className="col-span-1">
+												{refactorDate(s.date_start)}
+											</span>
+											<span className="col-span-1">
+												<span className="md:hidden"> - </span>
+												{refactorDate(s.date_end)}
+											</span>
+											<div className="block md:hidden"></div>
+											<span className="col-span-1">
+												{s.time_start ? (
+													refactorTime(s.time_start)
+												) : (
+													<></>
+												)}
+											</span>
+											<span className="col-span-1">
+												<span className="md:hidden"> - </span>
+												{s.time_end ? (
+													refactorTime(s.time_end)
+												) : (
+													<></>
+												)}
+											</span>
+											{s.location ? (
+												<span className="col-span-1">
+													<span className="md:hidden"> • </span>
+													{s.location.building}{" "}
+													{s.location.room}
+												</span>
+											) : (
+												<></>
+											)}
+										</div>
+									);
+								}
+							)
+						) : (
+							<div className="py-1.5 text-center dark:text-slate-400">
+								Not available at the moment :/
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
