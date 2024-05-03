@@ -1,19 +1,26 @@
+import os
+import time
+import json
+from django.utils.timezone import now
 from course.grabber.grabber import GrabUFV
 from course.models import *
 from course.utils import *
-import time
 from cofinder.settings import BASE_DIR
 
 
 def push():
     grabber = GrabUFV()
-    errors = []
+    summary = []
 
     # Terms
 
-    terms = grabber.terms()[:1]
+    terms = grabber.terms()[:1]  # Get the latest term only
+
     for term in terms:
         Terms.objects.create_term(code=term['code'], name=term['name'])
+
+        summary.append(now().strftime("%Y-%m-%d %H:%M:%S UTC"))
+        summary.append(f"Term selected: {term['code']} - {term['name']}")
 
         subjects, instructors, instruct_methods = grabber.term_details(
             term['code'])
@@ -34,8 +41,14 @@ def push():
             InstructionMediums.objects.create_instruction_medium(
                 method['code'], method['name'])
 
+        i = 0
         for subject in subjects:
+            i += 1
+            if i == 3:
+                break
             time.sleep(3)
+            summary.append("-" * 30)
+            summary.append(f"Processing {subject['code']}")
             sections, courses = grabber.subject_courses(
                 term['code'], subject['code'])
 
@@ -62,8 +75,9 @@ def push():
 
             # Sections
 
-            section_errors = []
             for section in sections:
+                if section is None:
+                    continue
                 try:
                     data = setup_section_data(
                         crn=section['CRN'],
@@ -80,7 +94,7 @@ def push():
                     locations = section['Location'] if 'Location' in section else None
                     instruct_method = section['Instructional Method'].split(
                         " (")[0].strip() if section['Instructional Method'] != '\xa0' else None
-                    Sections.objects.create_section(
+                    result = Sections.objects.create_section(
                         data,
                         Terms.objects.get(code=term['code']),
                         section['Instructor'] if section['Instructor'] else None,
@@ -90,10 +104,24 @@ def push():
                             instruct_method) > 0 else None,
                         schedules,
                         locations)
+                    if result is None:
+                        summary.append(
+                            f"> Section exists: {section['CRN']} - {section['Section']}")
+                    else:
+                        summary.append(
+                            f"> Section created: {section['CRN']} - {section['Section']}")
                 except Exception as e:
-                    section_errors.append([e, section])
+                    summary.append("!" * 5)
+                    summary.append(str(e))
+                    summary.append(json.dumps(section))
 
-            # Save errors to BASE_DIR
-            with open(BASE_DIR / "section_errors.txt", "w") as f:
-                f.write(str(section_errors))
             print(f"finished {subject['code']}")
+
+    # Save errors to BASE_DIR
+    try:
+        with open(BASE_DIR / "push_summary.txt", "w") as f:
+            for line in summary:
+                f.write(f'{line}\n')
+        os.chmod(BASE_DIR / "push_summary.txt", 0o777)
+    except:
+        pass

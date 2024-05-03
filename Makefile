@@ -18,6 +18,9 @@ resetdb:
 superuser:
 	.venv/bin/python manage.py createsuperuser
 
+autopush:
+	.venv/bin/python manage.py auto_push
+
 run:
 	.venv/bin/python manage.py runserver 0.0.0.0:8000
 
