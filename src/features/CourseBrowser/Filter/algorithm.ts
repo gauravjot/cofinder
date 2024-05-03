@@ -1,4 +1,5 @@
 import { InstructorType, SectionsBrowserType, SubjectType } from "@/types/dbTypes";
+import { friendlyInstructionMethod } from "../../../utils/process_instruction_method";
 
 /**
  * @param inputData SectionsBrowserType[]
@@ -73,6 +74,9 @@ function keywordFilter(section: SectionsBrowserType, keyword: string): boolean {
 		) ||
 		(keyword === "lab" && section.is_lab) ||
 		(section.medium?.code ?? "").toLowerCase().includes(keyword) ||
-		(section.medium?.name ?? "").toLowerCase().includes(keyword)
+		(section.medium?.name ?? "").toLowerCase().includes(keyword) ||
+		(section.medium?.code ? friendlyInstructionMethod(section.medium?.code) : "")
+			.toLowerCase()
+			.includes(keyword)
 	);
 }
