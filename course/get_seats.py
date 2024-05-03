@@ -4,6 +4,7 @@ import argparse
 import sys
 from bs4 import BeautifulSoup
 
+
 def get_seats(crn, s):
     '''Takes CRN and semester code as input and outputs a dictionary of the available and waitlisted seats of a course'''
 
@@ -22,32 +23,34 @@ def get_seats(crn, s):
 
     # Check for invalid combination error
     if (len(seats_cleaned) <= 0):
-        sys.exit("ERROR - Unable to process seat information. Check CRN / semester combination.")
+        sys.exit(
+            "ERROR - Unable to process seat information. Check CRN / semester combination.")
+
+    # Restriction information
+    restrictions = []
+    for r in dddefault_tags[0].text.split("Restrictions:")[1].split("\n\n"):
+        r = r.replace("\u00a0", "").strip()
+        if r != "":
+            restrictions.append(r)
 
     # Input values into a dictionary
     availability = {
-    "seats": {
-        'Capacity': seats_cleaned[0],
-        'Actual': seats_cleaned[1],
-        'Remaining': seats_cleaned[2]
-    },
-    "waitlist": {
-        'Capacity': seats_cleaned[3],
-        'Actual': seats_cleaned[4],
-        'Remaining': seats_cleaned[5]
+        "seats": {
+            'Capacity': seats_cleaned[0],
+            'Actual': seats_cleaned[1],
+            'Remaining': seats_cleaned[2]
+        },
+        "waitlist": {
+            'Capacity': seats_cleaned[3],
+            'Actual': seats_cleaned[4],
+            'Remaining': seats_cleaned[5]
+        },
+        "restrictions": restrictions
     }
-}
-
     return availability
+
 
 if __name__ == '__main__':
 
-    # Takes in --crn/-c for args to get the CRN of course,
-    # -s for the semester ex. '202301' for Summer 2023 semester
-    parser = argparse.ArgumentParser(description="Parse the seat information")
-    parser.add_argument('--crn', '-c', required=True)
-    parser.add_argument('-s', required=True)
-    args = parser.parse_args()
-
     # Output
-    print(json.dumps(get_seats(args.crn, args.s)))
+    print(json.dumps(get_seats("50174", "202405")))
