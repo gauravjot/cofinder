@@ -30,6 +30,12 @@ export default function StartSessionPage() {
 	let userInfo = queryFetchUserInfo(startSession.token || "");
 	const scheduleLocal = useAppSelector(selectAllSchedules);
 	const terms = useAppSelector(selectAllTerms);
+	let schedule: { [key: string]: string[] } = {};
+	try {
+		schedule = JSON.parse(userInfo.data?.schedule || "{}");
+	} catch (e) {
+		console.error(e);
+	}
 
 	React.useEffect(() => {
 		if (userInfo.isSuccess && userInfo.data !== null) {
@@ -44,7 +50,7 @@ export default function StartSessionPage() {
 					);
 				}
 			}
-			let isSchDifferent = !isEqual(JSON.parse(userInfo.data.schedule), dict);
+			let isSchDifferent = !isEqual(schedule, dict);
 			setScheduleDiff(isSchDifferent);
 			setLocalSchedule(dict);
 			if (!isSchDifferent) {
@@ -62,11 +68,11 @@ export default function StartSessionPage() {
 	function saveSchedule() {
 		if (selectSchToKeep === "cloud" && userInfo.data) {
 			let sch: MyScheduleTypeItem[] = [];
-			let data = JSON.parse(userInfo.data.schedule);
+			let data = schedule;
 			for (let i = 0; i < Object.keys(data).length; i++) {
 				for (let j = 0; j < data[Object.keys(data)[i]].length; j++) {
 					sch.push({
-						section: data[Object.keys(data)[i]][j],
+						section: parseInt(data[Object.keys(data)[i]][j]),
 						term: Object.keys(data)[i],
 					});
 				}
@@ -247,22 +253,20 @@ export default function StartSessionPage() {
 												userInfo.data !== null && (
 													<p className="leading-6 text-slate-600 text-sm dark:text-slate-400">
 														Schedules saved for:{" "}
-														{Object.keys(
-															JSON.parse(
-																userInfo.data.schedule
-															)
-														).map((term_id) => {
-															return (
-																<span>
-																	{
-																		getTermFromID(
-																			term_id
-																		).name
-																	}
-																	,{" "}
-																</span>
-															);
-														})}
+														{Object.keys(schedule).map(
+															(term_id) => {
+																return (
+																	<span>
+																		{
+																			getTermFromID(
+																				term_id
+																			).name
+																		}
+																		,{" "}
+																	</span>
+																);
+															}
+														)}
 													</p>
 												)}
 											{selectSchToKeep === "cloud" &&
@@ -271,45 +275,39 @@ export default function StartSessionPage() {
 												<div className="mt-2">
 													<table>
 														<tbody>
-															{Object.keys(
-																JSON.parse(
-																	userInfo.data.schedule
-																)
-															).map((term_id) => {
-																return (
-																	<tr className="place-items-baseline border-b-2 border-black/5 dark:border-white/10">
-																		<td className="w-28 text-sm align-baseline py-1.5 pt-2">
-																			{
-																				getTermFromID(
-																					term_id
-																				).name
-																			}
-																		</td>
-																		<td className="ml-4 mt-1 font-mono py-1.5">
-																			{JSON.parse(
-																				userInfo
-																					.data
-																					?.schedule
-																			)[
-																				term_id
-																			].map(
-																				(
-																					section: any
-																				) => {
-																					return (
-																						<span className="px-1 inline-block">
-																							•{" "}
-																							{
-																								section
-																							}
-																						</span>
-																					);
+															{Object.keys(schedule).map(
+																(term_id) => {
+																	return (
+																		<tr className="place-items-baseline border-b-2 border-black/5 dark:border-white/10">
+																			<td className="w-28 text-sm align-baseline py-1.5 pt-2">
+																				{
+																					getTermFromID(
+																						term_id
+																					).name
 																				}
-																			)}
-																		</td>
-																	</tr>
-																);
-															})}
+																			</td>
+																			<td className="ml-4 mt-1 font-mono py-1.5">
+																				{schedule[
+																					term_id
+																				].map(
+																					(
+																						section: any
+																					) => {
+																						return (
+																							<span className="px-1 inline-block">
+																								•{" "}
+																								{
+																									section
+																								}
+																							</span>
+																						);
+																					}
+																				)}
+																			</td>
+																		</tr>
+																	);
+																}
+															)}
 														</tbody>
 													</table>
 												</div>
