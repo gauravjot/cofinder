@@ -1,17 +1,22 @@
-import { useAppSelector } from "@/redux/hooks";
+import { UserContext } from "@/App";
+import Spinner from "@/components/ui/Spinner";
 import DiscordLogin from "@/features/User/LoginButton/DiscordLogin";
 import TopbarUserDrop from "@/features/User/TopbarUserDrop/TopbarUserDrop";
-import { selectUser } from "@/redux/users/userSlice";
+import { useContext } from "react";
 
 export function User() {
-	const user = useAppSelector(selectUser);
+	const user = useContext(UserContext);
 
-	return user ? (
+	return user?.isLoading ? (
+		<div className="w-full px-4 flex justify-center place-items-center">
+			<Spinner size="small" />
+		</div>
+	) : user?.data ? (
 		<div className="flex flex-col px-4 w-full">
 			<div className="flex-1 font-medium pb-2 text-gray-600 dark:text-slate-400">
 				Welcome
 			</div>
-			<TopbarUserDrop user={user} />
+			<TopbarUserDrop />
 		</div>
 	) : (
 		<div className="w-full px-4 flex flex-col">

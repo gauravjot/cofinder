@@ -26,7 +26,7 @@ export const scheduleSlice = createSlice({
 				schList.push(schedulesInTerm[i].section.toString());
 			}
 			// Send network request
-			alterSchedule(action.payload[0].term, schList, action.payload[0].userToken);
+			alterSchedule(action.payload[0].term, schList);
 		},
 		remove: (state, action) => {
 			let schedule = state.filter((entry) => {
@@ -40,7 +40,7 @@ export const scheduleSlice = createSlice({
 				schList.push(schedulesInTerm[i].section.toString());
 			}
 			// Send network request
-			alterSchedule(action.payload[0].term, schList, action.payload[0].userToken);
+			alterSchedule(action.payload[0].term, schList);
 			return schedule;
 		},
 	},

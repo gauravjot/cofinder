@@ -64,6 +64,14 @@ export const startSessionEP = (sut: string): string => {
 	);
 };
 
+export const authWithDiscordEP = (): string => {
+	return import.meta.env.VITE_AUTH_DISCORD;
+};
+
+export const userLogoutEP = (): string => {
+	return import.meta.env.VITE_USER_LOGOUT;
+};
+
 export const saveScheduleEP = (term_id: string): string => {
 	return (
 		import.meta.env.VITE_SAVE_SCHEDULE.replace(
