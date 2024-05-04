@@ -7,7 +7,7 @@ import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 import { set as setMySchedule } from "@/redux/schedules/scheduleSlice";
 import { set as setCurrentTerm } from "@/redux/terms/currentTermSlice";
 import alterBulkSchedule from "@/services/user/section/alter_bulk_schedule";
-import { selectUser } from "@/redux/users/userSlice";
+import { UserContext } from "@/App";
 
 export default function UserDataIE() {
 	const dispatch = useAppDispatch();
@@ -17,7 +17,7 @@ export default function UserDataIE() {
 	const [importData, setImportData] = React.useState<ImportFormat>();
 	const [disableBtns, setDisableBtns] = React.useState<boolean>(false);
 	let importFileRef = React.useRef<HTMLInputElement>(null);
-	const user = useAppSelector(selectUser);
+	const user = React.useContext(UserContext).data;
 
 	interface ImportFormat {
 		schedule: MyScheduleTypeItem[];
@@ -34,7 +34,7 @@ export default function UserDataIE() {
 					let f: ImportFormat = JSON.parse(reader.result.toString());
 					setImportData(f);
 				} catch (err) {
-					console.log(err)
+					console.log(err);
 				}
 				setImportPrompt(true);
 			}
@@ -139,11 +139,8 @@ export default function UserDataIE() {
 							<button
 								onClick={() => {
 									setDisableBtns(true);
-									if (user?.token) {
-										alterBulkSchedule(
-											importData.schedule,
-											user?.token
-										)
+									if (user) {
+										alterBulkSchedule(importData.schedule)
 											.then(() => {
 												dispatch(
 													setMySchedule(importData.schedule)

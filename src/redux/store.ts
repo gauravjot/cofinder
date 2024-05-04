@@ -1,13 +1,11 @@
 import { compose, configureStore } from "@reduxjs/toolkit";
 import sectionsReducer from "@/redux/sections/sectionSlice";
 import coursesReducer from "@/redux/courses/courseSlice";
-import termsReducer from "@/redux/terms/termSlice";
 import currentTermReducer from "@/redux/terms/currentTermSlice";
 import instructorsReducer from "@/redux/instructor/instructorSlice";
 import subjectsReducer from "@/redux/subjects/subjectSlice";
 import termScheduleReducer from "@/redux/schedules/termScheduleSlice";
 import schedulesReducer from "@/redux/schedules/scheduleSlice";
-import userReducer from "@/redux/users/userSlice";
 
 export type RootState = ReturnType<typeof reduxStore.getState>;
 export type AppDispatch = typeof reduxStore.dispatch;
@@ -26,9 +24,7 @@ export const reduxStore = configureStore({
 		mySchedule: schedulesReducer,
 		sections: sectionsReducer,
 		subjects: subjectsReducer,
-		terms: termsReducer,
 		termSchedule: termScheduleReducer,
-		user: userReducer,
 	},
 });
 

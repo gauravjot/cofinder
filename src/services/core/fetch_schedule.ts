@@ -84,7 +84,7 @@ export function useFetchSchedule(
 	React.useEffect(() => {
 		function getData() {
 			const pickTermSchedule = mySchedule.filter((row) => {
-				return row.term === currentTerm.code;
+				return row.term.toString() === currentTerm.code.toString();
 			});
 			// If schedule is empty then we set an empty list
 			if (

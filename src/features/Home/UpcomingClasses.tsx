@@ -13,6 +13,7 @@ import { FetchState } from "@/types/apiResponseType";
 import Spinner from "@/components/ui/Spinner";
 import { useAppSelector } from "@/redux/hooks";
 import { selectAllTermSchedules } from "@/redux/schedules/termScheduleSlice";
+import { abbreviateLocation } from "../../utils/process_location";
 
 interface UpcomingSection extends SectionsBrowserType {
 	time_start: Date;
@@ -49,14 +50,14 @@ export default function UpcomingClasses() {
 				}
 				for (const slot of section.schedule) {
 					// days
-					if (!slot.hasOwnProperty('days')) {
+					if (!slot.hasOwnProperty("days")) {
 						continue;
 					}
 					let days = slot.days;
 					if (!days) {
 						continue;
 					}
-					for (let i = 0; i < days.length ; i++) {
+					for (let i = 0; i < days.length; i++) {
 						let start_date = getDayAfterDate(
 							convertToJsDate(slot.date_start.toString()),
 							Weekdays[days[i] as keyof typeof Weekdays]
@@ -71,9 +72,9 @@ export default function UpcomingClasses() {
 								...section,
 								time_start: combineDateTime(start_date, slot.time_start),
 								time_end: combineDateTime(end_date, slot.time_end),
-								location: slot.location ? (slot.location.building +
-									" " +
-									slot.location.room) : "",
+								location: slot.location
+									? slot.location.building + " " + slot.location.room
+									: "",
 							});
 						} else {
 							for (
@@ -89,9 +90,11 @@ export default function UpcomingClasses() {
 										...section,
 										time_start: combineDateTime(d, slot.time_start),
 										time_end: combineDateTime(d, slot.time_end),
-										location: slot.location ? (slot.location.building +
-											" " +
-											slot.location.room) : "",
+										location: slot.location
+											? slot.location.building +
+											  " " +
+											  slot.location.room
+											: "",
 									});
 								}
 							}
@@ -155,7 +158,7 @@ export default function UpcomingClasses() {
 									title={day}
 								>
 									{day === "Sunday"
-										? "U"
+										? "Sun"
 										: day === "Thursday"
 										? "R"
 										: day.charAt(0)}
@@ -217,7 +220,7 @@ export default function UpcomingClasses() {
 										</div>
 									</div>
 								</div>
-								<div className="px-2 lg:pr-4 lg:pl-6 flex-1 grid grid-flow-row lg:grid-flow-col lg:grid-cols-12">
+								<div className="px-2 lg:pr-4 lg:py-3 lg:pl-2 flex-1 grid grid-flow-row lg:grid-flow-col lg:grid-cols-12">
 									<div className="xl:col-span-2 lg:col-span-2">
 										<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
 											{schedule.is_lab ? (
@@ -233,7 +236,7 @@ export default function UpcomingClasses() {
 										</div>
 									</div>
 									<div className="xl:col-span-7 lg:col-span-8 flex pr-4">
-										<div className="hidden lg:block w-px h-8 bg-gray-400 dark:bg-slate-700 bg-opacity-40 my-auto mx-8 lg:mx-6 md:mx-4"></div>
+										<div className="hidden lg:block w-px h-[90%] bg-gray-400 dark:bg-slate-700 bg-opacity-40 my-auto mx-8 lg:mx-6 md:mx-4"></div>
 										<div>
 											<div className="hidden lg:block text-sm font-medium text-opacity-70 mb-1">
 												Time
@@ -256,7 +259,7 @@ export default function UpcomingClasses() {
 											Location
 										</div>
 										<div className="text-[1rem] lg:text-[1.1rem] leading-[1.25rem] font-medium uppercase tracking-tight">
-											{schedule.location}
+											{abbreviateLocation(schedule.location)}
 										</div>
 									</div>
 								</div>

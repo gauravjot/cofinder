@@ -1,14 +1,13 @@
 export type UserType = {
-	name: string;
-	provider_uid: string;
-	token: string;
+	user: UserInfoType;
+	session_id: string;
 };
 
 export type UserInfoType = {
 	id: number;
 	email: string;
 	name: string;
-	schedule: any;
+	schedule: { [key: string]: string[] };
 	joined: string;
 	provider_uid: number;
 	avatar: string;
