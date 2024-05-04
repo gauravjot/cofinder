@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from django.utils.timezone import now
 
 
 class User(models.Model):
@@ -15,29 +14,7 @@ class User(models.Model):
     provider_access_token = models.CharField(max_length=48)
     provider_refresh_token = models.CharField(max_length=48)
     provider_token_expiry = models.BigIntegerField(default=0)
+    provider_connected_at = models.DateTimeField(default=now)
 
     def __str__(self):
         return "%s %s" % (self.id, self.name)
-
-
-class Session(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=128)
-    created = models.DateTimeField(auto_now_add=True)
-    valid = models.BooleanField(default=True)
-    ip = models.GenericIPAddressField()
-    ua = models.TextField()
-
-    def __str__(self):
-        return "%s %s" % (self.id, self.user)
-
-
-class SingleUseToken(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=128)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "%s %s" % (self.id, self.user)

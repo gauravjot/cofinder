@@ -1,6 +1,6 @@
 # Only to be used in development environment
 
-apps := course user
+apps := course user user_session
 
 .PHONY: all
 

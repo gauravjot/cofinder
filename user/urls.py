@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import handleDiscordResponse, startSession, userInfo, alterSchedule, alterBulkSchedule
+from .views import *
 
 urlpatterns = [
-    path('api/user/auth/discord/redirect/', handleDiscordResponse),
-    path('api/user/session/new/<sut>/', startSession),
     path('api/user/me/', userInfo),
-    path('api/user/<term_id>/schedule/', alterSchedule),
+    path('api/user/logout/', logout),
+    path('api/user/auth/discord/', handleDiscordResponse),
     path('api/user/schedule/bulk_update/', alterBulkSchedule),
+    path('api/user/<term_id>/schedule/', alterSchedule),
 ]

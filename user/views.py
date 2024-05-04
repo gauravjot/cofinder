@@ -1,23 +1,24 @@
-from django.shortcuts import redirect, reverse
+from django.utils.timezone import now
 # RestFramework
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 import requests
+from .permissions import HasSessionActive
 
-from .models import User, Session, SingleUseToken
-from secrets import token_hex
-import hashlib
+from .models import User
+from user.user_session.api import create_session, delete_session
 from decouple import config
 import json
 from .send_email import send_welcome_email
+from .serializers import UserResponseSerializer
 
 # Create your views here.
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def handleDiscordResponse(request):
-    code = request.GET['code']
+    code = request.data['code']
     if (code):
         try:
             r = requests.post(
@@ -42,7 +43,6 @@ def handleDiscordResponse(request):
                 )
                 if (u.status_code == 200):
                     discord_user = u.json()
-
                     # Get or create user in Database
                     try:
                         user = User.objects.get(
@@ -50,6 +50,7 @@ def handleDiscordResponse(request):
                         user.provider_access_token = discord_tokens['access_token']
                         user.provider_refresh_token = discord_tokens['refresh_token']
                         user.provider_token_expiry = discord_tokens['expires_in']
+                        user.provider_connected_at = now()
                         user.save()
                     except User.DoesNotExist:
                         user = User(
@@ -60,61 +61,55 @@ def handleDiscordResponse(request):
                             provider_uid=discord_user['id'],
                             provider_access_token=discord_tokens['access_token'],
                             provider_refresh_token=discord_tokens['refresh_token'],
-                            provider_token_expiry=discord_tokens['expires_in']
+                            provider_token_expiry=discord_tokens['expires_in'],
+                            provider_connected_at=now(),
                         )
                         user.save()
                         send_welcome_email(
                             discord_user['email'], discord_user['username'])
-
-                    # Prepare Single Use Token
-                    sut = issueSingleUseToken(request, user)
-
-                    return redirect(config('FRONTEND_AUTH_RECEIVE_URL')+sut+'/')
+                    # Start session
+                    key, session = create_session(user, request)
+                    # Prepare response
+                    data = prepareUserResponse(session, discord_user)
+                    response = Response(
+                        data=data, status=status.HTTP_202_ACCEPTED)
+                    response.set_cookie(
+                        key=config('AUTH_COOKIE_NAME', default='cf_auth'),
+                        value=key,
+                        expires=session.expire_at,  # expire is in minutes so we multiply by 60
+                        httponly=True,
+                        secure=config('AUTH_COOKIE_SECURE',
+                                      default=True, cast=bool),
+                        samesite=config('AUTH_COOKIE_SAMESITE',
+                                        default='Strict'),
+                        domain=config('AUTH_COOKIE_DOMAIN',
+                                      default='localhost')
+                    )
+                    # Send response
+                    return response
             raise Exception("Problem getting response from Discord API.")
-        except:
-            return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+            return Response(data=dict(), status=500)
     else:
-        return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
+        return Response(data=dict(), status=500)
 
 
 @api_view(['GET'])
-def startSession(request, sut):
-    if (sut):
-        try:
-            sut_row = SingleUseToken.objects.get(token=sut)
-        except SingleUseToken.DoesNotExist:
-            return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
-
-        # Issue session token and delete single use token
-        user = sut_row.user
-        session_token = issueSessionToken(request, user)
-        sut_row.delete()
-
-        # Prepare response
-        response = dict(
-            user=dict(
-                id=user.id,
-                name=user.name,
-                provider_uid=user.provider_uid
-            ))
-
-        # Make a session
-        response['session'] = dict(
-            token=session_token)
-
-        res = Response(data=response, status=status.HTTP_200_OK)
-        res.set_cookie('USAT', session_token,
-                       httponly=True, domain="localhost")
-        return res
-    else:
-        return Response(data=dict(), status=status.HTTP_400_BAD_REQUEST)
+@permission_classes([HasSessionActive])
+def logout(request):
+    # Delete session
+    delete_session(request.active_session.user, request.active_session.id)
+    # Return response
+    return Response(status=204)
 
 
 @api_view(['GET'])
+@permission_classes([HasSessionActive])
 def userInfo(request):
-    user = getUserID(request)
+    user = request.active_session.user
     try:
-
+        discord_user = None
         if (user.provider_connected):
             u = requests.get(
                 url=config('DISCORD_OAUTH_BASE_URL')+"users/@me",
@@ -122,34 +117,20 @@ def userInfo(request):
                     "Authorization": "Bearer " + user.provider_access_token,
                 }
             )
-
-        # Prepare response
-        response = dict(
-            id=user.id,
-            email=user.email,
-            name=user.name,
-            schedule=user.schedule,
-            joined=user.joined,
-            provider_uid=user.provider_uid,
-            avatar="",
-            tag=""
-        )
-
-        if (u.status_code == 200):
-            discord_user = u.json()
-            response['avatar'] = discord_user['avatar']
-            response['tag'] = discord_user['username'] + \
-                "#"+discord_user['discriminator']
-
-        return Response(data=response, status=status.HTTP_200_OK)
-    except:
-        return Response(data={}, status=status.HTTP_400_BAD_REQUEST)
+            if (u.status_code == 200):
+                discord_user = u.json()
+        data = prepareUserResponse(request.active_session, discord_user)
+        return Response(data=data, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response(data={}, status=500)
 
 
 @api_view(['POST'])
+@permission_classes([HasSessionActive])
 def alterSchedule(request, term_id):
     if term_id:
-        user = getUserID(request)
+        user = request.active_session.user
         try:
             userSchedule = json.loads(user.schedule)
         except:
@@ -163,10 +144,11 @@ def alterSchedule(request, term_id):
 
 
 @api_view(['POST'])
+@permission_classes([HasSessionActive])
 def alterBulkSchedule(request):
     if request.data:
         schedule = unflatten_dict(request.data.dict())
-        user = getUserID(request)
+        user = request.active_session.user
         userSchedule = dict()
         for key, value in schedule.items():
             print(value['section']['data'])
@@ -187,6 +169,7 @@ def alterBulkSchedule(request):
 
 
 @api_view(['POST'])
+@permission_classes([HasSessionActive])
 def bulkScheduleUpdate(request):
     if request.data['schedule']:
         pass
@@ -216,6 +199,7 @@ def refreshDiscordToken(refresh_token, user):
                 user.provider_access_token = discord_tokens['access_token']
                 user.provider_refresh_token = discord_tokens['refresh_token']
                 user.provider_token_expiry = discord_tokens['expires_in']
+                user.provider_connected_at = now()
                 user.save()
                 return user
             elif (r.status_code == 401):
@@ -226,77 +210,6 @@ def refreshDiscordToken(refresh_token, user):
         pass
     return None
 
-
-def getUserID(request):
-    # Check if token is present in header
-    try:
-        token = request.headers['Authorization'].split()[-1]
-        if len(token) < 48:
-            raise KeyError
-    except (KeyError, IndexError) as error:
-        return Response(data="Unauthorized.", status=status.HTTP_401_UNAUTHORIZED)
-    # Check if token is present in database and is valid
-    try:
-        session = Session.objects.select_related(
-            'user').get(token=hashThis(token))
-        # Check if session is expired
-        isSessionExpired = False
-        # Return valid token
-        if session.valid and not isSessionExpired:
-            return session.user
-        else:
-            if session.valid:
-                session.valid = False
-                session.token = "expired"
-                session.save()
-            return Response(data="Unauthorized.", status=status.HTTP_401_UNAUTHORIZED)
-    except Session.DoesNotExist:
-        return Response(data="Unauthorized.", status=status.HTTP_401_UNAUTHORIZED)
-
-
-def issueSingleUseToken(request, user):
-    session_token = token_hex(24)
-    session = SingleUseToken(
-        user=user,
-        token=session_token,
-    )
-    session.save()
-    return session_token
-
-
-def issueSessionToken(request, user):
-    session_token = token_hex(24)
-    session = Session(
-        user=user,
-        token=hashThis(session_token),
-        ip=_getClientIP(request),
-        ua=_getUserAgent(request)
-    )
-    session.save()
-    return session_token
-
-# Hash
-
-
-def hashThis(value):
-    return hashlib.sha256(str(value).encode('utf-8')).hexdigest()
-
-# Get Client IP Address
-
-
-def _getClientIP(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
-
-# Get User Agent
-
-
-def _getUserAgent(request):
-    return request.META.get('HTTP_USER_AGENT')
 
 # Unflatten local schedule from frontend
 
@@ -318,3 +231,14 @@ def unflatten_dict(flat_dict):
         current_dict[main_key] = value
 
     return unflattened_dict
+
+
+def prepareUserResponse(session, discord_user=None):
+    if discord_user:
+        avatar = discord_user['avatar']
+        tag = discord_user['username'] + "#"+discord_user['discriminator']
+    else:
+        avatar, tag = "", ""
+    response = {'user': {**UserResponseSerializer(
+        session.user).data, 'avatar': avatar, 'tag': tag}, **dict(session=session.id)}
+    return response

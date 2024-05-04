@@ -371,7 +371,7 @@ def template(name):
 													href="https://cofinder.ca"
 													target="_blank"
 													><img
-														src="https://cofinder.ca/assets/branding-2175b10e.png"
+														src="https://utfs.io/f/1e44ee15-d746-430a-8df8-b2f66beafe37-f3w91.png"
 														width="40px"
 												/></a>
 												<br />

@@ -37,12 +37,16 @@ INSTALLED_APPS = [
 
     'course',
     'user',
+    'user.user_session',
     'rest_framework',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    "user.user_session.middlewares.SessionMiddleware",
+
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
