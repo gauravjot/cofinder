@@ -9,11 +9,10 @@ import { combineDateTime } from "@/utils/CheckTimeSlotCollision";
 import { SectionsBrowserType } from "@/types/dbTypes";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "@/routes";
-import { FetchState } from "@/types/apiResponseType";
-import Spinner from "@/components/ui/Spinner";
 import { useAppSelector } from "@/redux/hooks";
-import { selectAllTermSchedules } from "@/redux/schedules/termScheduleSlice";
 import { abbreviateLocation } from "../../utils/process_location";
+import { selectAllSchedules } from "@/redux/schedules/scheduleSlice";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
 interface UpcomingSection extends SectionsBrowserType {
 	time_start: Date;
@@ -37,14 +36,16 @@ export default function UpcomingClasses() {
 	const navigate = useNavigate();
 	const [sections, setSections] = React.useState<UpcomingSection[]>([]);
 	const [untilNextClass, setUntilNextClass] = React.useState<string>();
-	const schedule = useAppSelector(selectAllTermSchedules);
+	const currentTerm = useAppSelector(selectCurrentTerm);
+	const schedule_sections = useAppSelector(selectAllSchedules);
 
 	React.useEffect(() => {
 		let seventh_date = new Date();
 		seventh_date.setDate(seventh_date.getDate() + 7);
 		let result: UpcomingSection[] = [];
-		if (schedule && schedule.sections?.length > 0) {
-			for (const section of schedule.sections) {
+		let sections = schedule_sections.filter((s) => s.term === currentTerm.code);
+		if (sections.length > 0) {
+			for (const section of sections) {
 				if (!section.is_active || !section.schedule) {
 					continue;
 				}
@@ -123,7 +124,7 @@ export default function UpcomingClasses() {
 		} else {
 			setSections([]);
 		}
-	}, [schedule]);
+	}, [schedule_sections, currentTerm]);
 
 	let [markDays, setMarkDays] = React.useState<string[]>([]);
 
@@ -187,11 +188,7 @@ export default function UpcomingClasses() {
 					)}
 				</span>
 			</div>
-			{schedule?.fetched === FetchState.Fetching ? (
-				<>
-					<Spinner />
-				</>
-			) : sections && sections.length > 0 ? (
+			{sections && sections.length > 0 ? (
 				<div className="bg-white dark:bg-slate-800 rounded shadow border border-gray-300 dark:border-slate-700 border-opacity-80">
 					{sections.map((schedule, index) => {
 						return (

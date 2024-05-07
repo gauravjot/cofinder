@@ -1,5 +1,4 @@
-import { ScheduleType } from "@/types/dbTypes";
-import { ReduxDetailedScheduleType } from "@/types/stateTypes";
+import { ScheduleType, SectionsBrowserType } from "@/types/dbTypes";
 
 export enum Weekdays {
 	"Sun",
@@ -64,18 +63,18 @@ export interface CollisionListItem {
 }
 
 export function checkCollision(
-	schedule: ScheduleType[] | undefined,
-	detailedSchedule: ReduxDetailedScheduleType
+	section_schedule: ScheduleType[] | undefined,
+	full_schedule: SectionsBrowserType[]
 ) {
 	// Get a timeslot list from sections in schedule
 	let scheduleList: CollisionListItem[] = [];
-	if (schedule === null || schedule === undefined) {
+	if (section_schedule === null || section_schedule === undefined) {
 		return false;
 	}
-	for (const slot of schedule) {
+	for (const slot of section_schedule) {
 		// days
-		if (!slot.hasOwnProperty('days')) {
-			continue
+		if (!slot.hasOwnProperty("days")) {
+			continue;
 		}
 		let days = slot.days;
 		if (!days) {
@@ -112,14 +111,14 @@ export function checkCollision(
 
 	// Get time slot list from detailed schedule
 	let alreadyScheduleList: CollisionListItem[] = [];
-	for (const schedule of detailedSchedule.sections) {
+	for (const schedule of full_schedule) {
 		if (schedule.schedule === null || !schedule.schedule) {
 			continue;
 		}
 		for (const slot of schedule.schedule) {
 			// days
-			if (!slot.hasOwnProperty('days')) {
-				continue
+			if (!slot.hasOwnProperty("days")) {
+				continue;
 			}
 			let days = slot.days;
 			if (!days) {

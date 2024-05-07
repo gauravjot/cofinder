@@ -4,7 +4,6 @@ import coursesReducer from "@/redux/courses/courseSlice";
 import currentTermReducer from "@/redux/terms/currentTermSlice";
 import instructorsReducer from "@/redux/instructor/instructorSlice";
 import subjectsReducer from "@/redux/subjects/subjectSlice";
-import termScheduleReducer from "@/redux/schedules/termScheduleSlice";
 import schedulesReducer from "@/redux/schedules/scheduleSlice";
 
 export type RootState = ReturnType<typeof reduxStore.getState>;
@@ -24,7 +23,6 @@ export const reduxStore = configureStore({
 		mySchedule: schedulesReducer,
 		sections: sectionsReducer,
 		subjects: subjectsReducer,
-		termSchedule: termScheduleReducer,
 	},
 });
 

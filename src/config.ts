@@ -1,8 +1,8 @@
 export const APP_NAME = "CoFinder";
-export const VERSION_CODE: string = "1.0.1";
-export const VERSION_DATE: string = "May 4, 2024";
+export const VERSION_CODE: string = "1.1.0";
+export const VERSION_DATE: string = "May 6, 2024";
 export const VERSION_RELEASE_PAGE =
-	"https://github.com/gauravjot/cofinder-frontend/pull/16";
+	"https://github.com/gauravjot/cofinder-frontend/pull/17";
 
 // School
 export const SCHOOL_FULL_NAME: string = "University of the Fraser Valley";
@@ -20,3 +20,5 @@ export const FEEDBACK_URL: string = "https://forms.office.com/r/6agnYan48K";
 export const API_FAIL_RETRY_TIMER = 5000;
 // Refresh Component Data at set interval
 export const FETCH_TIME_GAP: number = 60 * 60 * 1000;
+
+export const BACKEND_URL: string = import.meta.env.VITE_BACKEND_URL || "";

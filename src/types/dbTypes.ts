@@ -37,6 +37,7 @@ export interface SectionsBrowserType {
 	instructor?: string;
 	crn: number;
 	name: string;
+	term: string;
 	is_active: boolean;
 	is_lab: boolean;
 	status: string;

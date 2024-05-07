@@ -3,7 +3,7 @@ import { InstructorType, CourseType, SubjectType } from "./dbTypes";
 export interface MyScheduleTypeItem {
 	// term is term id
 	term: string;
-	section: number;
+	section: SectionsBrowserType;
 }
 export interface ReduxDetailedScheduleType {
 	sections: SectionsBrowserType[];

@@ -133,16 +133,15 @@ export function ListRow(props: Props) {
 					expand
 						? "bg-accent-200 dark:bg-slate-1000"
 						: props.isSelected
-						? "bg-accent-200 dark:bg-accent-700"
+						? "bg-accent-200 dark:bg-accent-700 hover:bg-accent-200 dark:hover:bg-accent-700"
 						: !props.section.is_active
 						? "bg-gray-100 dark:bg-slate-900"
-						: ""
+						: "hover:bg-opacity-5 dark:hover:bg-slate-700"
 				}
 			>
 				<div
 					className={
-						"block lg:grid grid-cols-12 hover:bg-black hover:bg-opacity-5" +
-						" dark:hover:bg-slate-700 transition-colors " +
+						"block lg:grid grid-cols-12 transition-colors " +
 						(expand
 							? ""
 							: props.isSelected
@@ -311,13 +310,13 @@ export function ListRow(props: Props) {
 							props.section.instructor
 								.split(";")
 								.map((instructor, index) => (
-									<>
+									<span key={instructor + index}>
 										{instructor}
 										{index + 1 !==
 										props.section.instructor?.split(";").length
 											? " • "
 											: ""}
-									</>
+									</span>
 								))}
 					</div>
 					<div className={rowItemClass + " hidden lg:flex col-span-1"}>
