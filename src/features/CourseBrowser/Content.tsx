@@ -57,7 +57,6 @@ export default function CourseBrowserContent(props: ICourseBrowserContentProps) 
 			</div>
 			<div className="w-full h-full overflow-y-hidden">
 				<List
-					mySchedule={mySchedule}
 					listData={props.data}
 					showOnlySelected={showOnlySelected}
 					isTFA={props.isTrustedFilterActive}

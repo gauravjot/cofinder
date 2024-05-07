@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux/store";
-import { MyScheduleTypeItem } from "@/types/stateTypes";
+import { SectionsBrowserType } from "@/types/dbTypes";
 import * as React from "react";
 
 export default function ShowSelectedToggle({
@@ -8,7 +8,7 @@ export default function ShowSelectedToggle({
 	setShowOnlySelected,
 	showOnlySelected,
 }: {
-	mySchedule: MyScheduleTypeItem[];
+	mySchedule: SectionsBrowserType[];
 	setShowOnlySelected: React.Dispatch<React.SetStateAction<boolean>>;
 	showOnlySelected: boolean;
 }) {
@@ -20,10 +20,10 @@ export default function ShowSelectedToggle({
 
 	React.useEffect(() => {
 		// If show selected is enabled but schedule is empty, disable it.
-		if (mySchedule.length === 0) {
+		if (mySchedule.filter((s) => s.term === currentTerm.code).length === 0) {
 			setShowOnlySelected(false);
 		}
-	}, [mySchedule]);
+	}, [mySchedule, currentTerm]);
 
 	return (
 		<button

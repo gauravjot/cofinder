@@ -13,7 +13,6 @@ import {
 	remove as removeFromMySchedule,
 	selectAllSchedules,
 } from "@/redux/schedules/scheduleSlice";
-import { MyScheduleTypeItem } from "@/types/stateTypes";
 import { Virtuoso } from "react-virtuoso";
 import { useLgMediaQuery } from "@/hooks/useMediaQuery";
 import { useMutation } from "react-query";
@@ -24,7 +23,6 @@ import { removeScheduleRequest } from "@/services/user/schedule/remove";
 const ListRow = React.lazy(() => import("@/features/CourseBrowser/ListRow"));
 
 interface Props {
-	mySchedule: MyScheduleTypeItem[];
 	listData: SectionsBrowserType[];
 	isKFA: boolean;
 	isTFA: boolean;

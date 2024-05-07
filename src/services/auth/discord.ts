@@ -1,8 +1,9 @@
 import { UserType } from "@/types/userTypes";
 import axios from "axios";
 import { authWithDiscordEP } from "../../server_eps";
+import { SectionsBrowserType } from "@/types/dbTypes";
 
-export async function authWithDiscord(code: string): Promise<UserType> {
+export async function authWithDiscord(code: string) {
 	return code.length > 0
 		? await axios
 				.post(
@@ -18,7 +19,10 @@ export async function authWithDiscord(code: string): Promise<UserType> {
 					}
 				)
 				.then(function (response) {
-					return response.data as UserType;
+					return response.data as {
+						user: UserType;
+						schedule: SectionsBrowserType[];
+					};
 				})
 		: Promise.reject("Invalid code");
 }
