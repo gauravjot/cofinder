@@ -1,6 +1,5 @@
 import { useAppDispatch } from "@/redux/hooks";
 import { clear as clearSchedule } from "@/redux/schedules/scheduleSlice";
-import { clear as clearTermSchedule } from "@/redux/schedules/termScheduleSlice";
 import { useContext } from "react";
 import { UserContext } from "@/App";
 import { useMutation } from "react-query";
@@ -15,7 +14,6 @@ export default function TopbarUserDrop() {
 		mutationFn: () => logoutUser(),
 		onSuccess: () => {
 			dispatch(clearSchedule());
-			dispatch(clearTermSchedule());
 			user.setData(null);
 		},
 		onError: (error: AxiosError) => {

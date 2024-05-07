@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { EP_TERMS } from "@/server_eps";
 import { useQuery } from "@tanstack/react-query";
 import { selectCurrentTerm, set as setCurrentTerm } from "@/redux/terms/currentTermSlice";
-import { clear as clearTermSchedule } from "@/redux/schedules/termScheduleSlice";
 import { clear as clearSections } from "@/redux/sections/sectionSlice";
 import { clear as clearInstructors } from "@/redux/instructor/instructorSlice";
 import { clear as clearSubjects } from "@/redux/subjects/subjectSlice";
@@ -59,7 +58,6 @@ export default function TermSelector() {
 			dispatch(clearInstructors());
 			dispatch(clearSections());
 			dispatch(clearSubjects());
-			dispatch(clearTermSchedule());
 			// Set new Term state
 			dispatch(setCurrentTerm(term));
 			toggleTermsMenu();
@@ -151,7 +149,8 @@ export default function TermSelector() {
 					>
 						<div className="h-px border-t border-gray-300 dark:border-slate-800 mt-px"></div>
 						<div className="py-2" role="none">
-							{query.isSuccess && query.data.terms &&
+							{query.isSuccess &&
+								query.data.terms &&
 								query.data.terms.map((term: TermType) => {
 									return (
 										<button

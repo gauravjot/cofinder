@@ -1,9 +1,8 @@
-import { MyScheduleTypeItem } from "@/types/stateTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import alterSchedule from "@/services/user/section/alter_schedule";
+import { SectionsBrowserType } from "@/types/dbTypes";
 
-const initialState: MyScheduleTypeItem[] = [];
+const initialState: SectionsBrowserType[] = [];
 
 export const scheduleSlice = createSlice({
 	name: "mySchedule",
@@ -16,31 +15,12 @@ export const scheduleSlice = createSlice({
 			return initialState;
 		},
 		add: (state, action) => {
-			state.push({
-				section: action.payload[0].section,
-				term: action.payload[0].term,
-			});
-			let schedulesInTerm = state.filter((s) => s.term === action.payload[0].term);
-			let schList: string[] = [];
-			for (let i = 0; i < schedulesInTerm.length; i++) {
-				schList.push(schedulesInTerm[i].section.toString());
-			}
-			// Send network request
-			alterSchedule(action.payload[0].term, schList);
+			state.push(action.payload);
 		},
 		remove: (state, action) => {
 			let schedule = state.filter((entry) => {
-				return entry.section.toString() !== action.payload[0].section.toString();
+				return entry.crn !== action.payload.crn;
 			});
-			let schedulesInTerm = schedule.filter(
-				(s) => s.term === action.payload[0].term
-			);
-			let schList: string[] = [];
-			for (let i = 0; i < schedulesInTerm.length; i++) {
-				schList.push(schedulesInTerm[i].section.toString());
-			}
-			// Send network request
-			alterSchedule(action.payload[0].term, schList);
 			return schedule;
 		},
 	},

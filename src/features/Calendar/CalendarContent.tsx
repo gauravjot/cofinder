@@ -9,41 +9,39 @@ import {
 } from "@/utils/CheckTimeSlotCollision";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@/assets/css/calendar.css";
-import { ReduxDetailedScheduleType } from "@/types/stateTypes";
 import { ScheduleType } from "@/types/dbTypes";
-import { FetchState } from "@/types/apiResponseType";
-import Spinner from "@/components/ui/Spinner";
-import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
-import { API_FAIL_RETRY_TIMER } from "@/config";
-import { useFetchSchedule } from "@/services/core/fetch_schedule";
+import { useAppSelector } from "@/redux/hooks";
+import { selectAllSchedules } from "@/redux/schedules/scheduleSlice";
+import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
 const localizer = momentLocalizer(moment);
+interface Event {
+	id: string;
+	title: string;
+	start: Date;
+	end: Date;
+}
 
 export default function Content() {
-	interface Event {
-		id: string;
-		title: string;
-		start: Date;
-		end: Date;
-	}
-
+	const schedule_sections = useAppSelector(selectAllSchedules);
+	const currentTerm = useAppSelector(selectCurrentTerm);
 	const [events, setEvents] = React.useState<Event[]>([]);
-	const detailedSchedule: ReduxDetailedScheduleType = useFetchSchedule();
 
 	// Get "events" for Calendar to populate
 	React.useEffect(() => {
-		if (detailedSchedule && detailedSchedule.sections.length > 0) {
+		let sections = schedule_sections.filter((s) => s.term === currentTerm.code);
+		if (sections.length > 0) {
 			let local_list: Event[] = [];
 			// Iterate over all the sections user is enrolled in
-			for (let i = 0; i < detailedSchedule.sections.length; i++) {
-				let section = detailedSchedule.sections[i];
+			for (let i = 0; i < sections.length; i++) {
+				let section = sections[i];
 				if (!section.is_active || !section.schedule) {
 					continue;
 				}
 				// Iterate all schedule enteries that section has
 				for (let j = 0; j < section.schedule.length; j++) {
 					// days
-					if (!section.schedule[j].hasOwnProperty('days')) {
+					if (!section.schedule[j].hasOwnProperty("days")) {
 						continue;
 					}
 					let days = section.schedule[j].days;
@@ -51,13 +49,15 @@ export default function Content() {
 						continue;
 					}
 					let section_schedule: ScheduleType = section.schedule[j];
-					for (let k = 0; k < days.length ; k++) {
+					for (let k = 0; k < days.length; k++) {
 						// Get the first date of class for this schedule
 						let start_date = getDayAfterDate(
 							convertToJsDate(section_schedule.date_start.toString()),
 							Weekdays[days[k] as keyof typeof Weekdays]
 						);
-						let end_date = convertToJsDate(section_schedule.date_end.toString());
+						let end_date = convertToJsDate(
+							section_schedule.date_end.toString()
+						);
 						let calendar_entry_title =
 							section.name +
 							" - " +
@@ -78,7 +78,10 @@ export default function Content() {
 										section_schedule.time_start +
 										d,
 									title: calendar_entry_title,
-									start: combineDateTime(d, section_schedule.time_start),
+									start: combineDateTime(
+										d,
+										section_schedule.time_start
+									),
 									end: combineDateTime(d, section_schedule.time_end),
 								};
 								local_list.push({ ...obj });
@@ -105,35 +108,17 @@ export default function Content() {
 			}
 			setEvents(local_list);
 		}
-	}, [detailedSchedule]);
+	}, [schedule_sections, currentTerm]);
 
 	return (
 		<div className="mt-28 md:mt-12 xl:mt-0">
-			{detailedSchedule.fetched === FetchState.Fetching ? (
-				<div className="grid items-center justify-center h-full py-24 dark:text-slate-300">
-					<Spinner />
-				</div>
-			) : detailedSchedule.fetched === FetchState.Error ? (
-				<div className="bg-red-200/50 rounded dark:bg-red-900/20 mt-10">
-					<ErrorTemplate
-						message={
-							<>
-								There was an error getting your calendar events over
-								network. We will try again in{" "}
-								{API_FAIL_RETRY_TIMER / 1000} secs.
-							</>
-						}
-					/>
-				</div>
-			) : (
-				<Calendar
-					localizer={localizer}
-					events={events}
-					views={["month", "week", "day"]}
-					min={moment("2023-03-26T07:00:00").toDate()}
-					max={moment("2023-03-26T23:00:00").toDate()}
-				/>
-			)}
+			<Calendar
+				localizer={localizer}
+				events={events}
+				views={["month", "week", "day"]}
+				min={moment("2023-03-26T07:00:00").toDate()}
+				max={moment("2023-03-26T23:00:00").toDate()}
+			/>
 		</div>
 	);
 }

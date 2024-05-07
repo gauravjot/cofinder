@@ -3,6 +3,10 @@ import App from "./App";
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+/* Redux */
+import { Provider } from "react-redux";
+import { reduxStore } from "./redux/store";
+
 // Create a client
 const queryClient = new QueryClient();
 
@@ -20,7 +24,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<QueryClientProvider2 client={queryClient2}>
 			<QueryClientProvider client={queryClient}>
-				<App />
+				<Provider store={reduxStore}>
+					<App />
+				</Provider>
 			</QueryClientProvider>
 		</QueryClientProvider2>
 	</React.StrictMode>

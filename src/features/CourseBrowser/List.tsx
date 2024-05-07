@@ -11,20 +11,18 @@ import { selectAllSections } from "@/redux/sections/sectionSlice";
 import {
 	add as addToMySchedule,
 	remove as removeFromMySchedule,
+	selectAllSchedules,
 } from "@/redux/schedules/scheduleSlice";
-import {
-	add as addToTermSchedule,
-	remove as removeFromTermSchedule,
-} from "@/redux/schedules/termScheduleSlice";
-import { useFetchSchedule } from "@/services/core/fetch_schedule";
-import { MyScheduleTypeItem } from "@/types/stateTypes";
 import { Virtuoso } from "react-virtuoso";
 import { useLgMediaQuery } from "@/hooks/useMediaQuery";
+import { useMutation } from "react-query";
+import { AddScheduleRequestType, addScheduleRequest } from "@/services/user/schedule/add";
+import { UserContext } from "@/App";
+import { removeScheduleRequest } from "@/services/user/schedule/remove";
 
 const ListRow = React.lazy(() => import("@/features/CourseBrowser/ListRow"));
 
 interface Props {
-	mySchedule: MyScheduleTypeItem[];
 	listData: SectionsBrowserType[];
 	isKFA: boolean;
 	isTFA: boolean;
@@ -32,35 +30,52 @@ interface Props {
 }
 
 export default function List(props: Props) {
+	const user_context = React.useContext(UserContext);
 	const dispatch = useAppDispatch();
-	const detailedSchedule = useFetchSchedule(props.mySchedule);
+	const schedule = useAppSelector(selectAllSchedules);
 	const currentTerm = useAppSelector(selectCurrentTerm);
 	const fetchState = useAppSelector(selectAllSections).fetched;
 
+	console.log("render");
+
 	const isLargeScreenSize = useLgMediaQuery();
 
+	const addScheduleMutation = useMutation({
+		mutationFn: (payload: AddScheduleRequestType) => {
+			return addScheduleRequest(payload);
+		},
+		onError: (error) => {
+			console.error(error);
+		},
+	});
+
+	const removeScheduleMutation = useMutation({
+		mutationFn: (payload: AddScheduleRequestType) => {
+			return removeScheduleRequest(payload);
+		},
+		onError: (error) => {
+			console.error(error);
+		},
+	});
+
 	const addToSchedule = (section: SectionsBrowserType) => {
-		dispatch(
-			addToMySchedule([
-				{
-					term: currentTerm.code,
-					section: section.crn,
-				},
-			])
-		);
-		dispatch(addToTermSchedule(section));
+		if (user_context.data) {
+			// Add to schedule in the backend
+			let payload = [{ term: currentTerm.code, section: section.crn }];
+			addScheduleMutation.mutate(payload);
+		}
+		// Add to schedule in local
+		dispatch(addToMySchedule(section));
 	};
 
 	const removeFromSchedule = (section: SectionsBrowserType) => {
-		dispatch(removeFromTermSchedule(section.crn));
-		dispatch(
-			removeFromMySchedule([
-				{
-					term: currentTerm.code,
-					section: section.crn,
-				},
-			])
-		);
+		if (user_context.data) {
+			// Remove from schedule in the backend
+			let payload = [{ term: currentTerm.code, section: section.crn }];
+			removeScheduleMutation.mutate(payload);
+		}
+		// Remove from schedule in local
+		dispatch(removeFromMySchedule(section));
 	};
 
 	const Row = ({ index }: { index: number }) => {
@@ -70,13 +85,13 @@ export default function List(props: Props) {
 				section={props.listData[index]}
 				term={currentTerm}
 				isSelected={
-					detailedSchedule?.sections.findIndex(
+					schedule.findIndex(
 						(o: SectionsBrowserType) => o.crn === props.listData[index].crn
 					) !== -1
 				}
 				doesCollide={
 					props.listData[index].is_active
-						? checkCollision(props.listData[index].schedule, detailedSchedule)
+						? checkCollision(props.listData[index].schedule, schedule)
 						: false
 				}
 				addToSchedule={addToSchedule}
@@ -128,19 +143,21 @@ export default function List(props: Props) {
 							}
 						>
 							{props.showOnlySelected ? (
-								detailedSchedule.sections.map((item) => {
-									return (
-										<ListRow
-											key={item.crn}
-											section={item}
-											term={currentTerm}
-											isSelected={true}
-											doesCollide={false}
-											addToSchedule={addToSchedule}
-											removeFromSchedule={removeFromSchedule}
-										/>
-									);
-								})
+								schedule
+									.filter((s) => s.term === currentTerm.code)
+									.map((item) => {
+										return (
+											<ListRow
+												key={item.crn}
+												section={item}
+												term={currentTerm}
+												isSelected={true}
+												doesCollide={false}
+												addToSchedule={addToSchedule}
+												removeFromSchedule={removeFromSchedule}
+											/>
+										);
+									})
 							) : props.listData.length > 0 ? (
 								<Virtuoso
 									style={{

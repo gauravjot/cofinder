@@ -76,20 +76,22 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 				<span className="text-gray-800 dark:text-slate-200">
 					{props.seatInfo ? (
 						<table>
-							<tr>
-								<td>Section:</td>
-								<td className="font-mono">
-									{props.seatInfo.seats.Actual}/
-									{props.seatInfo.seats.Capacity}
-								</td>
-							</tr>
-							<tr>
-								<td className="pr-4">Waitlist:</td>
-								<td className="font-mono">
-									{props.seatInfo.waitlist.Actual}/
-									{props.seatInfo.waitlist.Capacity}
-								</td>
-							</tr>
+							<tbody>
+								<tr>
+									<td>Section:</td>
+									<td className="font-mono">
+										{props.seatInfo.seats.Actual}/
+										{props.seatInfo.seats.Capacity}
+									</td>
+								</tr>
+								<tr>
+									<td className="pr-4">Waitlist:</td>
+									<td className="font-mono">
+										{props.seatInfo.waitlist.Actual}/
+										{props.seatInfo.waitlist.Capacity}
+									</td>
+								</tr>
+							</tbody>
 						</table>
 					) : props.isLoadingSeats ? (
 						<>Loading...</>

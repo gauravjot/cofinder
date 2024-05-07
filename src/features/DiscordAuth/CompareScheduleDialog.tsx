@@ -1,16 +1,27 @@
-import { UserContext } from "@/App";
-import { TermType } from "@/types/dbTypes";
-import { useContext, useState } from "react";
+import { SectionsBrowserType, TermType } from "@/types/dbTypes";
+import { useState } from "react";
 
 export default function CompareScheduleDialog({
 	local_schedule,
+	server_schedule,
 	saveScheduleCallback,
 }: {
-	local_schedule: { [key: string]: string[] };
+	local_schedule: SectionsBrowserType[];
+	server_schedule: SectionsBrowserType[];
 	saveScheduleCallback: (selected_schedule: "cloud" | "local") => void;
 }) {
 	const [selectSchToKeep, setSelectSchToKeep] = useState<"local" | "cloud">("cloud");
-	const server_schedule = useContext(UserContext).data?.user.schedule;
+
+	function getUniqueTerms(schedule: SectionsBrowserType[]) {
+		let terms: Set<string> = new Set();
+		for (let i = 0; i < schedule.length; i++) {
+			terms.add(schedule[i].term.toString());
+		}
+		// Convert set to array
+		let arr = Array.from(terms);
+		console.log(arr);
+		return arr;
+	}
 
 	return (
 		<div className="absolute h-screen w-screen flex place-content-center place-items-center">
@@ -48,11 +59,17 @@ export default function CompareScheduleDialog({
 									{local_schedule && selectSchToKeep === "cloud" && (
 										<p className="leading-6 text-slate-600 text-sm dark:text-slate-400">
 											Schedules saved for:{" "}
-											{Object.keys(local_schedule).join(", ")}
+											{getUniqueTerms(local_schedule)
+												.map((t) => getTermFromID(t).name)
+												.join(", ")}
 										</p>
 									)}
 									{local_schedule && selectSchToKeep === "local" && (
-										<ListSections schedule={local_schedule} />
+										<ListSections
+											schedule={local_schedule}
+											terms={getUniqueTerms(local_schedule)}
+											key={1}
+										/>
 									)}
 								</div>
 								<div>
@@ -83,11 +100,17 @@ export default function CompareScheduleDialog({
 								{selectSchToKeep === "local" && server_schedule && (
 									<p className="leading-6 text-slate-600 text-sm dark:text-slate-400">
 										Schedules saved for:{" "}
-										{Object.keys(local_schedule).join(", ")}
+										{getUniqueTerms(server_schedule)
+											.map((t) => getTermFromID(t).name)
+											.join(", ")}
 									</p>
 								)}
 								{selectSchToKeep === "cloud" && server_schedule ? (
-									<ListSections schedule={server_schedule} />
+									<ListSections
+										schedule={server_schedule}
+										terms={getUniqueTerms(server_schedule)}
+										key={2}
+									/>
 								) : (
 									<></>
 								)}
@@ -122,37 +145,33 @@ export default function CompareScheduleDialog({
 	);
 }
 
-function ListSections({ schedule }: { schedule: { [key: string]: string[] } }) {
-	function getTermFromID(term_id: string) {
-		// format 202405
-		let year = term_id.slice(0, 4);
-		let month = term_id.slice(4);
-		let term = month === "01" ? "Winter" : month === "05" ? "Summer" : "Fall";
-		return { code: term_id, name: term + " " + year } as TermType;
-	}
-
+function ListSections({
+	schedule,
+	terms,
+}: {
+	schedule: SectionsBrowserType[];
+	terms: string[];
+}) {
 	return (
 		<div className="mt-2">
 			<table>
 				<tbody>
-					{Object.keys(schedule).map((term_id) => {
+					{terms.map((term_code) => {
 						return (
 							<tr className="place-items-baseline border-b-2 border-black/5 dark:border-white/10">
 								<td className="w-28 text-sm align-baseline py-1.5 pt-2">
-									{getTermFromID(term_id).name}
+									{getTermFromID(term_code).name}
 								</td>
 								<td className="ml-4 mt-1 font-mono py-1.5">
-									{schedule[term_id] ? (
-										schedule[term_id].map((section: any) => {
+									{schedule
+										.filter((s) => s.term.toString() === term_code)
+										.map((section) => {
 											return (
 												<span className="px-1 inline-block">
-													• {section}
+													• {section.name}
 												</span>
 											);
-										})
-									) : (
-										<></>
-									)}
+										})}
 								</td>
 							</tr>
 						);
@@ -161,4 +180,12 @@ function ListSections({ schedule }: { schedule: { [key: string]: string[] } }) {
 			</table>
 		</div>
 	);
+}
+
+function getTermFromID(term_id: string) {
+	// format 202405
+	let year = term_id.slice(0, 4);
+	let month = term_id.slice(4);
+	let term = month === "01" ? "Winter" : month === "05" ? "Summer" : "Fall";
+	return { code: term_id, name: term + " " + year } as TermType;
 }

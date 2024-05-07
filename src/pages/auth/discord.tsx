@@ -8,18 +8,19 @@ import { AxiosError } from "axios";
 import { isEqual } from "lodash";
 import { useContext, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "@/assets/images/branding.png";
-import { MyScheduleTypeItem } from "@/types/stateTypes";
 import { set as setSchedule } from "@/redux/schedules/scheduleSlice";
-import alterBulkSchedule from "@/services/user/section/alter_bulk_schedule";
 import { themeApply } from "@/components/utils/ThemeApply";
 import { UserContext } from "@/App";
 import CompareScheduleDialog from "@/features/DiscordAuth/CompareScheduleDialog";
+import { SectionsBrowserType } from "@/types/dbTypes";
+import { addFromScratchScheduleRequest } from "@/services/user/schedule/add_from_scratch";
 
 export default function StartAuthPage() {
 	themeApply();
+	const queryclient = useQueryClient();
 	const navigate = useNavigate();
 	const [params, _] = useSearchParams();
 	const code = params.get("code") || "";
@@ -29,7 +30,11 @@ export default function StartAuthPage() {
 	const [scheduleDiff, setScheduleDiff] = useState<boolean>(false); // Flag if schedule is different
 	const user_context = useContext(UserContext);
 
-	const scheduleLocal = useAppSelector(selectAllSchedules);
+	const schedule = useAppSelector(selectAllSchedules);
+	const [schedule_local, setScheduleLocal] = useState<SectionsBrowserType[]>(schedule);
+	const [schedule_from_server, setScheduleFromServer] = useState<SectionsBrowserType[]>(
+		[]
+	);
 
 	if (discord_error) {
 		navigate(ROUTE.Home);
@@ -41,15 +46,17 @@ export default function StartAuthPage() {
 		onSuccess: (response) => {
 			setError(null);
 			// Set user data
-			user_context.setData(response);
+			setScheduleLocal(schedule);
+			setScheduleFromServer(response.schedule);
+			user_context.setData(response.user);
 			// Check course collisions
-			let isDifferent = compareSchedules(response.user.schedule);
+			let isDifferent = compareSchedules(response.schedule);
 			if (isDifferent) {
 				// Set schedule diff flag
 				setScheduleDiff(true);
 			} else {
 				// If no schedule changes, navigate to home
-				saveServerScheduleToRedux(response.user.schedule);
+				saveServerScheduleToRedux();
 				setTimeout(() => {
 					navigate(ROUTE.Home);
 				}, 1250);
@@ -60,55 +67,37 @@ export default function StartAuthPage() {
 		},
 	});
 
-	function compareSchedules(schedule_from_server: any) {
+	function compareSchedules(schedule_from_server: SectionsBrowserType[]) {
 		let isDifferent = false;
 		// Compare user schedules: local and from server
-		let local_schedule = processLocalSchedule();
-		isDifferent = !isEqual(schedule_from_server, local_schedule);
+		isDifferent = !isEqual(schedule_from_server, schedule_local);
 		// Check if local schedule is empty
-		if (Object.keys(local_schedule).length === 0) {
+		if (schedule_local.length === 0) {
 			isDifferent = false;
 		}
 		return isDifferent;
 	}
 
-	function processLocalSchedule() {
-		// mold local schedule into a same format as server
-		let dict: { [key: string]: string[] } = {};
-		for (let i = 0; i < scheduleLocal.length; i++) {
-			if (scheduleLocal[i].term in dict) {
-				dict[scheduleLocal[i].term].push(scheduleLocal[i].section.toString());
-			} else {
-				dict[scheduleLocal[i].term] = new Array(
-					scheduleLocal[i].section.toString()
-				);
-			}
-		}
-		return dict;
+	function saveServerScheduleToRedux() {
+		dispatch(setSchedule(schedule_from_server));
 	}
 
-	function saveServerScheduleToRedux(server_schedule: any) {
-		if (!server_schedule) return;
-		let sch: MyScheduleTypeItem[] = [];
-		let data = server_schedule;
-		for (let i = 0; i < Object.keys(data).length; i++) {
-			for (let j = 0; j < data[Object.keys(data)[i]].length; j++) {
-				sch.push({
-					section: parseInt(data[Object.keys(data)[i]][j]),
-					term: Object.keys(data)[i],
-				});
-			}
-		}
-		dispatch(setSchedule(sch));
-	}
-
-	function saveSchedule(selected_schedule: "cloud" | "local", server_schedule?: any) {
+	function saveSchedule(selected_schedule: "cloud" | "local") {
 		if (selected_schedule === "cloud") {
-			saveServerScheduleToRedux(server_schedule);
+			saveServerScheduleToRedux();
 			navigate(ROUTE.Home);
 		} else if (selected_schedule === "local") {
 			// Send schedule to server
-			alterBulkSchedule(scheduleLocal).then(() => {
+			let payload = [];
+			for (let i = 0; i < schedule_local.length; i++) {
+				payload.push({
+					section: schedule_local[i].crn,
+					term: schedule_local[i].term,
+				});
+			}
+			addFromScratchScheduleRequest(payload).then(() => {
+				// Invalidate user schedule query
+				queryclient.invalidateQueries("user_schedule");
 				navigate(ROUTE.Home);
 			});
 		}
@@ -176,7 +165,8 @@ export default function StartAuthPage() {
 				</div>
 				{scheduleDiff && (
 					<CompareScheduleDialog
-						local_schedule={processLocalSchedule()}
+						local_schedule={schedule_local}
+						server_schedule={schedule_from_server}
 						saveScheduleCallback={saveSchedule}
 					/>
 				)}

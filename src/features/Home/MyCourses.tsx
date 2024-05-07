@@ -1,19 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { SectionsBrowserType, TermType } from "@/types/dbTypes";
 import { ROUTE } from "@/routes";
-import { FetchState } from "@/types/apiResponseType";
-import { API_FAIL_RETRY_TIMER } from "@/config";
-import { ErrorTemplate } from "@/components/utils/ErrorTemplate";
 import Spinner from "@/components/ui/Spinner";
 import { useAppSelector } from "@/redux/hooks";
 import { queryFetchSeats } from "@/services/core/fetch_seats";
 import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
-import { useFetchSchedule } from "@/services/core/fetch_schedule";
+import { selectAllSchedules } from "@/redux/schedules/scheduleSlice";
 
 export default function MyCourses() {
 	const navigate = useNavigate();
-	const schedule = useFetchSchedule();
 	const currentTerm = useAppSelector(selectCurrentTerm);
+	const schedule = useAppSelector(selectAllSchedules).filter(
+		(s) => s.term === currentTerm.code
+	);
 
 	return (
 		<div>
@@ -23,24 +22,9 @@ export default function MyCourses() {
 					/ {currentTerm.name}
 				</span>
 			</h2>
-			{schedule?.fetched === FetchState.Error ? (
-				<div className="bg-red-200/50 rounded dark:bg-red-900/20">
-					<ErrorTemplate
-						message={
-							<>
-								There was an error getting upcoming classes over network.
-								We will try again in {API_FAIL_RETRY_TIMER / 1000} secs.
-							</>
-						}
-					/>
-				</div>
-			) : schedule?.fetched === FetchState.Fetching ? (
-				<>
-					<Spinner />
-				</>
-			) : schedule && schedule.sections?.length > 0 ? (
+			{schedule && schedule.length > 0 ? (
 				<div className="grid 3xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1">
-					{schedule.sections.map((section: SectionsBrowserType) => (
+					{schedule.map((section: SectionsBrowserType) => (
 						<SectionItem
 							key={section.crn}
 							section={section}
