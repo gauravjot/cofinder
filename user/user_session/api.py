@@ -16,6 +16,10 @@ from .models import Session
 from .serializers import SessionSerializer
 
 
+def get_active_session(request) -> Session:
+    return request.active_session
+
+
 def create_session(user, request) -> tuple[str, Session]:
     """
     Create a new session for the user

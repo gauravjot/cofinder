@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'course',
     'user',
     'user.user_session',
+    'user.user_schedule',
     'rest_framework',
 ]
 

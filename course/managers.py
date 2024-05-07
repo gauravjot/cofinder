@@ -15,6 +15,9 @@ class TermManager(models.Manager):
         term.save()
         return term
 
+    def get_term(self, code):
+        return self.model.objects.get(code=code)
+
 
 class InstructorManager(models.Manager):
     def __init__(self):
@@ -107,6 +110,9 @@ class SectionManager(models.Manager):
         )
         section.save()
         return section
+
+    def get_section(self, crn):
+        return self.model.objects.get(crn=crn)
 
 
 class InstructionMediumManager(models.Manager):

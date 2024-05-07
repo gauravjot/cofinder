@@ -1,8 +1,9 @@
 import hashlib
 from secrets import token_urlsafe
 
-
 # Generate session key
+
+
 def generate_session_key():
     # This token length can be of any size as sha256 is used
     # and saved in database as fixed 64 characters. At least

@@ -1,6 +1,6 @@
 # Only to be used in development environment
 
-apps := course user user_session
+apps := course user user_session user_schedule
 
 .PHONY: all
 
@@ -9,7 +9,7 @@ venv:
 	python3 -m venv .venv
 	.venv/bin/python -m pip install -r requirements.txt
 
-resetdb:
+migratedb:
 	find . -type d -name migrations -prune -not -path "./.venv/*" -exec rm -rf {} \;
 	.venv/bin/python manage.py makemigrations
 	.venv/bin/python manage.py makemigrations $(apps)

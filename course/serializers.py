@@ -19,13 +19,13 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Sections
         fields = ['crn', 'name', 'is_active', 'is_lab', 'status', 'enrolled',
                   'capacity', 'waitlist', 'locations', 'schedule', 'note',
-                  'instructor']
+                  'instructor', 'term']
 
 
 class InstructionMediumSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstructionMediums
-        fields = ['code','name']
+        fields = ['code', 'name']
 
 
 class SubjectSerializer(serializers.ModelSerializer):
