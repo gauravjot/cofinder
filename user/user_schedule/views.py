@@ -103,3 +103,46 @@ def get(request):
     """
     schedules = get_detailed_schedule(get_active_session(request).user)
     return Response(data=schedules, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([HasSessionActive])
+def add_from_scratch(request):
+    """ Remove all exisiting schedules for user and add new schedules
+
+    request.data:
+        schedule (list): List of schedules to add
+
+    ```json
+    {
+        "schedule": [
+            {
+                "term": "202401",
+                "section": 12039
+            },
+            {
+                "term": "202405",
+                "section": 23201
+            }
+        ]
+    }
+    ```
+    Returns:
+        List[] : List of Detailed Sections for the added schedules
+    """
+    add_request = AddRequestSerializer(data=request.data)
+    if add_request.is_valid():
+        UserSchedule.objects.remove_all_schedule(
+            get_active_session(request).user)
+        for schedule in add_request.data['schedule']:
+            try:
+                UserSchedule.objects.add_schedule(
+                    term=get_term(schedule['term']),
+                    user=get_active_session(request).user,
+                    section=get_section(schedule['section'])
+                )
+            except:
+                pass
+        schedules = get_detailed_schedule(get_active_session(request).user)
+        return Response(data=schedules, status=204)
+    return Response(status=400)

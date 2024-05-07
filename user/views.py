@@ -13,6 +13,8 @@ import json
 from .send_email import send_welcome_email
 from .serializers import UserResponseSerializer
 
+from .user_schedule.api import get_detailed_schedule
+
 # Create your views here.
 
 
@@ -70,7 +72,10 @@ def handleDiscordResponse(request):
                     # Start session
                     key, session = create_session(user, request)
                     # Prepare response
-                    data = prepareUserResponse(session, discord_user)
+                    data = dict(
+                        user=prepareUserResponse(session, discord_user),
+                        schedule=get_detailed_schedule(user)
+                    )
                     response = Response(
                         data=data, status=status.HTTP_202_ACCEPTED)
                     response.set_cookie(

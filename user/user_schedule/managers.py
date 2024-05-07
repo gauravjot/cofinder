@@ -24,3 +24,9 @@ class UserScheduleManager(models.Manager):
 
     def get_all_schedule(self, user):
         return self.filter(user=user).order_by('term__code')
+
+    def remove_all_schedule(self, user):
+        schedules = self.get_all_schedule(user)
+        for schedule in schedules:
+            schedule.delete()
+        return schedules
