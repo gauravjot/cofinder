@@ -303,7 +303,7 @@ export function ListRow(props: Props) {
 					<div
 						className={
 							rowItemClass +
-							" lg:flex col-span-2 pl-[3.65rem] pt-1 lg:py-1.5 lg:pl-0 pb-3"
+							" col-span-2 pl-[3.65rem] pt-1 lg:py-1.5 lg:pl-0 pb-3"
 						}
 					>
 						{props.section.instructor &&

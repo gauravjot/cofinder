@@ -80,9 +80,7 @@ export default function NewsFeed() {
 
 	return (
 		<div>
-			<h2 className="flex-1 font-medium font-serif dark:text-white">
-				Important News
-			</h2>
+			<h2 className="flex-1 font-medium font-serif dark:text-white">Campus News</h2>
 			<div className="bg-white border border-gray-300 dark:border-slate-700 border-opacity-70 shadow-sm dark:bg-slate-800 p-4 rounded mt-6">
 				{isFetched && fetched.length > 0 ? (
 					<div className="grid gap-8">

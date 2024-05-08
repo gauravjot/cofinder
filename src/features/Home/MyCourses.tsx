@@ -138,7 +138,10 @@ function SectionItem({
 						) : (
 							<></>
 						)}
-						{section.name}
+						{section.name}{" "}
+						<span className="text-zinc-500 dark:text-slate-400 font-normal tracking-tighter">
+							- {section.crn}
+						</span>
 					</div>
 					<div className="mt-2 mb-1 flex-1">
 						<p className="text-gray-700 dark:text-slate-300 leading-[1.125rem]">
@@ -146,7 +149,7 @@ function SectionItem({
 								{section.course.name}
 							</span>
 							<span className="mt-2 block leading-[1.125rem] text-[0.925rem] text-gray-800 dark:text-slate-300">
-								{section.crn} - {section.instructor}
+								{section.instructor?.replaceAll(";", ", ")}
 							</span>
 						</p>
 					</div>

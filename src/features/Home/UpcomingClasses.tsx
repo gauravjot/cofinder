@@ -14,12 +14,7 @@ import { abbreviateLocation } from "../../utils/process_location";
 import { selectAllSchedules } from "@/redux/schedules/scheduleSlice";
 import { selectCurrentTerm } from "@/redux/terms/currentTermSlice";
 
-interface UpcomingSection extends SectionsBrowserType {
-	time_start: Date;
-	time_end: Date;
-	location: string;
-}
-
+const todayIndex = new Date().getDay();
 const days: string[] = [
 	"Sunday",
 	"Monday",
@@ -29,8 +24,14 @@ const days: string[] = [
 	"Friday",
 	"Saturday",
 ];
-const todayIndex = new Date().getDay();
-const daysFromToday = [...days.slice(todayIndex), ...days.slice(0, todayIndex)];
+
+interface UpcomingSection extends SectionsBrowserType {
+	time_start: Date;
+	time_end: Date;
+	location: string;
+}
+
+// const daysFromToday = [...days.slice(todayIndex), ...days.slice(0, todayIndex)];
 
 export default function UpcomingClasses() {
 	const navigate = useNavigate();
@@ -117,7 +118,9 @@ export default function UpcomingClasses() {
 				} else if (untilNextClass === 1) {
 					setUntilNextClass("tomorrow");
 				} else {
-					setUntilNextClass("in " + untilNextClass + " days");
+					setUntilNextClass(
+						"in " + untilNextClass + " days on " + days[start_time.getDay()]
+					);
 				}
 			}
 			setSections(result);
@@ -143,25 +146,27 @@ export default function UpcomingClasses() {
 			<div className="flex mb-2">
 				<h2 className="flex-1 font-medium font-serif">Next 7 days</h2>
 				<div className="flex pt-0.5">
-					{daysFromToday.map((day, index) => {
+					{days.map((day, index) => {
 						return (
 							<div key={index}>
 								<div
 									className={
-										(markDays.includes(day)
+										(markDays.includes(day) && index === todayIndex
+											? "bg-accent-700 text-white rounded-full"
+											: markDays.includes(day)
 											? "bg-gray-700 text-white rounded-full"
 											: "text-gray-600") +
-										(index === 0
-											? " border border-gray-400 dark:border-slate-600 rounded-full"
+										(index === todayIndex
+											? " border border-accent-700 rounded-full"
 											: "") +
 										" px-1 user-select-none font-medium ml-1 w-7 h-7 text-center text-sm grid place-items-center"
 									}
 									title={day}
 								>
 									{day === "Sunday"
-										? "Sun"
+										? "Su"
 										: day === "Thursday"
-										? "R"
+										? "Th"
 										: day.charAt(0)}
 								</div>
 							</div>
