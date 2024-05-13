@@ -29,7 +29,8 @@ function Home() {
 		<div className="App">
 			<Helmet>
 				<title>
-					{SCHOOL_SHORT_NAME} {APP_NAME} - Plan, Organize & Succeed
+					{APP_NAME}: Plan, Organize, & Succeed | Find Courses for{" "}
+					{SCHOOL_SHORT_NAME}
 				</title>
 			</Helmet>
 			<div className="flex relative">

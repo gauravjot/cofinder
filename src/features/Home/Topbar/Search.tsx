@@ -95,7 +95,11 @@ export default function Search() {
 				onChange={(e) => setKeyword(e.target.value)}
 				onKeyDown={(e) => {
 					if (e.key === "Enter")
-						navigate(ROUTE.CourseBrowserKeywordFilter(deferredKeyword));
+						navigate(
+							ROUTE.CourseBrowserKeywordFilter(
+								encodeURIComponent(deferredKeyword)
+							)
+						);
 				}}
 			/>
 			<label
@@ -217,7 +221,9 @@ export default function Search() {
 												onClick={() => {
 													navigate(
 														ROUTE.CourseBrowserKeywordFilter(
-															instructor.name
+															encodeURIComponent(
+																instructor.name
+															)
 														)
 													);
 												}}
@@ -265,7 +271,9 @@ export default function Search() {
 												onClick={() => {
 													navigate(
 														ROUTE.CourseBrowserKeywordFilter(
-															course.code
+															encodeURIComponent(
+																course.code
+															)
 														)
 													);
 												}}

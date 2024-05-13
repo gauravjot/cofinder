@@ -1,22 +1,19 @@
+import { FilterContext } from "@/pages/courses";
+import { ROUTE } from "@/routes";
 import * as React from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export interface IKeywordFilterProps {
-	keyword: string;
 	fetchState: number;
-	setKeyword: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function KeywordFilter(props: IKeywordFilterProps) {
-	const location = useLocation();
-	// filter keyword from input bar
-	const [keyword, setKeyword] = React.useState<string>(
-		location.state?.keyword ? location.state.keyword : ""
-	);
-	const deferredKeyword = React.useDeferredValue(keyword);
+	const navigate = useNavigate();
+	const filter_context = React.useContext(FilterContext);
+	const deferredKeyword = React.useDeferredValue(filter_context.keywordFilter);
 
 	React.useEffect(() => {
-		props.setKeyword(deferredKeyword);
+		filter_context.setKeywordFilter(deferredKeyword);
 	}, [deferredKeyword]);
 
 	return (
@@ -29,9 +26,9 @@ export default function KeywordFilter(props: IKeywordFilterProps) {
 					" shadow w-[calc(100vw-3rem)] sm:w-[18rem] md:w-[20rem] lg:w-[24rem] xl:w-[26rem] 2xl:w-[28rem]"
 				}
 				placeholder="Search keyword e.g. CIS"
-				value={keyword}
+				value={filter_context.keywordFilter}
 				disabled={props.fetchState < 0}
-				onChange={(e) => setKeyword(e.target.value)}
+				onChange={(e) => filter_context.setKeywordFilter(e.target.value)}
 			/>
 			<div className="absolute left-1.5 top-[0.35rem] tw-show-on-hover-parent">
 				<span className="material-icons text-xl w-8 h-8 hover:bg-accent-100 rounded-full text-center grid items-center dark:text-white dark:hover:bg-slate-900">
@@ -55,7 +52,10 @@ export default function KeywordFilter(props: IKeywordFilterProps) {
 			>
 				<button
 					className="material-icons text-gray-500 dark:text-white text-lg rounded-full w-8 h-8 hover:bg-gray-300 dark:hover:bg-slate-700 hover:text-gray-700"
-					onClick={() => setKeyword("")}
+					onClick={() => {
+						filter_context.setKeywordFilter("");
+						navigate(ROUTE.CourseBrowser, { replace: true });
+					}}
 				>
 					close
 				</button>

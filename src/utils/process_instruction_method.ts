@@ -7,7 +7,7 @@ export function friendlyInstructionMethod(method_acronym: string) {
 		case "HYX":
 			return "Flexible";
 		case "OLM":
-			return "Online + Meetings";
+			return "Online";
 		case "OLO":
 			return "Online Only";
 		default:
