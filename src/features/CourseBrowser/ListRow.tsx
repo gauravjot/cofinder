@@ -122,7 +122,7 @@ export function ListRow(props: Props) {
 		? ""
 		: " dark:text-white line-through opacity-50 ";
 	const rowItemClass =
-		" items-center text-smb leading-5 pr-4 lg:py-2" +
+		" items-center place-items-center text-smb leading-5 pr-4 lg:py-2" +
 		" text-gray-700 dark:text-white dark:text-opacity-80" +
 		inactiveSectionClass;
 
@@ -295,7 +295,7 @@ export function ListRow(props: Props) {
 					<div
 						className={
 							rowItemClass +
-							" flex col-span-3 pl-[3.65rem] pt-1 lg:pt-0 lg:mt-0 lg:pl-0"
+							" flex place-items-center col-span-3 pl-[3.65rem] pt-1 lg:py-0 lg:my-0 lg:pl-0"
 						}
 					>
 						{props.section.course.name} ({props.section.course.credits})
@@ -303,21 +303,23 @@ export function ListRow(props: Props) {
 					<div
 						className={
 							rowItemClass +
-							" lg:flex col-span-2 pl-[3.65rem] pt-1 lg:py-1.5 lg:pl-0 pb-3"
+							" flex place-items-center col-span-2 pl-[3.65rem] pt-1 lg:py-0 lg:pl-0 pb-3"
 						}
 					>
-						{props.section.instructor &&
-							props.section.instructor
-								.split(";")
-								.map((instructor, index) => (
-									<span key={instructor + index}>
-										{instructor}
-										{index + 1 !==
-										props.section.instructor?.split(";").length
-											? " • "
-											: ""}
-									</span>
-								))}
+						<div>
+							{props.section.instructor &&
+								props.section.instructor
+									.split(";")
+									.map((instructor, index) => (
+										<span key={instructor + index}>
+											{instructor}
+											{index + 1 !==
+											props.section.instructor?.split(";").length
+												? " • "
+												: ""}
+										</span>
+									))}
+						</div>
 					</div>
 					<div className={rowItemClass + " hidden lg:flex col-span-1"}>
 						{props.section.medium

@@ -153,14 +153,14 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 					Schedule
 				</span>
 				<div className="mt-3">
-					<div className="2xl:w-2/3 lg:w-3/4 md:w-full lg:px-4">
-						<div className="hidden md:grid grid-cols-6 px-1 text-black dark:text-white pb-1 border-b-2 border-gray-500 dark:border-slate-600">
+					<div className="3xl:w-4/5 md:w-full lg:px-4">
+						<div className="hidden md:grid grid-cols-7 px-1 text-black dark:text-white pb-1 border-b-2 border-gray-500 dark:border-slate-600">
 							<div>Day</div>
 							<div>From</div>
 							<div>To</div>
 							<div>Start</div>
 							<div>End</div>
-							<div>Location</div>
+							<div className="col-span-2">Location</div>
 						</div>
 						{props.section.schedule && props.section.schedule.length > 0 ? (
 							props.section.schedule.map(
@@ -168,7 +168,7 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 									return (
 										<div
 											key={props.section.crn + "-" + index}
-											className="md:grid grid-cols-6 text-gray-800 dark:text-slate-200 border-b border-gray-400 dark:border-slate-600 py-1.5 tracking-wide md:px-1 text-smb"
+											className="md:grid grid-cols-7 text-gray-800 dark:text-slate-200 border-b border-gray-400 dark:border-slate-600 py-1.5 tracking-wide md:px-1 text-smb"
 										>
 											{s.days ? (
 												<span className="col-span-1">
@@ -183,7 +183,9 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 											</span>
 											<span className="col-span-1">
 												<span className="md:hidden"> - </span>
-												{refactorDate(s.date_end)}
+												{s.date_start !== s.date_end
+													? refactorDate(s.date_end)
+													: ""}
 											</span>
 											<div className="block md:hidden"></div>
 											<span className="col-span-1">
@@ -202,7 +204,7 @@ export default function ListRowExpandInfo(props: IListRowExpandInfoProps) {
 												)}
 											</span>
 											{s.location ? (
-												<span className="col-span-1">
+												<span className="col-span-2">
 													<span className="md:hidden"> • </span>
 													{s.location.building}{" "}
 													{s.location.room}

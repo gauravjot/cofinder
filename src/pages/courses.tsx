@@ -11,56 +11,105 @@ import ScrollToTopBtn from "@/components/utils/ScrollToTop";
 const Filter = React.lazy(() => import("@/features/CourseBrowser/Filter/Filter"));
 const CourseBrowserContent = React.lazy(() => import("@/features/CourseBrowser/Content"));
 
+// Main component
 export default function Courses() {
 	let params = useParams();
+
+	// States handled by Context
+	const [keywordFilter, setKeywordFilter] = React.useState<string>("");
+	const [subjectFilter, setSubjectFilter] = React.useState<string[]>([]);
+	const [instructorFilter, setInstructorFilter] = React.useState<string[]>([]);
+	const [mediumsFilter, setMediumsFilter] = React.useState<string[]>([]); // Instruction Mediums
+	const [showNonFullSections, setShowNonFullSections] = React.useState<boolean>(false);
+
 	const [listData, setListData] = React.useState<SectionsBrowserType[]>([]);
-	const [isTrustedFilterActive, setIsTrustedFilterActive] =
-		React.useState<boolean>(false);
-	const [isKeywordFilterActive, setIsKeywordFilterActive] =
-		React.useState<boolean>(false);
 
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
+		if (params.subject) {
+			setSubjectFilter(decodeURIComponent(params.subject).split(","));
+		}
+		if (params.keyword) {
+			setKeywordFilter(decodeURIComponent(params.keyword));
+		}
 	}, []);
 
 	return (
-		<div className="App">
-			<ScrollToTopBtn />
-			<Helmet>
-				<title>Course Browser - {APP_NAME}</title>
-			</Helmet>
-			<div className="flex relative">
-				<div className="flex-none xl:sticky fixed top-0 xl:h-screen z-30">
-					{/* Sidebar */}
-					<Sidebar current="course_browser" />
-				</div>
-				<div className="min-h-screen flex-1">
-					<div className="bg-slate-200 dark:bg-slate-900 bg-opacity-80 z-10 h-full relative">
-						<ErrorBoundary>
-							<React.Suspense
-								fallback={
-									<div className="bg-slate-200 dark:bg-slate-900 grid items-center justify-center h-full">
-										<Spinner />
-									</div>
-								}
-							>
-								<Filter
-									setData={setListData}
-									setIsTFA={setIsTrustedFilterActive}
-									setIsKFA={setIsKeywordFilterActive}
-									setSubjectFilter={params.subject}
-									setKeywordFilter={params.keyword}
-								/>
-								<CourseBrowserContent
-									data={listData}
-									isTrustedFilterActive={isTrustedFilterActive}
-									isKeywordFilterActive={isKeywordFilterActive}
-								/>
-							</React.Suspense>
-						</ErrorBoundary>
+		<FilterContext.Provider
+			value={{
+				keywordFilter,
+				setKeywordFilter,
+				subjectFilter,
+				setSubjectFilter,
+				instructorFilter,
+				setInstructorFilter,
+				showNonFullSections,
+				setShowNonFullSections,
+				mediumsFilter,
+				setMediumsFilter,
+			}}
+		>
+			<div className="App">
+				<ScrollToTopBtn />
+				<Helmet>
+					<title>Course Browser - {APP_NAME}</title>
+				</Helmet>
+				<div className="flex relative">
+					<div className="flex-none xl:sticky fixed top-0 xl:h-screen z-30">
+						{/* Sidebar */}
+						<Sidebar current="course_browser" />
+					</div>
+					<div className="min-h-screen flex-1">
+						<div className="bg-slate-200 dark:bg-slate-900 bg-opacity-80 z-10 h-full relative">
+							<ErrorBoundary>
+								<React.Suspense
+									fallback={
+										<div className="bg-slate-200 dark:bg-slate-900 grid items-center justify-center h-full">
+											<Spinner />
+										</div>
+									}
+								>
+									<Filter setData={setListData} />
+									<CourseBrowserContent
+										data={listData}
+										isTrustedFilterActive={
+											subjectFilter.length > 0 ||
+											instructorFilter.length > 0 ||
+											mediumsFilter.length > 0
+										}
+										isKeywordFilterActive={keywordFilter.length > 0}
+									/>
+								</React.Suspense>
+							</ErrorBoundary>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</FilterContext.Provider>
 	);
 }
+
+// Context for filters
+export const FilterContext = React.createContext({
+	keywordFilter: "",
+	setKeywordFilter: () => {},
+	subjectFilter: [],
+	setSubjectFilter: () => {},
+	instructorFilter: [],
+	setInstructorFilter: () => {},
+	showNonFullSections: false,
+	setShowNonFullSections: () => {},
+	mediumsFilter: [],
+	setMediumsFilter: () => {},
+} as {
+	keywordFilter: string;
+	setKeywordFilter: React.Dispatch<React.SetStateAction<string>>;
+	subjectFilter: string[];
+	setSubjectFilter: React.Dispatch<React.SetStateAction<string[]>>;
+	instructorFilter: string[];
+	setInstructorFilter: React.Dispatch<React.SetStateAction<string[]>>;
+	showNonFullSections: boolean;
+	setShowNonFullSections: React.Dispatch<React.SetStateAction<boolean>>;
+	mediumsFilter: string[];
+	setMediumsFilter: React.Dispatch<React.SetStateAction<string[]>>;
+});

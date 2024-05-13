@@ -11,16 +11,15 @@ import { useFetchSubjects } from "@/services/core/fetch_subjects";
 import { filterData } from "./algorithm";
 import CourseBrowserFilter from "@/components/ui/coursebrowser/CourseBrowserFilter";
 import KeywordFilter from "./KeywordFilter";
+import { FilterContext } from "@/pages/courses";
 
 interface Props {
 	setData: React.Dispatch<React.SetStateAction<SectionsBrowserType[]>>;
-	setIsTFA: React.Dispatch<React.SetStateAction<boolean>>;
-	setIsKFA: React.Dispatch<React.SetStateAction<boolean>>;
-	setSubjectFilter?: string;
-	setKeywordFilter?: string;
 }
 
 export default function Filter(props: Props) {
+	// Context data
+	const filter_context = React.useContext(FilterContext);
 	// For expanding filter
 	const [expandFilters, setExpandFilters] = React.useState<boolean>(false);
 	let expandFiltersRef: React.RefObject<any> = React.useRef<HTMLDivElement>(null);
@@ -34,8 +33,6 @@ export default function Filter(props: Props) {
 	const [activeFilterCount, setActiveFilterCount] = React.useState<number>(0);
 	// Preselected Subject from url /browse/courses/:subject
 	const [urlSelectedSubject, setUrlSelectedSubject] = React.useState<SubjectType>();
-	const setIsTFA = props.setIsTFA;
-	const setIsKFA = props.setIsKFA;
 
 	// Fetch and compute functions
 	const sectionsTermData: ReduxSectionDetailedType = useFetchSections();
@@ -43,22 +40,24 @@ export default function Filter(props: Props) {
 	const subjectsTermData: ReduxSubjectType = useFetchSubjects();
 
 	React.useEffect(() => {
+		if (filter_context.subjectFilter.length < 0) {
+			return;
+		}
+		let subjects: SubjectType[] = [];
 		for (let i = 0; i < subjectsTermData.subjects.length; i++) {
-			if (props.setSubjectFilter === subjectsTermData.subjects[i].code) {
+			if (
+				filter_context.subjectFilter.includes(subjectsTermData.subjects[i].code)
+			) {
 				setUrlSelectedSubject(subjectsTermData.subjects[i]);
-				setSelectedSubjects([subjectsTermData.subjects[i]]);
-				setActiveFilterCount(1);
-				setIsTFA(true);
-				break;
+				subjects.push(subjectsTermData.subjects[i]);
 			}
 		}
-	}, [subjectsTermData.subjects, props.setSubjectFilter, setIsTFA]);
+		setSelectedSubjects(subjects);
+	}, [subjectsTermData.subjects, filter_context.subjectFilter]);
 
 	React.useEffect(() => {
-		if (props.setKeywordFilter) {
-			setKeyword(props.setKeywordFilter);
-		}
-	}, [props.setKeywordFilter]);
+		setKeyword(filter_context.keywordFilter ?? "");
+	}, [filter_context.keywordFilter]);
 
 	// Apply Filters
 	React.useEffect(() => {
@@ -66,15 +65,10 @@ export default function Filter(props: Props) {
 	}, [sectionsTermData.sections, keyword]);
 
 	React.useEffect(() => {
-		if (selectedInstructors.length + selectedSubjects.length < 1) {
+		if (selectedInstructors.length + selectedSubjects.length > 0) {
 			applyFilters(sectionsTermData.sections, keyword);
 		}
 	}, [selectedSubjects, selectedInstructors]);
-
-	// Set isKeywordFilterActive
-	React.useEffect(() => {
-		setIsKFA(keyword.length > 0);
-	}, [keyword]);
 
 	const applyFilters = React.useCallback(
 		(data: SectionsBrowserType[], keyword: string) => {
@@ -89,7 +83,6 @@ export default function Filter(props: Props) {
 					: data
 			);
 			setActiveFilterCount(selectedSubjects.length + selectedInstructors.length);
-			setIsTFA(selectedSubjects.length + selectedInstructors.length > 0);
 		},
 		[selectedSubjects, selectedInstructors]
 	);
@@ -163,11 +156,7 @@ export default function Filter(props: Props) {
 						</div>
 					</div>
 					<div className="sm:flex-1 flex justify-center items-center sm:justify-end xl:justify-center mb-2 sm:mb-0">
-						<KeywordFilter
-							fetchState={sectionsTermData.fetched}
-							keyword={keyword}
-							setKeyword={setKeyword}
-						/>
+						<KeywordFilter fetchState={sectionsTermData.fetched} />
 					</div>
 					<div className="flex-none text-right lg:min-w-[19rem] hidden xl:block">
 						<h5 className="pl-4 font-semibold font-serif dark:text-white">

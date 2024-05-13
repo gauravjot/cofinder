@@ -57,26 +57,33 @@ export function filterData(
 
 function keywordFilter(section: SectionsBrowserType, keyword: string): boolean {
 	keyword = keyword.toLowerCase();
-	return (
-		section.course.code.toLowerCase().includes(keyword) ||
-		section.course.name.toLowerCase().includes(keyword) ||
-		(section.instructor ?? "").toLowerCase().includes(keyword) ||
-		section.subject.code.toLowerCase().includes(keyword) ||
-		section.subject.name.toLowerCase().includes(keyword) ||
-		section.crn.toString().includes(keyword) ||
-		(
-			section.subject.code.toLowerCase() +
-			" " +
-			section.course.code.toLowerCase()
-		).includes(keyword) ||
-		(section.subject.code.toLowerCase() + section.course.code.toLowerCase()).includes(
-			keyword
-		) ||
-		(keyword === "lab" && section.is_lab) ||
-		(section.medium?.code ?? "").toLowerCase().includes(keyword) ||
-		(section.medium?.name ?? "").toLowerCase().includes(keyword) ||
-		(section.medium?.code ? friendlyInstructionMethod(section.medium?.code) : "")
-			.toLowerCase()
-			.includes(keyword)
-	);
+	let keywords = keyword.split(",");
+	let result = false;
+	for (let i = 0; i < keywords.length; i++) {
+		let keyword = keywords[i].trim();
+		if (keyword.length < 1) continue;
+		result =
+			result ||
+			section.course.code.toLowerCase().includes(keyword) ||
+			section.course.name.toLowerCase().includes(keyword) ||
+			(section.instructor ?? "").toLowerCase().includes(keyword) ||
+			section.subject.code.toLowerCase().includes(keyword) ||
+			section.subject.name.toLowerCase().includes(keyword) ||
+			section.crn.toString().includes(keyword) ||
+			(
+				section.subject.code.toLowerCase() +
+				" " +
+				section.course.code.toLowerCase()
+			).includes(keyword) ||
+			(
+				section.subject.code.toLowerCase() + section.course.code.toLowerCase()
+			).includes(keyword) ||
+			(keyword === "lab" && section.is_lab) ||
+			(section.medium?.code ?? "").toLowerCase().includes(keyword) ||
+			(section.medium?.name ?? "").toLowerCase().includes(keyword) ||
+			(section.medium?.code ? friendlyInstructionMethod(section.medium?.code) : "")
+				.toLowerCase()
+				.includes(keyword);
+	}
+	return result;
 }
