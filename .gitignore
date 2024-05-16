@@ -1,0 +1,10 @@
+# python
+.venv
+venv
+/.venv
+/venv
+.env
+__pycache__/
+migrations/
+db/
+push_summary.txt
