@@ -121,7 +121,7 @@ function WelcomeComponent() {
 							Star us on GitHub
 						</a>
 						<iframe
-							src="https://ghbtns.com/github-btn.html?user=gauravjot&repo=cofinder-frontend&type=star&count=true"
+							src="https://ghbtns.com/github-btn.html?user=gauravjot&repo=cofinder&type=star&count=true"
 							frameBorder="0"
 							scrolling="0"
 							width="150"
