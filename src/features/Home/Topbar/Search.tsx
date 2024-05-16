@@ -199,112 +199,153 @@ export default function Search() {
 						{currentSearchTab === 0 &&
 						filteredInstructors &&
 						filteredInstructors.length ? (
-							<div className="mx-4 text-[0.8rem] text-gray-600 dark:text-slate-400 my-1.5">
+							<div className="mx-4 text-[0.8rem] text-gray-600 dark:text-slate-300 my-1.5">
 								Filtered Professors
 							</div>
 						) : (
 							""
 						)}
-						{currentSearchTab !== 1 &&
-							filteredInstructors &&
-							filteredInstructors
-								.slice(
-									0,
-									currentSearchTab === 0
-										? 3
-										: filteredInstructors.length
-								)
-								.map((instructor, index) => {
-									return (
-										<div className="mx-2.5 my-1" key={index}>
-											<button
-												onClick={() => {
-													navigate(
-														ROUTE.CourseBrowserKeywordFilter(
-															encodeURIComponent(
-																instructor.name
-															)
-														)
-													);
-												}}
-												className="w-full text-left px-2 py-2 flex outline outline-2 outline-transparent hover:outline-accent-400 dark:hover:outline-slate-400 rounded-lg cursor-pointer focus-visible:outline-accent-400 dark:focus-visible:outline-slate-400"
-											>
-												<div className="font-mono h-7 w-7 bg-gray-200 dark:bg-slate-900 border border-gray-400 dark:border-slate-1000 rounded-full text-gray-500 dark:text-slate-400 text-center mr-4 flex items-center justify-center leading-0 text-[0.85rem] font-medium">
-													{instructor.name.charAt(0)}
+						{currentSearchTab !== 1 ? (
+							<>
+								{filteredInstructors &&
+									filteredInstructors
+										.slice(
+											0,
+											currentSearchTab === 0
+												? 3
+												: filteredInstructors.length
+										)
+										.map((instructor, index) => {
+											return (
+												<div className="mx-2.5 my-1" key={index}>
+													<button
+														onClick={() => {
+															navigate(
+																ROUTE.CourseBrowserKeywordFilter(
+																	encodeURIComponent(
+																		instructor.name
+																	)
+																)
+															);
+														}}
+														className="w-full text-left px-2 py-2 flex outline outline-2 outline-transparent hover:outline-accent-400 dark:hover:outline-slate-400 rounded-lg cursor-pointer focus-visible:outline-accent-400 dark:focus-visible:outline-slate-400"
+													>
+														<div className="font-mono h-7 w-7 bg-gray-200 dark:bg-slate-900 border border-gray-400 dark:border-slate-1000 rounded-full text-gray-500 dark:text-slate-400 text-center mr-4 flex items-center justify-center leading-0 text-[0.85rem] font-medium">
+															{instructor.name.charAt(0)}
+														</div>
+														<div>
+															<h5 className="text-[0.95rem] leading-4 font-medium dark:text-white">
+																{instructor.name}
+															</h5>
+															<span className="text-gray-500 text-[0.8rem] dark:text-slate-300">
+																Instructor
+															</span>
+														</div>
+													</button>
 												</div>
-												<div>
-													<h5 className="text-[0.95rem] leading-4 font-medium dark:text-white">
-														{instructor.name}
-													</h5>
-													<span className="text-gray-500 text-[0.8rem] dark:text-slate-400">
-														Professor
-													</span>
-												</div>
-											</button>
-										</div>
-									);
-								})}
+											);
+										})}
+								{filteredInstructors &&
+									filteredInstructors.length > 3 && (
+										<button
+											onClick={() => {
+												setCurrentSearchTab(2);
+											}}
+											className={
+												(currentSearchTab === 2
+													? "hidden "
+													: "") +
+												"mx-2.5 my-1 text-sm px-2 font-medium text-accent-700" +
+												" dark:text-accent-300 hover:underline hover:underline-offset-4"
+											}
+										>
+											See all {filteredInstructors?.length}{" "}
+											instructors
+										</button>
+									)}
+							</>
+						) : (
+							<></>
+						)}
 						{currentSearchTab === 0 &&
 						filteredCourses &&
 						filteredCourses.length ? (
-							<div className="mx-4 text-[0.8rem] text-gray-600 my-1.5 dark:text-slate-400">
+							<div className="mx-4 text-[0.8rem] text-gray-600 my-2.5 dark:text-slate-300">
 								Filtered Courses
 							</div>
 						) : (
 							""
 						)}
-						{currentSearchTab !== 2 &&
-							filteredCourses &&
-							filteredCourses
-								.slice(
-									0,
-									currentSearchTab === 0 &&
-										filteredCourses &&
-										filteredCourses.length > 2
-										? 3
-										: filteredCourses.length
-								)
-								.map((course, index) => {
-									return (
-										<div className="mx-2.5 my-1" key={index}>
-											<button
-												onClick={() => {
-													navigate(
-														ROUTE.CourseBrowserKeywordFilter(
-															encodeURIComponent(
-																course.code
-															)
-														)
-													);
-												}}
-												className="w-full text-left px-2 py-2 flex outline outline-2 outline-transparent hover:outline-accent-400 dark:hover:outline-slate-400 rounded-lg cursor-pointer focus-visible:outline-accent-400 dark:focus-visible:outline-slate-400"
-											>
-												<div
-													style={{
-														backgroundColor: getColor(
-															course.subject_id
-														),
-													}}
-													className="font-mono border border-black border-opacity-20 h-7 w-7 bg-opacity-60 rounded-full text-black text-opacity-70 text-center mr-4 flex items-center justify-center leading-0 text-[0.85rem] font-medium"
-												>
-													{course.subject_id.charAt(0)}
+						{currentSearchTab !== 2 ? (
+							<>
+								{filteredCourses &&
+									filteredCourses
+										.slice(
+											0,
+											currentSearchTab === 0 &&
+												filteredCourses &&
+												filteredCourses.length > 2
+												? 3
+												: filteredCourses.length
+										)
+										.map((course, index) => {
+											return (
+												<div className="mx-2.5 my-1" key={index}>
+													<button
+														onClick={() => {
+															navigate(
+																ROUTE.CourseBrowserKeywordFilter(
+																	encodeURIComponent(
+																		course.code
+																	)
+																)
+															);
+														}}
+														className="w-full text-left px-2 py-2 flex outline outline-2 outline-transparent hover:outline-accent-400 dark:hover:outline-slate-400 rounded-lg cursor-pointer focus-visible:outline-accent-400 dark:focus-visible:outline-slate-400"
+													>
+														<div
+															style={{
+																backgroundColor: getColor(
+																	course.subject_id
+																),
+															}}
+															className="font-mono border border-black border-opacity-20 h-7 w-7 bg-opacity-60 rounded-full text-black text-opacity-70 text-center mr-4 flex items-center justify-center leading-0 text-[0.85rem] font-medium"
+														>
+															{course.subject_id.charAt(0)}
+														</div>
+														<div>
+															<h5 className="text-[0.95rem] leading-4 font-medium dark:text-white">
+																{course.name}
+															</h5>
+															<span className="text-gray-500 text-[0.8rem] dark:text-slate-300">
+																<span className="font-medium">
+																	{course.code}
+																</span>{" "}
+																• {course.credits} credits
+															</span>
+														</div>
+													</button>
 												</div>
-												<div>
-													<h5 className="text-[0.95rem] leading-4 font-medium dark:text-white">
-														{course.name}
-													</h5>
-													<span className="text-gray-500 text-[0.8rem] dark:text-slate-400">
-														<span className="font-medium">
-															{course.subject_id}{" "}
-															{course.code}
-														</span>{" "}
-														• {course.credits} credits
-													</span>
-												</div>
-											</button>
-										</div>
-									);
-								})}
+											);
+										})}
+								{filteredCourses && filteredCourses.length > 3 && (
+									<button
+										onClick={() => {
+											setCurrentSearchTab(1);
+										}}
+										className={
+											(currentSearchTab === 1 ? "hidden " : "") +
+											"mx-2.5 my-1 text-sm px-2 font-medium text-accent-700" +
+											" dark:text-accent-300 hover:underline hover:underline-offset-4"
+										}
+									>
+										See all {filteredCourses?.length} courses
+									</button>
+								)}
+							</>
+						) : (
+							<></>
+						)}
 					</div>
 				</div>
 			</div>
