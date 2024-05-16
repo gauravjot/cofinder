@@ -46,7 +46,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
-    "user.user_session.middlewares.SessionMiddleware",
 
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,6 +53,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    "cofinder.middlewares.APIRequestFormatMiddleware",
+    "cofinder.middlewares.RequestOriginMiddleware",
+    "user.user_session.middlewares.SessionMiddleware",
 ]
 
 ROOT_URLCONF = 'cofinder.urls'
@@ -104,6 +107,13 @@ CORS_ORIGIN_WHITELIST = CORS_ALLOWED_ORIGINS
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
 SECURE_FRAME_DENY = False
+
+# Set the origins that API will respond to.
+# 1. To set all origins, use value ['*']
+# 2. To add additional, simply add them to the list without trailing backslash
+#      Example ['https://google.com', 'http://google.com']
+# (Used in cofinder.middlewares.RequestOriginMiddleware)
+ALLOW_ORIGINS = [config('FRONTEND_URL'),]
 
 # Database
 DATABASES = {
