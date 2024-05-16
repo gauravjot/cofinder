@@ -1,0 +1,74 @@
+{
+	"name": "cofinder",
+	"version": "0.3.0",
+	"private": true,
+	"main": "src/index.tsx",
+	"dependencies": {
+		"@reduxjs/toolkit": "1.9.2",
+		"@tanstack/react-query": "^5.32.1",
+		"axios": "^1.6.8",
+		"buffer": "^6.0.3",
+		"lodash": "^4.17.21",
+		"moment": "^2.30.1",
+		"multiselect-react-dropdown": "^2.0.25",
+		"react": "^18.3.1",
+		"react-big-calendar": "1.6.8",
+		"react-cookie": "^7.1.4",
+		"react-dom": "^18.3.1",
+		"react-helmet": "^6.1.0",
+		"react-query": "^3.39.3",
+		"react-redux": "8.0.5",
+		"react-router-dom": "^6.23.0",
+		"react-virtuoso": "^4.7.10",
+		"stream": "^0.0.2",
+		"use-doc-theme": "^0.2.0",
+		"vite-plugin-svgr": "^4.2.0",
+		"vite-tsconfig-paths": "^4.3.2",
+		"web-vitals": "^3.5.2",
+		"xml-js": "^1.6.11",
+		"xml2js": "^0.6.2"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"serve": "vite preview"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@testing-library/jest-dom": "^6.4.2",
+		"@testing-library/react": "^15.0.5",
+		"@testing-library/user-event": "^14.5.2",
+		"@types/jest": "^29.5.12",
+		"@types/lodash": "^4.17.0",
+		"@types/node": "^20.12.7",
+		"@types/react": "^18.3.1",
+		"@types/react-big-calendar": "^1.8.9",
+		"@types/react-dom": "^18.3.0",
+		"@types/react-helmet": "^6.1.11",
+		"@types/react-redux": "7.1.25",
+		"@types/react-window": "^1.8.8",
+		"@vitejs/plugin-react": "^4.2.1",
+		"autoprefixer": "^10.4.19",
+		"postcss": "^8.4.38",
+		"tailwindcss": "^3.4.3",
+		"typescript": "^5.4.5",
+		"vite": "^5.2.10"
+	}
+}
