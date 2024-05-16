@@ -145,35 +145,7 @@ export default function UpcomingClasses() {
 		<div>
 			<div className="flex mb-2">
 				<h2 className="flex-1 font-medium font-serif">Next 7 days</h2>
-				<div className="flex pt-0.5">
-					{days.map((day, index) => {
-						return (
-							<div key={index}>
-								<div
-									className={
-										(markDays.includes(day) && index === todayIndex
-											? "bg-accent-700 text-white rounded-full"
-											: markDays.includes(day)
-											? "bg-gray-700 text-white rounded-full"
-											: "text-gray-600") +
-										(index === todayIndex
-											? " border border-accent-700 rounded-full"
-											: "") +
-										" px-1 user-select-none font-medium ml-1 w-7 h-7 text-center text-sm grid place-items-center"
-									}
-									title={day}
-								>
-									{day === "Sunday"
-										? "Su"
-										: day === "Thursday"
-										? "Th"
-										: day.charAt(0)}
-								</div>
-							</div>
-						);
-					})}
-					<div></div>
-				</div>
+				<DataBar markdays={markDays} />
 			</div>
 			<div className="text-gray-600 dark:text-slate-300 mb-5">
 				<span className="material-icons text-xl text-gray-800 dark:text-slate-300 align-middle mr-2">
@@ -292,6 +264,42 @@ export default function UpcomingClasses() {
 			) : (
 				""
 			)}
+		</div>
+	);
+}
+
+function DataBar({ markdays }: { markdays: string[] }) {
+	return (
+		<div className="flex pt-0.5">
+			{days.map((day, index) => {
+				return (
+					<div key={index}>
+						<div
+							className={
+								(markdays.includes(day) && index === todayIndex
+									? "bg-accent-700 text-white rounded-full"
+									: markdays.includes(day) && index > todayIndex
+									? "bg-gray-700 text-white rounded-full"
+									: index > todayIndex
+									? "text-zinc-800 dark:text-zinc-200"
+									: "text-zinc-400 dark:text-zinc-600") +
+								(index === todayIndex
+									? " border border-accent-700 rounded-full"
+									: "") +
+								" px-1 user-select-none font-medium ml-1 w-7 h-7 text-center text-sm grid place-items-center"
+							}
+							title={day}
+						>
+							{day === "Sunday"
+								? "Su"
+								: day === "Thursday"
+								? "Th"
+								: day.charAt(0)}
+						</div>
+					</div>
+				);
+			})}
+			<div></div>
 		</div>
 	);
 }
