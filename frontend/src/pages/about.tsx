@@ -16,31 +16,31 @@ export default function About() {
 			<Helmet>
 				<title>About Us - {APP_NAME}</title>
 			</Helmet>
-			<div className="flex relative">
-				<div className="flex-none xl:sticky fixed top-0 h-screen z-20">
+			<div className="relative flex">
+				<div className="fixed top-0 z-20 flex-none h-screen xl:sticky">
 					{/* Sidebar */}
 					<Sidebar current="team" />
 				</div>
-				<div className="bg-slate-200 dark:bg-slate-900 bg-opacity-80 w-full z-10">
-					<div className="container p-4 py-8 mx-auto min-h-screen">
-						<div className="min-h-screen relative flex-1 lg:grid grid-cols-12">
+				<div className="z-10 w-full bg-slate-100 dark:bg-slate-900 bg-opacity-80">
+					<div className="container min-h-screen p-4 py-8 mx-auto">
+						<div className="relative flex-1 min-h-screen grid-cols-12 lg:grid">
 							<div className="col-span-9 2xl:col-span-8">
 								<div className="max-w-[90ch] float-right lg:mt-6">
 									<div className="float-right">
 										<img
 											src={logo}
 											alt="Cofinder Logo"
-											className="lg:w-10 lg:h-10 w-8 h-8"
+											className="w-8 h-8 lg:w-10 lg:h-10"
 										/>
 									</div>
 									<br />
-									<span className="text-slate-400 dark:text-slate-600 text-sm">
+									<span className="text-sm text-slate-400 dark:text-slate-600">
 										v{VERSION_CODE}
 									</span>
 								</div>
-								<div className="mt-10 xl:mt-6 mb-6">
+								<div className="mt-10 mb-6 xl:mt-6">
 									<h3
-										className="font-medium font-serif"
+										className="font-serif font-medium"
 										id="about-cofinder"
 									>
 										About CoFinder
@@ -62,13 +62,13 @@ export default function About() {
 									process for students, making it easier and
 									stress-free.
 								</p>
-								<h4 className="font-medium font-serif mt-8 mb-2">
+								<h4 className="mt-8 mb-2 font-serif font-medium">
 									Want to talk?
 								</h4>
 								<p className="max-w-[70ch] text-lg lg:leading-9 leading-8 text-gray-800 dark:text-slate-400">
 									Contact us:{" "}
 									<a
-										className="font-medium italic font-mono tracking-tight"
+										className="font-mono italic font-medium tracking-tight"
 										href="mailto:admin@cofinder.ca"
 									>
 										admin@cofinder.ca
@@ -76,32 +76,40 @@ export default function About() {
 								</p>
 								<div className="mt-12 mb-4">
 									<h3
-										className="font-medium font-serif"
+										className="font-serif font-medium"
 										id="maintainer"
 									>
 										Active Maintainer
 									</h3>
 								</div>
 								<div className="max-w-[70ch] text-lg lg:leading-9 leading-8 text-gray-800 dark:text-slate-400">
-									<div className="border px-4 py-3 border-gray-300 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-1000 hover:bg-opacity-40 rounded shadow-sm">
-									<h4 className="font-medium font-serif">Gauravjot Garaya</h4>
-									<p className="leading-7 pt-1 pl-4">Contact: <a
-										className="font-medium italic font-mono tracking-tight"
-										href="mailto:connect@gauravjot.com"
-									>
-										connect@gauravjot.com
-									</a></p>
-									<p className="pl-4">LinkedIn: <a
-										className="font-medium italic font-mono tracking-tight"
-										href="https://linkedin.com/in/gauravjot"
-									>
-										linkedin/gauravjot
-									</a></p>
+									<div className="px-4 py-3 border border-gray-300 rounded shadow-sm dark:border-slate-700 hover:bg-white dark:hover:bg-slate-1000 hover:bg-opacity-40">
+										<h4 className="font-serif font-medium">
+											Gauravjot Garaya
+										</h4>
+										<p className="pt-1 pl-4 leading-7">
+											Contact:{" "}
+											<a
+												className="font-mono italic font-medium tracking-tight"
+												href="mailto:connect@gauravjot.com"
+											>
+												connect@gauravjot.com
+											</a>
+										</p>
+										<p className="pl-4">
+											LinkedIn:{" "}
+											<a
+												className="font-mono italic font-medium tracking-tight"
+												href="https://linkedin.com/in/gauravjot"
+											>
+												linkedin/gauravjot
+											</a>
+										</p>
 									</div>
 								</div>
 								<div className="mt-12 mb-4">
 									<h3
-										className="font-medium font-serif"
+										className="font-serif font-medium"
 										id="about-team"
 									>
 										Founding Team
@@ -230,7 +238,7 @@ export default function About() {
 								</div>
 								<div className="mt-12 mb-4">
 									<h3
-										className="font-medium font-serif"
+										className="font-serif font-medium"
 										id="special-thanks"
 									>
 										🎓 Special Thanks
@@ -243,7 +251,7 @@ export default function About() {
 										<div className="py-0.5" />
 										COMP 370 AB1 - Winter 2023
 									</div>
-									<p className="mt-4 text-gray-700 dark:text-slate-400 leading-7 tracking-wide">
+									<p className="mt-4 leading-7 tracking-wide text-gray-700 dark:text-slate-400">
 										{
 											<>
 												Opeyemi's inspiration was pivotal in
@@ -267,11 +275,11 @@ export default function About() {
 										}
 									</p>
 								</div>
-								<div className="text-gray-500 dark:text-slate-400 mt-12">
+								<div className="mt-12 text-gray-500 dark:text-slate-400">
 									Last edited: April 7, 2023, 3:50 PM
 								</div>
 							</div>
-							<div className="col-span-3 2xl:col-span-4 lg:block hidden pl-24 mt-2">
+							<div className="hidden col-span-3 pl-24 mt-2 2xl:col-span-4 lg:block">
 								<h3 className="mt-4 font-medium tracking-tight">
 									On this page
 								</h3>
@@ -311,18 +319,18 @@ interface TmProps {
 
 function TeamMember(props: TmProps) {
 	return (
-		<div className="border border-gray-300 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-1000 hover:bg-opacity-40 rounded shadow-sm">
+		<div className="border border-gray-300 rounded shadow-sm dark:border-slate-700 hover:bg-white dark:hover:bg-slate-1000 hover:bg-opacity-40">
 			{props.image ? (
 				<img
 					src={props.image}
 					alt={props.name}
-					className="w-100 h-96 rounded-t object-cover"
+					className="object-cover rounded-t w-100 h-96"
 				/>
 			) : (
 				<></>
 			)}
-			<div className="text-black text-xl px-4 pt-4">
-				<span className="align-middle font-bold dark:text-white">
+			<div className="px-4 pt-4 text-xl text-black">
+				<span className="font-bold align-middle dark:text-white">
 					{props.name}{" "}
 				</span>
 				{props.website ? (
@@ -330,9 +338,9 @@ function TeamMember(props: TmProps) {
 						target="_blank"
 						rel="noopener noreferrer"
 						href={props.website}
-						className="align-middle inline-block border border-transparent tw-hover-no-underline hover:bg-accent-200 dark:hover:bg-slate-800 hover:text-accent-800 transition-colors hover:border-accent-300 dark:hover:border-slate-700 text-accent-700 dark:text-slate-300 px-1 rounded ml-1"
+						className="inline-block px-1 ml-1 align-middle transition-colors border border-transparent rounded tw-hover-no-underline hover:bg-accent-200 dark:hover:bg-slate-800 hover:text-accent-800 hover:border-accent-300 dark:hover:border-slate-700 text-accent-700 dark:text-slate-300"
 					>
-						<span className="material-icons rotate-45 hover:-rotate-45 text-lg align-middle transition-transform">
+						<span className="text-lg align-middle transition-transform rotate-45 material-icons hover:-rotate-45">
 							link
 						</span>
 						<span className="font-mono text-[0.95rem] font-bold align-middle ml-1">
@@ -344,7 +352,7 @@ function TeamMember(props: TmProps) {
 				)}
 			</div>
 			<p className="px-4 mt-1 dark:text-slate-100">{props.title}</p>
-			<div className="px-4 mt-4 text-gray-700 dark:text-slate-400 leading-7 tracking-wide">
+			<div className="px-4 mt-4 leading-7 tracking-wide text-gray-700 dark:text-slate-400">
 				{props.description}
 			</div>
 			<div className="p-4 mt-2 mb-2">
@@ -356,11 +364,11 @@ function TeamMember(props: TmProps) {
 						className="text-base mr-3 inline-block px-1.5 py-0.5 border border-transparent rounded-md align-middle hover:bg-gray-300 dark:hover:bg-slate-800 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer text-gray-500 tw-hover-no-underline"
 					>
 						<img
-							className="align-middle inline-block transition-transform h-5 w-5 dark:invert"
+							className="inline-block w-5 h-5 align-middle transition-transform dark:invert"
 							src={github}
 							alt={"Github " + props.name}
 						/>
-						<span className="text-black dark:text-white font-mono font-medium ml-2 align-middle">
+						<span className="ml-2 font-mono font-medium text-black align-middle dark:text-white">
 							Github
 						</span>
 					</Link>
@@ -375,11 +383,11 @@ function TeamMember(props: TmProps) {
 						className="text-base mr-3 inline-block px-1.5 py-0.5 border border-transparent rounded-md align-middle hover:bg-gray-300 dark:hover:bg-slate-800 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer text-gray-500 tw-hover-no-underline"
 					>
 						<img
-							className="align-middle inline-block transition-transform h-5 w-5 dark:invert"
+							className="inline-block w-5 h-5 align-middle transition-transform dark:invert"
 							src={linkedin}
 							alt={"LinkedIn " + props.name}
 						/>
-						<span className="text-black dark:text-white font-mono font-medium ml-2 align-middle">
+						<span className="ml-2 font-mono font-medium text-black align-middle dark:text-white">
 							LinkedIn
 						</span>
 					</Link>
@@ -396,7 +404,7 @@ function TeamMember(props: TmProps) {
 						<span className="material-icons text-black text-[1.415rem] align-middle transition-transform dark:invert">
 							email
 						</span>
-						<span className="text-black dark:text-white font-mono font-medium ml-2 align-middle">
+						<span className="ml-2 font-mono font-medium text-black align-middle dark:text-white">
 							Email
 						</span>
 					</a>

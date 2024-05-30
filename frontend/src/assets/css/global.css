@@ -188,7 +188,7 @@ nav[aria-label="Main"] a[aria-current="page"] {
 	@apply bg-accent-100 dark:bg-slate-700 text-accent-700 dark:text-white font-medium border-accent-200 dark:border-slate-900 border;
 }
 .tw-sidebar-nav-btn {
-	@apply block text-left xl:mr-4 pl-4 w-full py-1.5 my-1 rounded-lg border border-transparent hover:bg-gray-200 hover:text-black dark:hover:text-white dark:hover:border-slate-700 hover:border-gray-300 focus:bg-slate-200 dark:focus:bg-slate-800 dark:hover:bg-slate-800 xl:hover:pl-6 xl:focus:pl-6 transition-all hover:cursor-pointer;
+	@apply block text-left xl:mr-4 pl-4 w-full py-2 md:py-1.5 my-1 rounded-lg border border-transparent hover:bg-gray-200 hover:text-black dark:hover:text-white dark:hover:border-slate-700 hover:border-gray-300 focus:bg-slate-200 dark:focus:bg-slate-800 dark:hover:bg-slate-800 xl:hover:pl-6 xl:focus:pl-6 transition-all hover:cursor-pointer;
 }
 .tw-sidebar-nav-btn > span:nth-child(1) {
 	@apply align-middle;
@@ -515,7 +515,7 @@ nav[aria-label="Main"] a[aria-current="page"] {
 */
 .hamburger[aria-hidden="false"]:after {
 	content: "";
-	@apply inset-0 bg-black/20 absolute z-10 h-screen w-screen;
+	@apply inset-0 bg-black/20 absolute z-10 h-screen w-screen md:-left-2 lg:-left-14;
 }
 .tw-sidebar-menu[aria-expanded="false"] {
 	@apply hidden;

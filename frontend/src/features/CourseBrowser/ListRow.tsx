@@ -127,29 +127,24 @@ export function ListRow(props: Props) {
 		inactiveSectionClass;
 
 	return (
-		<div>
+		<>
 			<div
 				className={
 					expand
-						? "bg-accent-200 dark:bg-slate-1000"
+						? "bg-white dark:bg-slate-1000"
 						: props.isSelected
-						? "bg-accent-200 dark:bg-accent-700 hover:bg-accent-200 dark:hover:bg-accent-700"
+						? "bg-accent-200 dark:bg-accent-700 hover:bg-accent-200 dark:hover:bg-accent-700 border-b border-accent-400/70 dark:border-accent-800"
 						: !props.section.is_active
-						? "bg-gray-100 dark:bg-slate-900"
-						: "hover:bg-opacity-5 dark:hover:bg-slate-700"
+						? "bg-gray-100 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700"
+						: "hover:bg-opacity-5 dark:hover:bg-slate-700 border-b border-gray-200 dark:border-slate-800"
 				}
 			>
 				<div
 					className={
-						"block lg:grid grid-cols-12 transition-colors " +
-						(expand
-							? ""
-							: props.isSelected
-							? "border-b border-accent-300 dark:border-accent-800"
-							: "border-b border-gray-300 dark:border-slate-700")
+						"block container mx-auto lg:grid grid-cols-[repeat(13,minmax(0,1fr))] transition-colors"
 					}
 				>
-					<div className="col-span-3 flex pr-4">
+					<div className="flex col-span-3 pr-4">
 						<button
 							onClick={() => {
 								if (!props.isSelected && !props.section.is_active) {
@@ -160,7 +155,7 @@ export function ListRow(props: Props) {
 							}}
 							className={
 								(props.isSelected
-									? "bg-accent-300 dark:bg-accent-800"
+									? "bg-accent-300/70 dark:bg-accent-800/50"
 									: props.doesCollide && !props.isSelected
 									? "bg-zinc-300 dark:bg-zinc-500/30 bg-opacity-30"
 									: "hover:bg-accent-300 text-gray-400 hover:text-gray-700 dark:hover:text-white dark:hover:bg-accent-700") +
@@ -184,7 +179,7 @@ export function ListRow(props: Props) {
 									: "radio_button_unchecked"}
 							</span>
 							<div
-								className="tw-tooltip left-14 top-10 whitespace-nowrap z-10"
+								className="z-10 tw-tooltip left-14 top-10 whitespace-nowrap"
 								aria-disabled={props.doesCollide && !props.isSelected}
 							>
 								{props.doesCollide && !props.isSelected ? (
@@ -200,11 +195,11 @@ export function ListRow(props: Props) {
 								)}
 							</div>
 						</button>
-						<div className="flex items-center lg:order-2 order-3">
+						<div className="flex items-center order-3 lg:order-2">
 							<button
 								onClick={() => toggleExpand()}
 								className={
-									(expand ? "bg-accent-300 dark:bg-slate-600" : "") +
+									(expand ? "bg-accent-200 dark:bg-slate-600" : "") +
 									" w-8 h-8 rounded-full hover:bg-accent-300 dark:hover:bg-slate-500 my-2 ml-2" +
 									inactiveSectionClass
 								}
@@ -249,7 +244,7 @@ export function ListRow(props: Props) {
 										""
 									)}
 								</span>
-								<span className="lg:hidden pl-1 text-md">
+								<span className="pl-1 lg:hidden text-md">
 									{seatInfo ? (
 										<SeatInfoBadge
 											actual={seatInfo.seats.Actual}
@@ -303,7 +298,7 @@ export function ListRow(props: Props) {
 					<div
 						className={
 							rowItemClass +
-							" flex place-items-center col-span-2 pl-[3.65rem] pt-1 lg:py-0 lg:pl-0 pb-3"
+							" flex place-items-center col-span-3 pl-[3.65rem] pt-1 lg:py-0 lg:pl-0 pb-3"
 						}
 					>
 						<div>
@@ -342,7 +337,7 @@ export function ListRow(props: Props) {
 				</div>
 			</div>
 			<div
-				className="accordion border-b border-gray-300 dark:border-slate-700"
+				className="border-b border-gray-300 accordion dark:border-slate-700"
 				ref={expandRef}
 				aria-expanded="false"
 			>
@@ -355,7 +350,7 @@ export function ListRow(props: Props) {
 					/>
 				)}
 			</div>
-		</div>
+		</>
 	);
 }
 

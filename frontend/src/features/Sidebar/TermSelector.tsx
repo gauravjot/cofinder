@@ -31,7 +31,16 @@ export default function TermSelector() {
 				},
 			})
 			.then((res) => {
-				return res.data;
+				let terms = res.data.terms;
+
+				terms.sort((a: TermType, b: TermType) => {
+					if (parseInt(a.code) < parseInt(b.code)) return 1;
+					if (parseInt(a.code) > parseInt(b.code)) return -1;
+					return 0;
+				});
+				console.log("Terms fetched");
+				console.log(terms);
+				return terms;
 			});
 	};
 	const query = useQuery({ queryKey: ["terms"], queryFn: getTerms });
@@ -41,7 +50,7 @@ export default function TermSelector() {
 			return;
 		}
 		if (currentTerm && currentTerm.code === "0") {
-			let term = query.data.terms[0];
+			let term = query.data[0];
 			dispatch(
 				setCurrentTerm({
 					code: term.code,
@@ -96,12 +105,12 @@ export default function TermSelector() {
 
 	return (
 		<nav aria-label="Terms" className="relative px-4">
-			<div className="text-base pb-2 text-gray-600 dark:text-slate-400">
+			<div className="pb-2 text-base text-gray-600 dark:text-slate-400">
 				Current Term
 			</div>
 			{query.isError ? (
 				<div className="pt-1">
-					<p className="dark:text-red-400 text-red-700 leading-5">
+					<p className="leading-5 text-red-700 dark:text-red-400">
 						Failed to reach server. Refresh the page or try again later.
 					</p>
 				</div>
@@ -147,11 +156,11 @@ export default function TermSelector() {
 						aria-expanded={isTermsExpanded}
 						ref={termsMenuRef}
 					>
-						<div className="h-px border-t border-gray-300 dark:border-slate-800 mt-px"></div>
+						<div className="h-px mt-px border-t border-gray-300 dark:border-slate-800"></div>
 						<div className="py-2" role="none">
 							{query.isSuccess &&
-								query.data.terms &&
-								query.data.terms.map((term: TermType) => {
+								query.data &&
+								query.data.map((term: TermType) => {
 									return (
 										<button
 											className="term-selector-dropdown-item"

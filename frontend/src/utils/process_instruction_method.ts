@@ -9,7 +9,7 @@ export function friendlyInstructionMethod(method_acronym: string) {
 		case "OLM":
 			return "Online";
 		case "OLO":
-			return "Online Only";
+			return "Online";
 		default:
 			return method_acronym;
 	}
