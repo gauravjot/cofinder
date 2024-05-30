@@ -17,13 +17,16 @@ export default function KeywordFilter(props: IKeywordFilterProps) {
 	}, [deferredKeyword]);
 
 	return (
-		<div className="inline relative">
+		<div className="relative inline w-full md:w-auto">
 			<input
 				type="text"
 				className={
+					(deferredKeyword.length > 0
+						? "bg-accent-100 border-accent-400 dark:bg-accent-400/30 dark:border-accent-500 "
+						: "") +
 					"font-medium tw-input-focus border rounded-lg border-gray-300 dark:bg-slate-700" +
 					" dark:border-slate-900 dark:text-white py-2 px-10 pl-12 disabled:opacity-50" +
-					" shadow w-[calc(100vw-3rem)] sm:w-[18rem] md:w-[20rem] lg:w-[24rem] xl:w-[26rem] 2xl:w-[28rem]"
+					" shadow w-full md:w-full lg:w-[24rem] xl:w-[26rem] 2xl:w-[28rem]"
 				}
 				placeholder="Search keyword e.g. CIS"
 				value={filter_context.keywordFilter}
@@ -31,11 +34,11 @@ export default function KeywordFilter(props: IKeywordFilterProps) {
 				onChange={(e) => filter_context.setKeywordFilter(e.target.value)}
 			/>
 			<div className="absolute left-1.5 top-[0.35rem] tw-show-on-hover-parent">
-				<span className="material-icons text-xl w-8 h-8 hover:bg-accent-100 rounded-full text-center grid items-center dark:text-white dark:hover:bg-slate-900">
-					bolt
+				<span className="grid items-center w-8 h-8 text-xl text-center rounded-full material-icons hover:bg-accent-100 dark:text-white dark:hover:bg-slate-900">
+					search
 				</span>
-				<div className="tw-show-on-hover text-gray-600 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-900">
-					<span className="block font-medium mb-1 text-gray-800 dark:text-white text-smb">
+				<div className="text-gray-600 tw-show-on-hover dark:bg-slate-800 dark:text-slate-300 dark:border-slate-900">
+					<span className="block mb-1 font-medium text-gray-800 dark:text-white text-smb">
 						Advanced Filtering
 					</span>
 					Use comma separated values for multiple filters. For example
@@ -51,7 +54,7 @@ export default function KeywordFilter(props: IKeywordFilterProps) {
 				}
 			>
 				<button
-					className="material-icons text-gray-500 dark:text-white text-lg rounded-full w-8 h-8 hover:bg-gray-300 dark:hover:bg-slate-700 hover:text-gray-700"
+					className="w-8 h-8 text-lg text-gray-500 rounded-full material-icons dark:text-white hover:bg-gray-300 dark:hover:bg-slate-700 hover:text-gray-700"
 					onClick={() => {
 						filter_context.setKeywordFilter("");
 						navigate(ROUTE.CourseBrowser, { replace: true });

@@ -54,17 +54,17 @@ export default function Courses() {
 				<Helmet>
 					<title>Course Browser - {APP_NAME}</title>
 				</Helmet>
-				<div className="flex relative">
-					<div className="flex-none xl:sticky fixed top-0 xl:h-screen z-30">
+				<div className="relative flex">
+					<div className="fixed top-0 z-30 flex-none xl:sticky xl:h-screen">
 						{/* Sidebar */}
 						<Sidebar current="course_browser" />
 					</div>
-					<div className="min-h-screen flex-1">
-						<div className="bg-slate-200 dark:bg-slate-900 bg-opacity-80 z-10 h-full relative">
+					<div className="flex-1 min-h-screen">
+						<div className="relative z-10 h-full bg-slate-100 dark:bg-slate-900 bg-opacity-80">
 							<ErrorBoundary>
 								<React.Suspense
 									fallback={
-										<div className="bg-slate-200 dark:bg-slate-900 grid items-center justify-center h-full">
+										<div className="grid items-center justify-center h-full bg-slate-100 dark:bg-slate-900">
 											<Spinner />
 										</div>
 									}

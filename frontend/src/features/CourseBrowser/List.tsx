@@ -26,7 +26,6 @@ interface Props {
 	listData: SectionsBrowserType[];
 	isKFA: boolean;
 	isTFA: boolean;
-	showOnlySelected: boolean;
 }
 
 export default function List(props: Props) {
@@ -103,14 +102,14 @@ export default function List(props: Props) {
 	return (
 		<>
 			{fetchState === FetchState.Fetching ? (
-				<div className="py-14 text-center">
+				<div className="text-center py-14">
 					<Spinner />
-					<p className="text-black dark:text-white mt-6 font-medium">
+					<p className="mt-6 font-medium text-black dark:text-white">
 						Getting data for you, hold on!
 					</p>
 				</div>
 			) : fetchState === FetchState.Error ? (
-				<div className="bg-red-200/50 rounded dark:bg-red-900/20">
+				<div className="rounded bg-red-200/50 dark:bg-red-900/20">
 					<ErrorTemplate
 						message={
 							<p>
@@ -126,14 +125,18 @@ export default function List(props: Props) {
 				</div>
 			) : props.listData ? (
 				<>
-					<div className="bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-md py-2 h-full overflow-hidden">
-						<div className="hidden lg:grid grid-cols-12 tracking-wide font-medium dark:text-white pb-4 pt-3 border-b border-gray-300 dark:border-slate-700">
-							<div className="col-span-3 pl-16">Course</div>
-							<div className="col-span-1 pr-4">Seats</div>
-							<div className="col-span-3 pr-4">Name (credits)</div>
-							<div className="col-span-2 pr-4">Instructor</div>
-							<div className="col-span-1 pr-4">Medium</div>
-							<div className="col-span-2 pr-4">Weekday/s</div>
+					<div className="h-full overflow-hidden bg-white dark:bg-slate-900">
+						<div className="border-b border-gray-300 dark:border-slate-800 dark:bg-black/20">
+							<div className="container mx-auto">
+								<div className="hidden lg:grid grid-cols-[repeat(13,minmax(0,1fr))] tracking-wide font-medium dark:text-white pt-4 pb-3 ">
+									<div className="col-span-3 pl-16">Course</div>
+									<div className="col-span-1 pr-4">Seats</div>
+									<div className="col-span-3 pr-4">Name (credits)</div>
+									<div className="col-span-3 pr-4">Instructor</div>
+									<div className="col-span-1 pr-4">Medium</div>
+									<div className="col-span-2 pr-4">Weekday/s</div>
+								</div>
+							</div>
 						</div>
 						<React.Suspense
 							fallback={
@@ -142,28 +145,12 @@ export default function List(props: Props) {
 								</div>
 							}
 						>
-							{props.showOnlySelected ? (
-								schedule
-									.filter((s) => s.term === currentTerm.code)
-									.map((item) => {
-										return (
-											<ListRow
-												key={item.crn}
-												section={item}
-												term={currentTerm}
-												isSelected={true}
-												doesCollide={false}
-												addToSchedule={addToSchedule}
-												removeFromSchedule={removeFromSchedule}
-											/>
-										);
-									})
-							) : props.listData.length > 0 ? (
+							{props.listData.length > 0 ? (
 								<Virtuoso
 									style={{
 										height: isLargeScreenSize
 											? "calc(100% - 0rem)"
-											: "calc(100% - 3.25rem)",
+											: "calc(100% - 3.1rem)",
 										overflowX: "hidden",
 									}}
 									totalCount={props.listData.length}

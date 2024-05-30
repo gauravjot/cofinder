@@ -15,21 +15,21 @@ export default function Calendar() {
 			<Helmet>
 				<title>Your Calendar - {APP_NAME}</title>
 			</Helmet>
-			<div className="flex relative">
-				<div className="flex-none xl:sticky fixed top-0 h-screen z-20">
+			<div className="relative flex">
+				<div className="fixed top-0 z-20 flex-none h-screen xl:sticky">
 					{/* Sidebar */}
 					<Sidebar current="calendar" />
 				</div>
-				<div className="min-h-screen flex-1">
+				<div className="flex-1 min-h-screen">
 					<React.Suspense
 						fallback={
-							<div className="bg-slate-200 dark:bg-slate-900 grid items-center justify-center h-full">
+							<div className="grid items-center justify-center h-full bg-slate-100 dark:bg-slate-900">
 								<Spinner />
 							</div>
 						}
 					>
-						<div className="bg-slate-200 dark:bg-slate-900 bg-opacity-80 z-10">
-							<div className="p-4 py-8 container mx-auto min-h-screen overflow-x-auto">
+						<div className="z-10 bg-slate-100 dark:bg-slate-900 bg-opacity-80">
+							<div className="container min-h-screen p-4 py-8 mx-auto overflow-x-auto">
 								<Content />
 							</div>
 						</div>

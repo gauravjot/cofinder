@@ -12,6 +12,9 @@ import { filterData } from "./algorithm";
 import CourseBrowserFilter from "@/components/ui/coursebrowser/CourseBrowserFilter";
 import KeywordFilter from "./KeywordFilter";
 import { FilterContext } from "@/pages/courses";
+import { useAppSelector } from "@/redux/hooks";
+import { RootState } from "@/redux/store";
+import ShowSelectedToggle from "../ShowSelectedToggle";
 
 interface Props {
 	setData: React.Dispatch<React.SetStateAction<SectionsBrowserType[]>>;
@@ -39,6 +42,9 @@ export default function Filter(props: Props) {
 	const instructorsTermData: ReduxInstructorType = useFetchInstructors();
 	const subjectsTermData: ReduxSubjectType = useFetchSubjects();
 
+	// Show schedule (Show selected)
+	const mySchedule = useAppSelector((state: RootState) => state.mySchedule);
+
 	React.useEffect(() => {
 		if (filter_context.subjectFilter.length < 0) {
 			return;
@@ -61,35 +67,43 @@ export default function Filter(props: Props) {
 
 	// Apply Filters
 	React.useEffect(() => {
-		applyFilters(sectionsTermData.sections, keyword);
+		applyFilters(
+			sectionsTermData.sections,
+			selectedSubjects,
+			selectedInstructors,
+			keyword
+		);
 	}, [sectionsTermData.sections, keyword]);
 
-	React.useEffect(() => {
-		if (selectedInstructors.length + selectedSubjects.length > 0) {
-			applyFilters(sectionsTermData.sections, keyword);
-		}
-	}, [selectedSubjects, selectedInstructors]);
+	// React.useEffect(() => {
+	// 	if (selectedInstructors.length + selectedSubjects.length > 0) {
+	// 		applyFilters(sectionsTermData.sections, keyword);
+	// 	}
+	// }, [selectedSubjects, selectedInstructors]);
 
-	const applyFilters = React.useCallback(
-		(data: SectionsBrowserType[], keyword: string) => {
-			let isAnyFilterActive =
-				keyword.length > 0 ||
-				selectedSubjects.length > 0 ||
-				selectedInstructors.length > 0;
-			// If no filter is active then we set state to whole data
-			props.setData(
-				isAnyFilterActive
-					? filterData(data, keyword, selectedSubjects, selectedInstructors)
-					: data
-			);
-			setActiveFilterCount(selectedSubjects.length + selectedInstructors.length);
-		},
-		[selectedSubjects, selectedInstructors]
-	);
+	const applyFilters = (
+		data: SectionsBrowserType[],
+		filterSubjects: SubjectType[],
+		filterInstructors: InstructorType[],
+		keyword: string
+	) => {
+		let isAnyFilterActive =
+			keyword.length > 0 ||
+			filterSubjects.length > 0 ||
+			filterInstructors.length > 0;
+		// If no filter is active then we set state to whole data
+		props.setData(
+			isAnyFilterActive
+				? filterData(data, keyword, filterSubjects, filterInstructors)
+				: data
+		);
+		setActiveFilterCount(filterSubjects.length + filterInstructors.length);
+	};
 
-	const removeFilters = () => {
+	const removeFilters = async () => {
 		setSelectedSubjects([]);
 		setSelectedInstructors([]);
+		applyFilters(sectionsTermData.sections, [], [], keyword);
 	};
 
 	/* Filter Toggle */
@@ -121,57 +135,70 @@ export default function Filter(props: Props) {
 		}
 	}, []);
 
+	const showOnlySelectedToggle = (active: boolean) => {
+		if (active) {
+			const scheduleRows = sectionsTermData.sections.filter((section) => {
+				return mySchedule.some((sch) => {
+					return sch.term === section.term && sch.crn === section.crn;
+				});
+			});
+			props.setData(scheduleRows);
+			return true;
+		} else {
+			applyFilters(
+				sectionsTermData.sections,
+				selectedSubjects,
+				selectedInstructors,
+				keyword
+			);
+			return false;
+		}
+	};
+
 	return (
-		<div className="sticky top-0 z-20 sm:h-16 bg-white dark:bg-slate-1000 border-b border-gray-300 dark:border-slate-800 py-px">
-			<div className="container mx-auto px-4 relative">
-				<div className="sm:flex items-center transition-colors rounded-lg">
-					<div className="sm:flex-none flex justify-end md:justify-start items-center pr-4 py-3 lg:min-w-[19rem] pl-12 sm:pl-16 md:pl-16 lg:pl-20 xl:pl-0">
+		<div className="sticky top-0 z-20 h-32 py-px bg-white border-b border-gray-300 md:h-16 dark:bg-slate-1000 dark:border-slate-800">
+			<div className="container relative h-full px-4 mx-auto lg:px-0">
+				<div className="grid h-full grid-cols-12 gap-2 p-0.5 transition-colors rounded-lg md:ml-16 lg:ml-24 xl:ml-0">
+					<div className="flex order-1 col-span-6 ml-12 h-14 md:ml-0 place-items-center md:col-span-4 lg:col-span-3 md:order-1">
 						<button
 							onClick={() => {
 								toggleFilters();
 							}}
 							id="filter-btn"
 							disabled={sectionsTermData.fetched < 0}
-							className="shadow py-1 pl-4 pr-6 bg-laccent-800 text-white rounded-full"
+							className="py-1.5 pl-2 pr-3 text-white rounded-full shadow md:pl-4 md:pr-6 bg-laccent-800"
 						>
-							<span className="material-icons text-xl align-middle">
+							<span className="text-lg align-middle md:text-xl material-icons">
 								{expandFilters ? "expand_less" : "expand_more"}
 							</span>
-							<span className="inline ml-2 font-medium tracking-wide align-middle">
-								Filters
+							<span className="inline ml-2 text-sm font-medium tracking-wide align-middle md:text-base">
+								Filters{" "}
+								{activeFilterCount === 0
+									? ""
+									: "(" + activeFilterCount + ")"}
 							</span>
 						</button>
-						<div
-							className={
-								(activeFilterCount > 0
-									? "bg-orange-200 dark:bg-opacity-10 text-orange-800 dark:text-orange-300"
-									: "bg-gray-200 text-black dark:bg-slate-700 dark:text-white") +
-								" block align-middle ml-4 font-bold" +
-								" px-2 py-0.5 text-sm rounded user-select-none"
-							}
-						>
-							{activeFilterCount === 0
-								? "not set"
-								: "ACTIVE: " + activeFilterCount}
-						</div>
 					</div>
-					<div className="sm:flex-1 flex justify-center items-center sm:justify-end xl:justify-center mb-2 sm:mb-0">
+					<div className="flex justify-center order-3 col-span-12 h-14 place-items-center md:col-span-4 lg:col-span-6 md:order-2">
 						<KeywordFilter fetchState={sectionsTermData.fetched} />
 					</div>
-					<div className="flex-none text-right lg:min-w-[19rem] hidden xl:block">
-						<h5 className="pl-4 font-semibold font-serif dark:text-white">
-							Course Browser
-						</h5>
+					<div className="flex justify-end order-2 col-span-6 h-14 place-items-center md:col-span-4 lg:col-span-3 md:order-3">
+						<div>
+							<ShowSelectedToggle
+								mySchedule={mySchedule}
+								showOnlySelectedToggle={showOnlySelectedToggle}
+							/>
+						</div>
 					</div>
 				</div>
 				<div
 					id="filter-box"
-					className="accordion absolute top-14 sm:top-auto left-2 right-3 md:right-auto md:left-auto tw-shadow bg-gray-50 dark:bg-slate-800 ml-2 rounded-lg px-6 py-6 pb-8 border border-gray-200 dark:border-slate-900 z-30"
+					className="absolute z-30 px-6 py-6 pb-8 ml-2 border border-gray-200 rounded-lg accordion top-14 sm:top-auto left-2 right-3 md:right-auto md:left-auto tw-shadow bg-gray-50 dark:bg-slate-800 dark:border-slate-900"
 					ref={expandFiltersRef}
 					aria-expanded="false"
 				>
 					<div className="md:w-[38rem] text-sm text-gray-600 dark:text-slate-300 mb-4">
-						<span className="material-icons text-smb align-middle">info</span>
+						<span className="align-middle material-icons text-smb">info</span>
 						<span className="align-middle">
 							{" "}
 							Filter is set in -or- mode. So, if you choose subject "Comp"
@@ -181,9 +208,9 @@ export default function Filter(props: Props) {
 					</div>
 					<div className="md:flex">
 						<div className="flex-1">
-							<div className="rounded-lg bg-gray-200 dark:bg-slate-800 bg-opacity-100 border-2 border-gray-200 dark:border-slate-700 dark:hover:bg-opacity-0 hover:bg-opacity-0 transition-colors">
+							<div className="transition-colors bg-gray-200 bg-opacity-100 border-2 border-gray-200 rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-opacity-0 hover:bg-opacity-0">
 								<label
-									className="text-gray-800 dark:text-slate-200 text-sm block px-4 pt-3 pb-2 leading-3"
+									className="block px-4 pt-3 pb-2 text-sm leading-3 text-gray-800 dark:text-slate-200"
 									htmlFor="subjects"
 								>
 									Subjects
@@ -198,10 +225,10 @@ export default function Filter(props: Props) {
 								</div>
 							</div>
 						</div>
-						<div className="flex-1 md:ml-4 mt-4 md:mt-0">
-							<div className="rounded-lg bg-gray-200 dark:bg-slate-800 bg-opacity-100 border-2 border-gray-200 dark:border-slate-700 dark:hover:bg-opacity-0 hover:bg-opacity-0 transition-colors">
+						<div className="flex-1 mt-4 md:ml-4 md:mt-0">
+							<div className="transition-colors bg-gray-200 bg-opacity-100 border-2 border-gray-200 rounded-lg dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-opacity-0 hover:bg-opacity-0">
 								<label
-									className="text-gray-800 dark:text-slate-200 text-sm block px-4 pt-3 pb-2 leading-3"
+									className="block px-4 pt-3 pb-2 text-sm leading-3 text-gray-800 dark:text-slate-200"
 									htmlFor="subjects"
 								>
 									Instructor
@@ -219,12 +246,17 @@ export default function Filter(props: Props) {
 					<div>
 						<button
 							onClick={() => {
-								applyFilters(sectionsTermData.sections, keyword);
+								applyFilters(
+									sectionsTermData.sections,
+									selectedSubjects,
+									selectedInstructors,
+									keyword
+								);
 								toggleFilters();
 							}}
-							className="tw-animation-scaleup-parent bg-accent-700 text-white text-left rounded-md px-3 py-1 font-medium mt-6 ml-1 tw-input-focus dark:hover:outline-transparent"
+							className="px-3 py-1 mt-6 ml-1 font-medium text-left text-white rounded-md tw-animation-scaleup-parent bg-accent-700 tw-input-focus dark:hover:outline-transparent"
 						>
-							<span className="tw-animation-scaleup material-icons text-xl align-middle">
+							<span className="text-xl align-middle tw-animation-scaleup material-icons">
 								check
 							</span>
 							<span className="align-middle ml-2.5 mr-0.5">Apply</span>
@@ -234,10 +266,10 @@ export default function Filter(props: Props) {
 							className="tw-animation-scaleup-parent ml-5 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-500 hover:bg-red-700 hover:bg-opacity-80 hover:outline hover:outline-4 hover:outline-red-200 dark:hover:outline-transparent hover:text-white dark:hover:text-white px-3 py-[0.18rem] font-medium rounded-md"
 							disabled={activeFilterCount === 0}
 						>
-							<span className="tw-animation-scaleup material-icons text-xl align-middle">
+							<span className="text-xl align-middle tw-animation-scaleup material-icons">
 								delete
 							</span>
-							<span className="align-middle ml-3">Remove All</span>
+							<span className="ml-3 align-middle">Remove All</span>
 						</button>
 					</div>
 				</div>

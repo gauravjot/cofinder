@@ -33,32 +33,32 @@ function Home() {
 					{SCHOOL_SHORT_NAME}
 				</title>
 			</Helmet>
-			<div className="flex relative">
-				<div className="flex-none xl:sticky fixed top-0 xl:h-screen z-20">
+			<div className="relative flex">
+				<div className="fixed top-0 z-20 flex-none xl:sticky xl:h-screen">
 					{/* Sidebar */}
 					<Sidebar current="home" />
 				</div>
-				<div className="min-h-screen flex-1">
+				<div className="flex-1 min-h-screen">
 					<React.Suspense
 						fallback={
-							<div className="bg-slate-200 dark:bg-slate-900 grid items-center justify-center h-full">
+							<div className="grid items-center justify-center h-full bg-slate-100 dark:bg-slate-900">
 								<Spinner />
 							</div>
 						}
 					>
-						<div className="sticky top-0 min-h-max bg-white dark:bg-slate-1000 z-10">
+						<div className="sticky top-0 z-10 bg-white min-h-max dark:bg-slate-1000">
 							<Topbar title="Plan, Organize & Succeed" />
 						</div>
 						<div>
-							<div className="bg-slate-200 bg-opacity-80 dark:bg-slate-900 z-10">
-								<div className="bg-white/50 dark:bg-slate-700/20 border-b border-zinc-300 dark:border-slate-800">
-									<div className="p-4 py-6 container mx-auto">
+							<div className="z-10 bg-slate-100 bg-opacity-80 dark:bg-slate-900">
+								<div className="border-b bg-white/50 dark:bg-slate-700/20 border-zinc-300 dark:border-slate-800">
+									<div className="container p-4 py-6 mx-auto">
 										<WelcomeComponent />
 									</div>
 								</div>
-								<div className="px-4 pb-8 container mx-auto min-h-screen">
-									<div className="lg:p-6 p-4"></div>
-									<div className="grid md:grid-cols-2 gap-12 xl:gap-16 xl:gap-y-12 2xl:gap-24 2xl:gap-y-14 mt-4">
+								<div className="container min-h-screen px-4 pb-8 mx-auto">
+									<div className="p-4 lg:p-6"></div>
+									<div className="grid gap-12 mt-4 md:grid-cols-2 xl:gap-16 xl:gap-y-12 2xl:gap-24 2xl:gap-y-14">
 										<div className="order-1">
 											<ErrorBoundary>
 												<MyCourses />
@@ -90,13 +90,20 @@ export default Home;
 
 function WelcomeComponent() {
 	return (
-		<div className="grid md:grid-cols-2 gap-4 md:gap-16">
+		<div className="grid gap-4 md:grid-cols-2 md:gap-16">
 			<div className="col-span-1">
-				<div className="font-bold uppercase text-zinc-500 dark:text-slate-500 text-sm mt-2 mb-1">
-					Updated daily
+				<div className="flex flex-col gap-2 mt-2 mb-1.5 sm:flex-row">
+					{/* <div className="text-sm font-bold uppercase text-zinc-500 dark:text-slate-500">
+						Updated daily
+					</div> */}
+					<div className="-mt-0.5">
+						<div className="px-1.5 inline-block rounded-md bg-sky-200 border border-sky-300 dark:bg-sky-800/50 dark:border-sky-700 dark:text-white/90 text-[0.95rem]">
+							Fall 2024 Now Available!
+						</div>
+					</div>
 				</div>
-				<h2 className="font-medium mb-1">Welcome to CoFinder</h2>
-				<div className="text-gray-700 dark:text-slate-400 py-2 mb-1">
+				<h2 className="mb-1 font-medium">Welcome to CoFinder</h2>
+				<div className="py-2 mb-1 text-gray-700 dark:text-slate-400">
 					CoFinder helps you find course offerings for{" "}
 					<Link to={SCHOOL_WEBSITE} target="_blank" rel="noopener noreferrer">
 						{SCHOOL_FULL_NAME}
@@ -104,17 +111,17 @@ function WelcomeComponent() {
 					.
 				</div>
 			</div>
-			<div className="col-span-1 flex place-items-center">
-				<ul className="flex flex-col gap-1 py-6 px-5 w-full rounded-3xl border border-slate-300 dark:border-slate-700">
+			<div className="flex col-span-1 place-items-center">
+				<ul className="flex flex-col w-full gap-1 px-5 py-6 border rounded-3xl border-slate-300 dark:border-slate-700">
 					<li className="flex gap-3 place-items-center">
 						<img
-							className="size-4 transition-transform dark:invert"
+							className="transition-transform size-4 dark:invert"
 							src={github}
 							alt="GitHub"
 						/>
 						<a
 							href={GITHUB_URL}
-							className="font-medium inline-block mt-px"
+							className="inline-block mt-px font-medium"
 							rel="noopener noreferrer"
 							target="_blank"
 						>
@@ -130,7 +137,7 @@ function WelcomeComponent() {
 						></iframe>
 					</li>
 					<li>
-						<span className="material-icons align-top text-black dark:text-white scale-125 text-base">
+						<span className="text-base text-black align-top scale-125 material-icons dark:text-white">
 							arrow_forward
 						</span>
 						<Link to={ROUTE.About} className="pl-3 font-medium">
