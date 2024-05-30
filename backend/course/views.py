@@ -18,6 +18,8 @@ from course.grabber.do_database import push
 @api_view(['POST'])
 def pushData(request):
     if 'password' in request.data:
+        if len(config('DB_PUSH_PASSWORD', default='')) == 0:
+            return Response(status=400)
         if hashlib.sha256(request.data['password'].encode("utf-8")).hexdigest() == config('DB_PUSH_PASSWORD'):
             push()
             return Response(status=204)

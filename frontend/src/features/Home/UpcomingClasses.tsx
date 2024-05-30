@@ -280,7 +280,7 @@ function DataBar({ markdays }: { markdays: string[] }) {
 									? "bg-accent-700 text-white rounded-full"
 									: markdays.includes(day) && index > todayIndex
 									? "bg-gray-700 text-white rounded-full"
-									: index > todayIndex
+									: index > todayIndex || index === todayIndex
 									? "text-zinc-800 dark:text-zinc-200"
 									: "text-zinc-400 dark:text-zinc-600") +
 								(index === todayIndex

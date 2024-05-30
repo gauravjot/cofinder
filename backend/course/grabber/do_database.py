@@ -41,12 +41,8 @@ def push():
             InstructionMediums.objects.create_instruction_medium(
                 method['code'], method['name'])
 
-        i = 0
         for subject in subjects:
-            i += 1
-            if i == 3:
-                break
-            time.sleep(3)
+            time.sleep(2) # to not spam server with requests
             summary.append("-" * 30)
             summary.append(f"Processing {subject['code']}")
             sections, courses = grabber.subject_courses(
